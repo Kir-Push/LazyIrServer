@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: libs/jackson-databind-2.8.6.jar libs/jackson-core-2.8.6.jar libs/jackson-
+ annotations-2.8.6.jar libs/logback-classic-1.2.3.jar libs/logback-core-1.2.3.jar libs/slf4j-api-1.7.25.jar
+Main-Class: com.push.lazyir.MainClass
+

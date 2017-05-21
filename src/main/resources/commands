@@ -1,0 +1,2 @@
+monitorOff=xrandr --output HDMI-0 --off 
+monitorOn=xrandr --output HDMI-0 --auto --left-of DVI-I-1 

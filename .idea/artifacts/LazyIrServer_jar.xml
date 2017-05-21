@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="LazyIrServer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/LazyIrServer_jar</output-path>
+    <root id="root">
+      <element id="archive" name="LazyIrServer.jar">
+        <element id="module-output" name="LazyIrServer" />
+      </element>
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.8.6" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.8.6" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.8.6" />
+      <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
+      <element id="library" level="project" name="Maven: ch.qos.logback:logback-core:1.2.3" />
+      <element id="library" level="project" name="Maven: ch.qos.logback:logback-classic:1.2.3" />
+    </root>
+  </artifact>
+</component>
