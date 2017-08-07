@@ -1,14 +1,19 @@
 package com.push.lazyir.service;
 
 import com.push.lazyir.devices.Device;
+import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.managers.CommandManager;
+import com.push.lazyir.managers.SettingManager;
 import com.push.lazyir.managers.TcpConnectionManager;
 import com.push.lazyir.managers.UdpBroadcastManager;
-import com.push.lazyir.modules.clipBoard.BoardListener;
+import com.push.lazyir.modules.clipboard.ClipboardJni;
 
 /**
  * Created by buhalo on 12.03.17.
  */
 public class BackgroundService {
+
+
 
     private static BackgroundService instance;
 
@@ -16,27 +21,25 @@ public class BackgroundService {
     {
         if(instance == null)
         {
-            instance = new BackgroundService(TcpConnectionManager.getInstance(),UdpBroadcastManager.getInstance());
+            instance = new BackgroundService();
         }
         return instance;
     }
 
-
     private TcpConnectionManager tcp;
     private UdpBroadcastManager udp;
+    private CommandManager commandManager;
+    private SettingManager settingManager;
 
-    private BoardListener clipBoard;
 
-    private BackgroundService(TcpConnectionManager tcp, UdpBroadcastManager udp) {
-        this.tcp = tcp;
-        this.udp = udp;
-        this.clipBoard = new BoardListener();
+    private BackgroundService() {
     }
 
 
 
     public synchronized void startUdpListening()
     {
+        udp.configureManager();
         udp.startUdpListener(5667);
     }
 
@@ -45,10 +48,6 @@ public class BackgroundService {
         udp.connectRecconect("null");
     }
 
-    public synchronized void startClipBoardListener()
-    {
-        clipBoard.run();
-    }
 
     public synchronized void stopUdpListening()
     {
@@ -62,6 +61,7 @@ public class BackgroundService {
 
     public synchronized void startTcpListening()
     {
+        tcp.startServer(5667);
         tcp.startListening(5667);
     }
 
@@ -73,19 +73,27 @@ public class BackgroundService {
 
     }
 
-    public UdpBroadcastManager getUdp() {
-        return udp;
+    public static UdpBroadcastManager getUdp() {
+        return getInstance().udp;
     }
 
     public void setUdp(UdpBroadcastManager udp) {
         this.udp = udp;
     }
 
-    public TcpConnectionManager getTcp() {
-        return tcp;
+    public static TcpConnectionManager getTcp() {
+        return getInstance().tcp;
     }
+    public void setCommandManager(CommandManager commandManager){this.commandManager = commandManager;}
+
+    public static CommandManager getCommandManager(){return getInstance().commandManager;}
+
+    public void setSettingManager(SettingManager settingManager){this.settingManager = settingManager;}
+
+    public static SettingManager getSettingManager(){return getInstance().settingManager;}
 
     public void setTcp(TcpConnectionManager tcp) {
         this.tcp = tcp;
     }
+
 }

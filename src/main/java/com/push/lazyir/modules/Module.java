@@ -20,4 +20,6 @@ public abstract class Module {
 
 
     public abstract void execute(NetworkPackage np);
+
+  public abstract void endWork();
 }

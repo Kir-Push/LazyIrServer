@@ -1,0 +1,63 @@
+package com.push.lazyir.modules.dbus.websocket;
+
+import org.glassfish.tyrus.server.Server;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by buhalo on 04.07.17.
+ */
+public class BrowserServer {
+    private Server server;
+    private boolean running;
+    private int port = 11520;
+    private String contextPath = "/lazyir";
+
+
+    public void start() throws Exception
+    {
+        if(running)
+            return;
+        running = true;
+        try {
+
+            final Map<String, Object> serverProperties = new HashMap<String, Object>();
+            serverProperties.put(Server.STATIC_CONTENT_ROOT, "./src/main/webapp");
+
+            server = new Server("127.0.0.1", port, contextPath, serverProperties, PopupEndpoint.class);
+            server.start();
+        }catch (Exception e)
+        {
+            stop();
+        }
+
+    }
+
+    public void stop()
+    {
+        running = false;
+        server.stop();
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+
+}

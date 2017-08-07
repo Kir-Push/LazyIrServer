@@ -1,482 +1,554 @@
 package com.push.lazyir.modules.dbus;
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.MainClass;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.managers.TcpConnectionManager;
 import com.push.lazyir.modules.Module;
+import com.push.lazyir.modules.dbus.strategies.win.Strategy;
+import com.push.lazyir.modules.dbus.strategies.win.Vlc;
+import com.push.lazyir.modules.dbus.websocket.BrowserServer;
+import com.push.lazyir.modules.dbus.websocket.PopupEndpoint;
+import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.utils.SettableFuture;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static com.push.lazyir.MainClass.*;
 
 /**
- * Created by buhalo on 09.04.17.
+ * Created by buhalo on 22.07.17.
  */
 public class Mpris extends Module {
+    private static final String seek = "seek";
+    private static final String next = "next";
+    private static final String previous = "previous";
+    private static final String stop = "stop";
+    private static final String playPause = "playPause";
+    private static final String player = "player";
+    private static final String openUri = "openUri";
+    private static final String setPosition = "setPosition";
+    private static final String volume = "volume";
+    private static final String allPlayers = "allPlayers";
 
-    public final static String FIRST_PART_DEST = "dbus-send --session --dest=";
-    public final static String FREEDESKTOP_DBUS = "org.freedesktop.DBus";
-    public final static String MEDIUM_PART = "--type=method_call --print-reply /org/mpris/MediaPlayer2 ";
-    public final static String GET_ALL_MPRIS = FIRST_PART_DEST +  FREEDESKTOP_DBUS + " --type=method_call --print-reply /org/freedesktop/DBus org.freedesktop.DBus.ListNames | grep org.mpris.MediaPlayer2";
-    public final static String PLAYER_INTERFACE = "org.mpris.MediaPlayer2.Player";
-    public final static String SEEK = ".Seek int64:";
-    public final static String NEXT = ".Next";
-    public final static String PREVIOUS = ".Previous";
-    public final static String PLAYPAUSE = ".PlayPause";
-    public final static String STOP = ".Stop";
-    public final static String OPENURI = ".OpenUri string:";
-    public final static String SETPOSITION = ".SetPosition Object Path:";
+    private static final String[] getAllMpris = {"/bin/sh", "-c", DbusCommandFabric.getGetAll()};
 
-    public final static String VOLUME = ".Volume double:";
-    public final static String PLAYBACKSTATUS = ".PlaybackStatus string:";
+    private volatile static BrowserServer browserServer;
+    private volatile static ConcurrentHashMap<String,Strategy> strategies;
+    private static Lock lock = new ReentrantLock();
+    private volatile static ConcurrentHashMap<String,String> pausedPlayers = new ConcurrentHashMap<>();
+    private volatile static ConcurrentHashMap<String,String> pausedPlayersBrowser = new ConcurrentHashMap<>();
+    private volatile static ConcurrentHashMap<String,String> pausedPlayersWin = new ConcurrentHashMap<>();
+    private volatile static int callersCount = 0;
 
-    public final static String MONITOR = "dbus-monitor --session \"path=/org/mpris/MediaPlayer2,member=PropertiesChanged\" --monitor ";
-
-    public final static String PLAYER = "player";
-
-    public final static String GET_ALL_INFO = "allInfo";
-
-    public final static String ALL_PLAYERS = "allPlayers";
-
-    private final static String SETVOLUME = " --type=method_call --print-reply /org/mpris/MediaPlayer2  org.freedesktop.DBus.Properties.Set string:org.mpris.MediaPlayer2.Player string:Volume variant:double:";
-
-    public static Map<String,String> players = new HashMap<>();
-
-    private static Set<String> Paused = new HashSet<>();
-
-    private static int NUMBER_OF_CALLERS = 0;
-
-    private static Set<String> callers = new HashSet<>();
+    public Mpris() {
+        super();
+            BrowserServer localInstance = browserServer;
+            if(localInstance == null) {
+                synchronized (BrowserServer.class) {
+                    localInstance = browserServer;
+                    if (localInstance == null) {
+                        localInstance = browserServer = new BrowserServer();
+                        try {
+                            browserServer.start();
+                        } catch (Exception e) {
+                            Loggout.e("Mpris",e.toString());
+                        }
+                        }
+                    }
+                }
+                if(isWindows())
+                {
+                    if(strategies == null)
+                    {
+                        strategies = new ConcurrentHashMap<>();
+                    }
+                    if(strategies.size() == 0)
+                    {
+                        strategies.put("vlc",new Vlc());
+                    }
+                }
+    }
 
     @Override
     public void execute(NetworkPackage np) {
-        String data = np.getData();
-        switch (data)
+        if(isUnix()){
+            isDbus(np);
+        }
+        else if(isWindows())
         {
-            case SEEK:
-                seek(np);
-                break;
-            case NEXT:
-                next(np);
-                break;
-            case PREVIOUS:
-                previous(np);
-                break;
-            case PLAYPAUSE:
-                playPause(np);
-                break;
-            case STOP:
-                stop(np);
-                break;
-            case OPENURI:
-                openUri(np);
-                break;
-            case SETPOSITION:
-                setPostion(np);
-                break;
-            case VOLUME:
-                setVolume(np);
-                break;
-            case PLAYBACKSTATUS:
-                sendPlaybackStatus(np);
-                break;
-            case ALL_PLAYERS:
-                sendMpris();
-                break;
-            case GET_ALL_INFO:
-                sendAllInfo(np);
-                break;
-            default:
-                break;
-
+            nonDbus(np);
         }
     }
 
-    public synchronized static void pauseAll(String id)
-    {
-        List<String> mpris = new ArrayList<>();
+    private void isDbus(NetworkPackage np) {
         try {
-            String[] cmd = {
-                    "/bin/sh",
-                    "-c",
-                    GET_ALL_MPRIS};
-            Process exec = Runtime.getRuntime().exec(cmd);
-            System.out.println(cmd);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
-                String temp;
-                while((temp = reader.readLine()) != null)
-                {
-                    String org = temp.substring(temp.indexOf("org"), temp.length() - 1);
-                    mpris.add(org);
-                }
-
+            String data = np.getData();
+            switch (data) {
+                case seek:
+                    seek(np);
+                    break;
+                case next:
+                    next(np);
+                    break;
+                case stop:
+                    stop(np);
+                    break;
+                case previous:
+                    previous(np);
+                    break;
+                case playPause:
+                    playPause(np);
+                    break;
+                case openUri:
+                    openUri(np);
+                    break;
+                case setPosition:
+                    setPosition(np);
+                    break;
+                case volume:
+                    setVolume(np);
+                    break;
+                case allPlayers:
+                    getAllPlayers();
+                    break;
             }
-
-        } catch (Exception e) {
+        }catch (Exception e)
+        {
             Loggout.e("Mpris",e.toString());
-
-        }
-        callers.add(id);
-        for(String name : mpris)
-        {
-            String getPlayback = FIRST_PART_DEST + name + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:PlaybackStatus";
-            String playback = getPlaybackStatus(getPlayback);
-            if(playback.equals("\"Playing\"") || playback.equals("Playing")) {
-                Paused.add(name);
-                String result = FIRST_PART_DEST + name + " " + MEDIUM_PART + PLAYER_INTERFACE + ".Pause";
-                dbusSend(result);
-            }
         }
     }
 
-    public synchronized static void playAll(String id)
-    {
-       callers.remove(id);
-      if(callers.size() == 0) {
-          for (String name : Paused) {
-              String result = FIRST_PART_DEST + name + " " + MEDIUM_PART + PLAYER_INTERFACE + ".Play";
-              dbusSend(result);
-          }
-          Paused.clear();
-
-      }
+    private void setVolume(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        String volumeVal = np.getValue(volume);
+        if(browserCheck(playerValue))
+            PopupEndpoint.sendVolume(playerValue.substring(10),volumeVal);
+        else
+        dbusSend(DbusCommandFabric.setVolume(playerValue,volumeVal));
     }
 
-    private void sendAllInfo(NetworkPackage np) {
-        NetworkPackage infopck = new NetworkPackage(Mpris.class.getSimpleName(),GET_ALL_INFO);
-        String getVolume = FIRST_PART_DEST + np.getValue(PLAYER) + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Volume";
-        String volumeFromDbus = getVolumeFromDbus(getVolume);
-        infopck.setValue(VOLUME,volumeFromDbus);
-        String metadata = FIRST_PART_DEST + np.getValue(PLAYER) + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata";
-        infopck.setValue(PLAYER,np.getValue(PLAYER));
-        getMetadata(infopck,metadata);
-        String getPlayback = FIRST_PART_DEST + np.getValue(PLAYER) + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:PlaybackStatus";
-        String playback = getPlaybackStatus(getPlayback);
-        infopck.setValue("playbackStatus",playback);
-        String currTime = FIRST_PART_DEST + np.getValue(PLAYER) + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Position";
-        String time = getTime(currTime);
-        infopck.setValue("currTime",time);
-        sendAnswer(infopck.getMessage());
+    private void setPosition(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        String pos = np.getValue("position");
+        String path = np.getValue("path");
+        if(browserCheck(playerValue))
+            PopupEndpoint.sendTime(playerValue,pos);
+        else
+        dbusSend(DbusCommandFabric.setPosition(playerValue,path,pos));
     }
 
-    private NetworkPackage getAllInfo(String player)
-    {
-        NetworkPackage infopck = new NetworkPackage(Mpris.class.getSimpleName(),GET_ALL_INFO);
-        String getVolume = FIRST_PART_DEST + player + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Volume";
-        String volumeFromDbus = getVolumeFromDbus(getVolume);
-        infopck.setValue(VOLUME,volumeFromDbus);
-        String metadata = FIRST_PART_DEST + player + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata";
-        infopck.setValue(PLAYER,player);
-        getMetadata(infopck,metadata);
-        String getPlayback = FIRST_PART_DEST + player + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:PlaybackStatus";
-        String playback = getPlaybackStatus(getPlayback);
-        infopck.setValue("playbackStatus",playback);
-        String currTime = FIRST_PART_DEST + player + " --type=method_call --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Position";
-        String time = getTime(currTime);
-        infopck.setValue("currTime",time);
-        return infopck;
+    private void openUri(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        String uri = np.getValue(openUri);
+        if(!browserCheck(playerValue))
+            dbusSend(DbusCommandFabric.openUri(playerValue,uri));
     }
 
-    private String getTime(String currTime) {
-        String result = "";
-        try {
-            Process exec = Runtime.getRuntime().exec(currTime);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
-                String temp;
-                while((temp = reader.readLine()) != null)
-                {
-                    result += temp;
+    private void playPause(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        if(browserCheck(playerValue))
+            PopupEndpoint.sendStatus(playerValue.substring(10),playPause);
+        else
+        dbusSend(DbusCommandFabric.playPause(playerValue));
+    }
+
+    private void previous(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        if(!browserCheck(playerValue))
+            dbusSend(DbusCommandFabric.previous(playerValue));
+    }
+
+    private void stop(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        if(!browserCheck(playerValue))
+            dbusSend(DbusCommandFabric.stop(playerValue));
+        else
+            PopupEndpoint.sendStatus(playerValue.substring(10),"pause");
+    }
+
+    private void next(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        if(browserCheck(playerValue))
+            PopupEndpoint.sendStatus(playerValue.substring(10),"next");
+        else
+        dbusSend(DbusCommandFabric.next(playerValue));
+    }
+
+    private void seek(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        String seekValue = np.getValue(seek);
+        if(browserCheck(playerValue))
+            PopupEndpoint.sendTime(playerValue.substring(10), seekValue);
+        else {
+            Long ss = Long.parseLong(seekValue);
+            ss *= 1000000;
+            seekValue = Long.toString(ss);
+            dbusSend(DbusCommandFabric.seek(playerValue, seekValue));
+        }
+    }
+
+    private void getAllPlayers() {
+        executorService.submit(()->{
+            NetworkPackage np = new NetworkPackage(Mpris.class.getSimpleName(),allPlayers);
+            List<Player> playerList = new ArrayList<>();
+            List<Player> playersFromBrowser = null;
+            SettableFuture<List<Player>> browsr = null;
+            try {
+                Process exec = Runtime.getRuntime().exec(getAllMpris);
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
+                    String temp;
+                    while((temp = reader.readLine()) != null)
+                    {
+                        String org = temp.substring(temp.indexOf("org"), temp.length() - 1);
+                        playerList.add(fillPlayer(org));
+                    }
                 }
+                try {
+                    browsr = PopupEndpoint.getAll();
+                    playerList.addAll(browsr.get(200, TimeUnit.MILLISECONDS)); // from browser
+                    System.out.println(Thread.currentThread());
+                } catch (Exception e) {
+                    Loggout.e("Mpris",e.toString());
+                    browsr.cancel(true);
+                }
+                Players players = new Players(playerList);
+                if(players.getPlayerList().size()> 0)
+                {
+                    np.setObject(allPlayers, players);
+                    sendAnswer(np.getMessage());
+                }
+            } catch (Exception e) {
+                Loggout.e("Mpris",e.toString());
             }
-            result = result.substring(result.indexOf("int64 ")+6, result.length()); //magic number is double string lenght
-        } catch (IOException e) {
+        });
+    }
+
+    private Player fillPlayer(String org) {
+        try {
+            String status = getPlayStatus(DbusCommandFabric.getPlaybackstatus(org));
+            HashMap<String, String> metadata = getMetadata(DbusCommandFabric.getMetadata(org));
+            String volumeStr = getVolume(DbusCommandFabric.getVolume(org));
+            String currTimeStr = getTime(DbusCommandFabric.getPosition(org));
+            String lenghtStr = metadata.get("lenght");
+            double volume = volumeStr == null ? 0 : (Double.parseDouble(volumeStr) * 100);
+            double currTime = currTimeStr == null ? 0 : ((currTime = Double.parseDouble(currTimeStr)) < 1000000 ? 0 : currTime / 1000000);
+            double lenght = lenghtStr == null ? 0 : ((lenght = Double.parseDouble(lenghtStr)) < 1000000 ? 0 : lenght / 1000000);
+            String readyTime = ((int)currTime) / 60 + ":" + ((int)currTime) % 60 + " / " + ((int)lenght)/60 + ":" + ((int)lenght) % 60;
+            return new Player(org, status, metadata.get("title"), lenght, volume, currTime, readyTime);
+        }catch (Exception e){
+            return new Player(org,"","",0,0,0,"0/0");
+        }
+    }
+
+    private String getTime(String org) {
+        StringBuilder result = new StringBuilder();
+        getResultFromexec(org).forEach(result::append);
+        return result.substring(result.indexOf("int64 ") + 6);
+    }
+
+    private String getVolume(String org) {
+        StringBuilder result = new StringBuilder();
+        getResultFromexec(org).forEach(result::append);
+        return result.substring(result.indexOf("double ") + 7);
+    }
+
+    private HashMap<String, String> getMetadata(String metadata) {
+        HashMap<String,String> result = new HashMap<>();
+        result.put("artist","");
+        List<String> resultFromexec = getResultFromexec(metadata);
+        for(int i=0;i<resultFromexec.size();i++)
+        {
+           if(resultFromexec.get(i).contains("mpris:length") && ++i < resultFromexec.size())
+           {
+               String temp = resultFromexec.get(i);
+               int indx = temp.indexOf("int64 ");
+               if(indx != -1)
+                   result.put("lenght",temp.substring(indx+6));
+               else if((indx = temp.indexOf("double ")) != -1)
+               {
+                   result.put("lenght",temp.substring(indx+7));
+               }
+           } else if(resultFromexec.get(i).contains("mpris:trackid") && ++i < resultFromexec.size())
+           {
+               String temp = resultFromexec.get(i);
+               result.put("object path",temp.substring(temp.indexOf("object path ")+12));
+           } else if(resultFromexec.get(i).contains("title") && ++i < resultFromexec.size())
+           {
+               String temp = resultFromexec.get(i);
+               result.put("title",temp.substring(temp.indexOf("string ")+7));
+           } else if(resultFromexec.get(i).contains("artist") && (i+=2) < resultFromexec.size())
+           {
+               String temp = resultFromexec.get(i);
+               try {
+                   result.put("artist",temp.trim().substring(temp.indexOf("string ") + 7));
+               }catch (NullPointerException e) {
+                   result.put("artist","");
+               }
+           }
+        }
+        return result;
+    }
+
+
+    private String getPlayStatus(String org) {
+        StringBuilder result = new StringBuilder();
+        getResultFromexec(org).forEach(result::append);
+        return result.substring(result.indexOf("string ") + 7); //magic number is double string lenght
+    }
+
+    private List<String> getResultFromexec(String org)
+    {
+        List<String> result = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(dbusSend(org).getInputStream()))) {
+            String temp;
+            while ((temp = reader.readLine()) != null) {
+                result.add(temp);
+            }
+        }catch (IOException e) {
             Loggout.e("Mpris",e.toString());
         }
         return result;
     }
 
-    private static synchronized String getPlaybackStatus(String np) {
-        String volume = "";
-        try {
-            String result = "";
-            Process exec = Runtime.getRuntime().exec(np);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
-                String temp;
-                while((temp = reader.readLine()) != null)
-                {
-                    result += temp;
-                }
-            }
-            volume = result.substring(result.indexOf("string ")+7, result.length()); //magic number is double string lenght
-        } catch (IOException e) {
-            Loggout.e("Mpris",e.toString());
-        }
-        return volume;
+    private boolean browserCheck(String player)
+    {
+        return player.startsWith("js9876528:");
     }
 
-    private void getMetadata(NetworkPackage np, String metadata) {
-     //   np.setValue(PLAYER,"org.mpris.MediaPlayer2.amarok");
-        List<String> metaList = new ArrayList<>();
-        try {
-            String commad = FIRST_PART_DEST + np.getValue(PLAYER) + " --print-reply /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata";
+    private void sendAnswer(String message)
+    {
+        BackgroundService.getTcp().sendCommandToServer(device.getId(),message);
+    }
 
-            Process exec = Runtime.getRuntime().exec(commad);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
-                String temp;
-                while((temp = reader.readLine()) != null)
+
+    private Process dbusSend(String message)
+    {
+        try {
+          return Runtime.getRuntime().exec(message);
+        } catch (Exception e) {
+            Loggout.e("Mpris",e.toString());
+            return null;
+        }
+    }
+
+    private void nonDbus(NetworkPackage np) {
+        String data = np.getData();
+        switch (data) {
+            case seek:
+                seekWin(np);
+                break;
+            case next:
+                nextWin(np);
+                break;
+            case stop:
+                stopWin(np);
+                break;
+            case previous:
+                previousWin(np);
+                break;
+            case playPause:
+                playPauseWin(np);
+                break;
+            case openUri:
+                openUriWin(np);
+                break;
+            case setPosition:
+                setPositionWin(np);
+                break;
+            case volume:
+                setVolumeWin(np);
+                break;
+            case allPlayers:
+                getAllWin();
+                break;
+        }
+
+    }
+
+    private void seekWin(NetworkPackage np) {
+        setPositionWin(np);
+    }
+
+    private void nextWin(NetworkPackage np) {
+        String npValue = np.getValue(player);
+        Strategy strategy = strategies.get(npValue.substring(0, 3));
+        strategy.next(npValue);
+    }
+
+    private void stopWin(NetworkPackage np) {
+        String npValue = np.getValue(player);
+        Strategy strategy = strategies.get(npValue.substring(0, 3));
+        strategy.stop(npValue);
+    }
+
+    private void previousWin(NetworkPackage np) {
+        String npValue = np.getValue(player);
+        Strategy strategy = strategies.get(npValue.substring(0, 3));
+        strategy.previous(npValue);
+    }
+
+    private void playPauseWin(NetworkPackage np) {
+        String npValue = np.getValue(player);
+        Strategy strategy = strategies.get(npValue.substring(0, 3));
+        strategy.playPause(npValue);
+    }
+
+    private void openUriWin(NetworkPackage np) {
+        String npValue = np.getValue(player);
+        Strategy strategy = strategies.get(npValue.substring(0, 3));
+        strategy.openUri(npValue,np.getValue(openUri));
+    }
+
+    private void setPositionWin(NetworkPackage np) {
+        String npValue = np.getValue(player);
+        Strategy strategy = strategies.get(npValue.substring(0, 3));
+        strategy.seek(npValue,np.getValue(seek));
+    }
+
+    private void setVolumeWin(NetworkPackage np) {
+        String npValue = np.getValue(player);
+        Strategy strategy = strategies.get(npValue.substring(0, 3));
+        strategy.setVolume(npValue,np.getValue(volume));
+    }
+
+    private void getAllWin()
+    {
+        executorService.submit(()->{
+            NetworkPackage np = new NetworkPackage(Mpris.class.getSimpleName(),allPlayers);
+            List<Player> playerList = new ArrayList<>();
+            for (Strategy strategy : strategies.values()) {
+                if (!strategy.checkStatus()) {
+                    strategy.Tryinitiate();
+                }
+                else
                 {
-                    metaList.add(temp);
+                    playerList.addAll(strategy.getGetAll().getPlayerList());
                 }
             }
-            np.setValue("artist","");
-            for(int i = 0;i<metaList.size();i++)
+            SettableFuture<List<Player>>  browsr = null;
+            try {
+                browsr = PopupEndpoint.getAll();
+                playerList.addAll(browsr.get(200, TimeUnit.MILLISECONDS)); // from browser
+            } catch (Exception e) {
+                Loggout.e("Mpris",e.toString());
+                if(browsr!= null)
+                browsr.cancel(true);
+            }
+            Players players = new Players(playerList);
+            if(players.getPlayerList().size()> 0)
             {
-                String m = metaList.get(i);
-                if(m.contains("mpris:length"))
-                {
-                    i++;
-                    String m2 = metaList.get(i);
-                    if(m2.contains("int64"))
-                    m2 = m2.substring(m2.indexOf("int64 ")+6,m2.length());
-                    else if(m2.contains("double")) {
-                        m2 = m2.substring(m2.indexOf("double ") + 7,m2.length());
-                    }
-                    np.setValue("lenght",m2);
-                }
-                else if(m.contains("mpris:trackid"))
-                {
-                    i++;
-                    String m2 = metaList.get(i);
-                    m2 = m2.substring(m2.indexOf("object path ")+12,m2.length());
-                    np.setValue("object path",m2);
-                }
-                else if(m.contains("title"))
-                {
-                    i++;
-                    String m2 = metaList.get(i);
-                    m2 = m2.substring(m2.indexOf("string ")+7,m2.length());
-                    np.setValue("title",m2);
-                }
 
-                if(m.contains("artist"))
+                np.setObject(allPlayers, players);
+                sendAnswer(np.getMessage());
+            }
+        });
+    }
+
+    public void pauseAll(String id) {
+        lock.lock();
+        try {
+            callersCount++;
+            if (MainClass.isUnix()) {
+                try {
+                    Process exec = Runtime.getRuntime().exec(getAllMpris);
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
+                        String temp;
+                        while ((temp = reader.readLine()) != null) {
+                            String org = temp.substring(temp.indexOf("org"), temp.length() - 1);
+                            Player player = fillPlayer(org);
+                            if (player.getPlaybackStatus().equalsIgnoreCase("playing")) {
+                                dbusSend(DbusCommandFabric.playPause(player.getName()));
+                                pausedPlayers.put(player.getName(), player.getPlaybackStatus());
+                            }
+                        }
+                    }
+
+                } catch (IOException e) {
+                    Loggout.e("Mpris", e.toString());
+                }
+            } else if (MainClass.isWindows()) {
+                for (Strategy strategy : strategies.values()) {
+                    if (!strategy.checkStatus()) {
+                        strategy.initiate();
+                        List<Player> playerList = strategy.getGetAll().getPlayerList();
+                        for (Player pl : playerList) {
+                            if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) //todo проовервь везде ли playing статус а не play например и pause тоже (может быть paused например)
+                            {
+                                pausedPlayersWin.put(pl.getName(), pl.getPlaybackStatus());
+                                strategy.playPause(pl.getName());
+                            }
+                        }
+                    }
+
+                }
+            }
+            try {
+                List<Player> playerList = PopupEndpoint.getAll().get(200, TimeUnit.MILLISECONDS);
+                if (playerList != null) {
+                    for (Player pl : playerList) {
+                        if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) {
+                            String substring = pl.getName().substring(10);
+                            PopupEndpoint.sendStatus(substring, "pause");
+                            pausedPlayersBrowser.put(substring, pl.getPlaybackStatus());
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Loggout.e("Mpris", e.toString());
+            }
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    public void playAll(String id) {
+        lock.lock();
+        try {
+            callersCount--;
+            if (callersCount > 0) {
+               return;
+
+            }
+            if(MainClass.isWindows())
+            {
+                for (String s : pausedPlayersWin.keySet()) {
+                    String strategyType = s.substring(0, 2);
+                    Strategy strategy = strategies.get(strategyType);
+                    if (!strategy.checkStatus())
+                        strategy.initiate();
+                    String playbackStatus = strategy.getOnePlayer().getPlaybackStatus();
+                    if(playbackStatus.equalsIgnoreCase("pause"))
+                    strategy.playPause(s);
+                }
+                pausedPlayersWin.clear();
+            }
+            else if(MainClass.isUnix())
+            {
+                for(String player : pausedPlayers.keySet())
                 {
-                    i++;
-                    i++;
-                    String m2 = metaList.get(i);
-                    try {
-                        m2 = m2.trim();
-                        m2 = m2.substring(m2.indexOf("string ") + 7, m2.length());
-                    }catch (NullPointerException e)
+                    String playStatus = getPlayStatus(player);
+                    if(playStatus.equalsIgnoreCase("pause"))
                     {
-
-                        m2 = "";
+                        dbusSend(DbusCommandFabric.playPause(player));
                     }
-                    np.setValue("artist",m2);
                 }
-            }
-        } catch (IOException e) {
-            Loggout.e("Mpris",e.toString());
-        }
-    }
-
-    private String getVolumeFromDbus(String command) {
-        String volume = "";
-        try {
-            String result = "";
-            Process exec = Runtime.getRuntime().exec(command);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
-                String temp;
-                while((temp = reader.readLine()) != null)
-                {
-                    result += temp;
-                }
-            }
-            volume = result.substring(result.indexOf("double ")+7, result.length()); //magic number is double string lenght
-        } catch (IOException e) {
-            Loggout.e("Mpris",e.toString());
-        }
-        return volume;
-    }
-
-    public void sendMpris()
-    {
-        List<String> mpris = new ArrayList<>();
-        try {
-            String[] cmd = {
-                    "/bin/sh",
-                    "-c",
-            GET_ALL_MPRIS};
-            Process exec = Runtime.getRuntime().exec(cmd);
-            System.out.println(cmd);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
-                String temp;
-                while((temp = reader.readLine()) != null)
-                {
-                    String org = temp.substring(temp.indexOf("org"), temp.length() - 1);
-                    mpris.add(org);
-                }
-
+                pausedPlayers.clear();
             }
 
-        } catch (Exception e) {
-            Loggout.e("Mpris",e.toString());
+            for (String s : pausedPlayersBrowser.keySet()) {
+                PopupEndpoint.sendStatus(s,"play");
+            }
 
-        }
-        NetworkPackage np = new NetworkPackage(Mpris.class.getSimpleName(),ALL_PLAYERS);
-        List<Player> playerList = new ArrayList<>();
-        for(String mp : mpris)
-        {
-            NetworkPackage data = getAllInfo(mp);
-            fillPlayer(data,mp);
-            playerList.add(fillPlayer(data,mp));
-        }
-        Players players = new Players(playerList);
-        if(players.getPlayerList().size()> 0) {
-            np.setObject(ALL_PLAYERS, players);
-            String message = np.getMessage();
-            sendAnswer(message);
-        }
-
-    }
-
-    private Player fillPlayer(NetworkPackage data,String name) {
-        try {
-
-            String status = data.getValue("playbackStatus");
-            String titleArtist = data.getValue("artist") + " : " + data.getValue("title");
-            int lenght = extractLenght(data.getValue("lenght"));
-            int volume = extractVolume(data.getValue(VOLUME));
-            int currTime = extractCurrTime(data.getValue("currTime"));
-
-            StringBuilder readyTime = new StringBuilder();
-            readyTime.append(currTime / 60);
-            readyTime.append(":");
-            readyTime.append(currTime % 60);
-            readyTime.append(" / ");
-            readyTime.append(lenght / 60);
-            readyTime.append(":");
-            readyTime.append(lenght % 60);
-            return new Player(name, status, titleArtist, lenght, volume, currTime, readyTime.toString());
-        }
-        catch (Exception e)
-        {
-            return new Player(name,"","",0,0,0,"0/0");
+        }finally {
+            lock.unlock();
         }
     }
-
-    private int extractCurrTime(String currTime) {
-      return extractLenght(currTime);
-    }
-
-    private int extractVolume(String value) {
-        if(value == null)
-        {
-            return 0;
-        }
-        return (int)(Double.parseDouble(value)*100);
-    }
-
-    private int extractLenght(String lenght) {
-        if(lenght == null)
-        {
-            return 0;
-        }
-
-      double d = Double.parseDouble(lenght);
-        if(d < 1000000)
-        {
-            return 0;
-        }
-        else
-        {
-            return (int)(d / 1000000);
-        }
-
-    }
-
-
-    public void sendPlaybackStatus(NetworkPackage np) {
-
-        //hz
-    }
-
-    public void setVolume(NetworkPackage np) {
-        String destination = players.get(np.getValue(PLAYER));
-        String volume = np.getValue(VOLUME);
-
-        dbusSend(FIRST_PART_DEST + np.getValue(PLAYER) + SETVOLUME+volume);
-    }
-
-    public void setPostion(NetworkPackage np) {
-        String destination = players.get(np.getValue(PLAYER));
-        String path = np.getValue("path");
-        String pos = np.getValue("position");
-        String result = FIRST_PART_DEST + destination +  MEDIUM_PART + PLAYER_INTERFACE + SETPOSITION + path + " int64:" + pos;
-        dbusSend(result);
-    }
-
-    public void openUri(NetworkPackage np) {
-        String destination = players.get(np.getValue(PLAYER));
-        String uri = np.getValue(OPENURI);
-        String result = FIRST_PART_DEST + destination +  MEDIUM_PART + PLAYER_INTERFACE + OPENURI + uri;
-        dbusSend(result);
-    }
-
-    public void stop(NetworkPackage np) {
-        String destination = players.get(np.getValue(PLAYER));
-        String result = FIRST_PART_DEST + destination +  MEDIUM_PART + PLAYER_INTERFACE + STOP;
-        dbusSend(result);
-    }
-
-    public void playPause(NetworkPackage np) {
-        String destination = players.get(np.getValue(PLAYER));
-        String result = FIRST_PART_DEST + np.getValue(PLAYER) + " " +  MEDIUM_PART + PLAYER_INTERFACE + PLAYPAUSE; //aatention
-        dbusSend(result);
-    }
-
-    public void previous(NetworkPackage np) {
-        String destination = players.get(np.getValue(PLAYER));
-        String result = FIRST_PART_DEST + np.getValue(PLAYER)  +" "+  MEDIUM_PART + PLAYER_INTERFACE + PREVIOUS;
-        dbusSend(result);
-    }
-
-    public void next(NetworkPackage np) {
-        String destination = players.get(np.getValue(PLAYER));
-        String result = FIRST_PART_DEST + np.getValue(PLAYER)  +" " +  MEDIUM_PART + PLAYER_INTERFACE + NEXT;
-        dbusSend(result);
-    }
-
-    public void seek(NetworkPackage np) {
-        String destination = players.get(np.getValue(PLAYER));
-        String sec = np.getValue(SEEK);
-        Long ss = Long.parseLong(sec);
-        ss *= 1000000;
-        sec = Long.toString(ss);
-        String result = FIRST_PART_DEST + np.getValue(PLAYER) +" "+  MEDIUM_PART + PLAYER_INTERFACE + SEEK + sec;
-       dbusSend(result);
-    }
-
-
-    public void sendAnswer(String message)
-    {
-        TcpConnectionManager.getInstance().sendCommandToServer(device.getId(),message);
-    }
-
-    public static void dbusSend(String message)
-    {
-        try {
-            Runtime.getRuntime().exec(message);
-        } catch (Exception e) {
-            Loggout.e("Mpris",e.toString());
-        }
-    }
-
-    public static void main(String args[])
-    {
-
-
-    }
-
-
 }

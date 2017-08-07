@@ -3,14 +3,13 @@ package com.push.lazyir.modules;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.modules.battery.Battery;
-import com.push.lazyir.modules.clipBoard.BoardListener;
-import com.push.lazyir.modules.clipBoard.ClipBoard;
+import com.push.lazyir.modules.clipboard.ClipBoard;
 import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.modules.notifications.Messengers;
 import com.push.lazyir.modules.notifications.ShowNotification;
 import com.push.lazyir.modules.notifications.SmsModule;
-import com.push.lazyir.modules.sendCommand.SendCommand;
-import com.push.lazyir.modules.shareManager.ShareModule;
+import com.push.lazyir.modules.command.SendCommand;
+import com.push.lazyir.modules.share.ShareModule;
 
 import java.util.ArrayList;
 import java.util.List;

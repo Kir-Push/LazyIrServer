@@ -108,6 +108,16 @@ public class NetworkPackage {
 
     }
 
+    public double getDouble(String key)
+    {
+        try {
+            return idNode.get(key).asDouble();
+        }catch (NullPointerException e)
+        {
+            return 0;
+        }
+    }
+
     public void setValue(String key,String value)
     {
         idNode.put(key,value);

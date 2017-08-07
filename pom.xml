@@ -38,7 +38,59 @@
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <scope>compile</scope>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <scope>compile</scope>
+            <version>1.0.4</version>
+        </dependency>
+
+
+
+
+        <!--<dependency>-->
+            <!--<groupId>org.glassfish.tyrus</groupId>-->
+            <!--<artifactId>tyrus-core</artifactId>-->
+            <!--<version>1.13.1</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-container-grizzly-server</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.8.47</version>
+        </dependency>
+
+
+
     </dependencies>
+
+
+
 
 
     <build>
@@ -59,9 +111,22 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>MainClass.main</mainClass>
+                            <mainClass> com.push.lazyir.MainClass</mainClass>
                         </manifest>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.push.lazyir.MainClass</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                 </configuration>
             </plugin>
         </plugins>

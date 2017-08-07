@@ -4,6 +4,7 @@ import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.managers.TcpConnectionManager;
 import com.push.lazyir.modules.Module;
+import com.push.lazyir.service.BackgroundService;
 
 /**
  * Created by buhalo on 19.04.17.
@@ -23,6 +24,6 @@ public class Messengers extends Module {
         NetworkPackage np = new NetworkPackage(Messengers.class.getSimpleName(),ANSWER);
         np.setValue("typeName",typeName);
         np.setValue("text",text);
-        TcpConnectionManager.getInstance().sendCommandToServer(id,np.getMessage());
+        BackgroundService.getTcp().sendCommandToServer(id,np.getMessage());
     }
 }

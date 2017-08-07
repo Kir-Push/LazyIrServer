@@ -15,6 +15,15 @@ public class Players {
         this.playerList = playerList;
     }
 
+    public void addTo(Player player)
+    {
+        if(playerList == null)
+        {
+            playerList = new ArrayList<>();
+        }
+        playerList.add(player);
+    }
+
     public Players() {
         playerList = new ArrayList<>();
     }

@@ -8,22 +8,42 @@ public class Player {
     private String name;
     private String playbackStatus;
     private String title;
-    private int lenght;
-    private int volume;
-    private int currTime;
+    private double lenght;
+    private double volume;
+    private double currTime;
     private String readyTimeString;
-    public Player(String name, String playbackStatus, String title, int lenght, int volume, int currTime, String readyTimeString) {
-        this.name = name;
+    private String type;
+    private String id;
+
+    public Player(String name, String playbackStatus, String title, double lenght, double volume, double currTime, String readyTimeString, String type, String id) {
+        this.name = "js9876528:" + id; //i'm lazy
         this.playbackStatus = playbackStatus;
         this.title = title;
         this.lenght = lenght;
         this.volume = volume;
         this.currTime = currTime;
         this.readyTimeString = readyTimeString;
+        this.type = type;
+        this.id = id;
+    }
+
+    public Player(String name, String playbackStatus, String title, double lenght, double volume, double currTime, String readyTimeString) {
+        this.name = name; // android use name as identificator
+        this.playbackStatus = playbackStatus;
+        this.title = title;
+        this.lenght = lenght;
+        this.volume = volume;
+        this.currTime = currTime;
+        this.readyTimeString = readyTimeString;
+        this.type = "dbus";
+        this.id = "-1";
     }
 
     public Player() {
     }
+    public void setType(String type) {this.type = type;}
+
+    public String getType() {return type;}
 
     public String getName() {
         return name;
@@ -49,27 +69,27 @@ public class Player {
         this.title = title;
     }
 
-    public int getLenght() {
+    public double getLenght() {
         return lenght;
     }
 
-    public void setLenght(int lenght) {
+    public void setLenght(double lenght) {
         this.lenght = lenght;
     }
 
-    public int getVolume() {
+    public double getVolume() {
         return volume;
     }
 
-    public void setVolume(int volume) {
+    public void setVolume(double volume) {
         this.volume = volume;
     }
 
-    public int getCurrTime() {
+    public double getCurrTime() {
         return currTime;
     }
 
-    public void setCurrTime(int currTime) {
+    public void setCurrTime(double currTime) {
         this.currTime = currTime;
     }
 
@@ -79,5 +99,29 @@ public class Player {
 
     public void setReadyTimeString(String readyTimeString) {
         this.readyTimeString = readyTimeString;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", playbackStatus='" + playbackStatus + '\'' +
+                ", title='" + title + '\'' +
+                ", lenght=" + lenght +
+                ", volume=" + volume +
+                ", currTime=" + currTime +
+                ", readyTimeString='" + readyTimeString + '\'' +
+                ", type='" + type + '\'' +
+                ", id='" + id + '\'' +
+                '}';
     }
 }

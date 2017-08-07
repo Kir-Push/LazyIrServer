@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact build-on-make="true" name="LazyIrServer:jar">
+  <artifact name="LazyIrServer:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/LazyIrServer_jar</output-path>
     <root id="root">
       <element id="archive" name="LazyIrServer.jar">
@@ -11,6 +11,9 @@
       <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
       <element id="library" level="project" name="Maven: ch.qos.logback:logback-core:1.2.3" />
       <element id="library" level="project" name="Maven: ch.qos.logback:logback-classic:1.2.3" />
+      <element id="library" level="project" name="Maven: javax.websocket:javax.websocket-api:1.1" />
+      <element id="library" level="project" name="Maven: org.glassfish:javax.json:1.0.4" />
+      <element id="library" level="project" name="Maven: org.glassfish.tyrus:tyrus-server:1.13.1" />
     </root>
   </artifact>
 </component>

@@ -3,20 +3,24 @@ package com.push.lazyir.managers;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.gui.Communicator;
-import com.push.lazyir.modules.shareManager.ShareModule;
+import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.pojo.Command;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.pojo.CommandsList;
-import sun.nio.ch.Net;
+import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
+import static com.push.lazyir.MainClass.executorService;
+import static com.push.lazyir.MainClass.timerService;
 import static com.push.lazyir.devices.NetworkPackage.N_OBJECT;
 
 /**
@@ -25,8 +29,6 @@ import static com.push.lazyir.devices.NetworkPackage.N_OBJECT;
 
 public class TcpConnectionManager {
     public final static String TCP_INTRODUCE = "tcpIntroduce";
-    public final static  String TCP_INTRODUCE_MSG = "my name is";
-    public final static String TCP_INTRODUCE_DATA = "mana data";
     public final static String TCP_PING = "ping pong";
     public final static String TCP_PAIR_RESULT = "pairedresult";
     public final static String RESULT = "result";
@@ -36,15 +38,19 @@ public class TcpConnectionManager {
     public final static String TCP_UNPAIR = "unpair";
     public final static String TCP_SYNC = "sync";
 
-    private static TcpConnectionManager instance;
-    public final static int port = 5667;
+    private int port = 5667;
 
     ServerSocket myServerSocket;
     private static boolean ServerOn = false;
 
-    private TcpConnectionManager() {
+    public TcpConnectionManager() {
+    }
+
+    public void startServer(int port)
+    {
         try {
             myServerSocket = new ServerSocket(port);
+            this.port = port;
         } catch (Exception e) {
             Loggout.e("Tcp",e.toString());
             Communicator.getInstance().iamCrushed();
@@ -52,13 +58,9 @@ public class TcpConnectionManager {
         }
     }
 
-    public static TcpConnectionManager getInstance()
+    private TcpConnectionManager(boolean forTest)
     {
-        if(instance == null)
-        {
-            instance = new TcpConnectionManager();
-        }
-        return instance;
+
     }
 
 
@@ -71,7 +73,7 @@ public class TcpConnectionManager {
                  }
                 if(device == null || device.getSocket() == null || !device.getSocket().isConnected() || device.getSocket().isClosed())
                 {
-                    Loggout.d("Tcp","Error in output for socket");
+                    Loggout.d("Tcp","Error in output for jasechsocket");
                     StopListening(id);
 
                 }
@@ -89,7 +91,7 @@ public class TcpConnectionManager {
 
                 }catch (Exception e)
                 {
-                    Loggout.d("Tcp","Error in open output for socket " + e.toString());
+                    Loggout.d("Tcp","Error in open output for jasechsocket " + e.toString());
                 }
         return true;
     }
@@ -97,13 +99,12 @@ public class TcpConnectionManager {
 
 
     public synchronized void sendSynchoCommand(String myid) {
-        List<Command> allCommands = CommandManager.getInstance().getAllCommands();
+        List<Command> allCommands =  BackgroundService.getCommandManager().getAllCommands();
         CommandsList commandsList = new CommandsList(allCommands);
         NetworkPackage np = new NetworkPackage(TCP_SYNC,TCP_SYNC);
         np.setObject(N_OBJECT,commandsList);
         String fromTypeAndData = np.getMessage();
         sendCommandToServer(myid,fromTypeAndData);
-
     }
 
 
@@ -129,43 +130,39 @@ public class TcpConnectionManager {
 
 
     public void startListening(int port) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if(ServerOn)
-                {
-                    Loggout.d("Tcp","Server already working");
-                    return;
-                }
+        executorService.submit(() -> {
+            if(ServerOn)
+            {
+                Loggout.d("Tcp","Server already working");
+                return;
+            }
 
-                ServerOn = true;
+            ServerOn = true;
 
-                while(ServerOn)
-                {
-                    try {
-                        Socket socket = myServerSocket.accept();
-                        ConnectionThread connection = new ConnectionThread(socket);
-                        connection.start();
+            while(ServerOn)
+            {
+                try {
+                    Socket socket = myServerSocket.accept();
+                    executorService.submit(new ConnectionThread(socket));
 
 
-                    } catch (IOException e) {
-                        Loggout.e("Tpc","Exception on accept connection ignoring + " + e.toString());
-                        if(myServerSocket.isClosed())
-                        {
-                            ServerOn = false;
-                        }
+                } catch (IOException e) {
+                    Loggout.e("Tpc","Exception on accept connection ignoring + " + e.toString());
+                    if(myServerSocket.isClosed())
+                    {
+                        ServerOn = false;
                     }
                 }
-                try
-                {
-                    myServerSocket.close();
-                    Loggout.d("Tcp","Closing server");
-                }catch (IOException e)
-                {
-                    Loggout.e("Tcp","error in closing connecton");
-                }
             }
-        }).start();
+            try
+            {
+                myServerSocket.close();
+                Loggout.d("Tcp","Closing server");
+            }catch (IOException e)
+            {
+                Loggout.e("Tcp","error in closing connecton");
+            }
+        });
     }
 
     public void sendCommandToAll(String message) {
@@ -181,14 +178,14 @@ public class TcpConnectionManager {
     /**
      * Created by buhalo on 12.03.17.
      */
-    public class ConnectionThread extends Thread {
+    public class ConnectionThread implements Runnable {
 
         private Socket connection;
         private String deviceId = null;
         private boolean connectionRun = true;
         BufferedReader in = null;
         PrintWriter out = null;
-        java.util.Timer timer;
+        private ScheduledFuture<?> timerFuture;
 
         public ConnectionThread(Socket socket) {
             this.connection = socket;
@@ -203,7 +200,7 @@ public class TcpConnectionManager {
                 out = new PrintWriter(
                         new OutputStreamWriter(connection.getOutputStream()));
               sendIntroduce();
-              SettingManager.getInstance().saveCache(connection.getInetAddress());
+                BackgroundService.getSettingManager().saveCache(connection.getInetAddress());
                 while (connectionRun)
                 {
                     String clientCommand = in.readLine();
@@ -225,14 +222,15 @@ public class TcpConnectionManager {
                     determineWhatTodo(np);
                 }
 
-            }catch (IOException e)
+            }catch (Exception e)
             {
                 Loggout.e("Tcp","Error in tcp out + " + e.toString());
             }
             finally {
                 try {
-                    timer.cancel();
-                    timer.purge();
+                    if(timerFuture!=null && !timerFuture.isDone()) {
+                        timerFuture.cancel(true);
+                    }
                     in.close();
                     out.close();
                     connection.close();
@@ -241,7 +239,7 @@ public class TcpConnectionManager {
                     module.stopSftpServer();
                     Device.getConnectedDevices().remove(deviceId);
                     Communicator.getInstance().deviceLost(deviceId);
-                }catch (IOException e)
+                }catch (Exception e)
                 {
                     Loggout.e("Tcp",e.toString());
                 }
@@ -249,11 +247,11 @@ public class TcpConnectionManager {
         }
 
 
-        private void sendIntroduce() {
+        public void sendIntroduce() {
             try {
                 String temp =String.valueOf(InetAddress.getLocalHost().getHostName().hashCode());
                 NetworkPackage networkPackage = new NetworkPackage(TCP_INTRODUCE,temp);
-                out.println(networkPackage.getMessage());
+                out.println(networkPackage.getMessage()); //todo send to out not synchronized with sendmesasge method
                 out.flush();
             } catch (UnknownHostException e) {
                Loggout.e("Tcp",e.toString());
@@ -308,7 +306,7 @@ public class TcpConnectionManager {
                     StopListening(deviceId);
                 }
                 Device.getConnectedDevices().put(device.getId(), device);
-                if(np.getData() != null && np.getData().equals(SettingManager.getInstance().get(deviceId)))
+                if(np.getData() != null && np.getData().equals( BackgroundService.getSettingManager().get(deviceId)))
                 {
                     device.setPaired(true);
                     sendPairResult(deviceId,OK);
@@ -327,7 +325,7 @@ public class TcpConnectionManager {
         private void unpair()
         {
             Device.getConnectedDevices().get(deviceId).setPaired(false);
-            SettingManager.getInstance().delete(deviceId);
+            BackgroundService.getSettingManager().delete(deviceId);
             Communicator.getInstance().devicePaired(deviceId,false);
         }
 
@@ -338,7 +336,11 @@ public class TcpConnectionManager {
 
         public void pingCheck()
         {
-            TimerTask tt =  new TimerTask() {
+            if(timerFuture!=null && !timerFuture.isDone()) {
+                timerFuture.cancel(true);
+            }
+            timerFuture = timerService.scheduleAtFixedRate(new ExtScheduledThreadPoolExecutor.ScheludeRunnable() {
+
                 @Override
                 public void run() {
                     Loggout.e("TcpPING","b");
@@ -352,8 +354,7 @@ public class TcpConnectionManager {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }finally {
-                            timer.cancel();
-                            timer.purge();
+                            myFuture.cancel(true);
                         }
 
                     }else
@@ -361,11 +362,8 @@ public class TcpConnectionManager {
                         Device.getConnectedDevices().get(deviceId).setAnswer(false);
                         ping(null);
                     }
-
                 }
-            };
-            timer = new java.util.Timer();
-            timer.schedule(tt,20000,20000); // maybe decrease time?
+            },20,20, TimeUnit.SECONDS);
         }
 
         public void ping(NetworkPackage np)
@@ -380,8 +378,17 @@ public class TcpConnectionManager {
 
         public void commandFromClient(NetworkPackage np)
         {
-            Module module = Device.getConnectedDevices().get(np.getId()).getEnabledModules().get(np.getType());
-            module.execute(np);
+            try {
+                Device device = Device.getConnectedDevices().get(np.getId());
+                if (!device.isPaired()) {
+                    return;
+                }
+                Module module = Device.getConnectedDevices().get(np.getId()).getEnabledModules().get(np.getType());
+                module.execute(np);
+            }catch (Exception e)
+            {
+                Loggout.e("TcpConnectionManager",e.toString());
+            }
         }
     }
 
@@ -415,7 +422,7 @@ public class TcpConnectionManager {
         NetworkPackage np = new NetworkPackage(TCP_UNPAIR,TCP_UNPAIR);
         sendCommandToServer(id,np.getMessage());
         Device.getConnectedDevices().get(id).setPaired(false);
-        SettingManager.getInstance().delete(id);
+        BackgroundService.getSettingManager().delete(id);
         Communicator.getInstance().devicePaired(id,false);
     }
 
@@ -426,7 +433,7 @@ public class TcpConnectionManager {
         if(np.getValue("answer").equals("paired"))
         {
             String s = np.getData();
-            SettingManager.getInstance().saveValue(id,s);
+            BackgroundService.getSettingManager().saveValue(id,s);
             Device.getConnectedDevices().get(id).setPaired(true);
             sendPairResult(id,OK);
             Communicator.getInstance().devicePaired(id,true);
@@ -434,7 +441,7 @@ public class TcpConnectionManager {
         else
         {
             Device.getConnectedDevices().get(id).setPaired(false);
-            SettingManager.getInstance().delete(id);
+            BackgroundService.getSettingManager().delete(id);
             sendPairResult(id,REFUSE);
             Communicator.getInstance().devicePaired(id,false);
         }
@@ -448,7 +455,7 @@ public class TcpConnectionManager {
             socket.connect(new InetSocketAddress(address,port),10000);
             socket.setKeepAlive(true);
             ConnectionThread connection = new ConnectionThread(socket);
-            connection.start();
+        //    connection.start();
         } catch (IOException e) {
             e.printStackTrace();
         }

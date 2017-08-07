@@ -7,10 +7,13 @@ import com.push.lazyir.MainClass;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.service.BackgroundService;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
+
+import static com.push.lazyir.MainClass.executorService;
 
 /**
  * Created by buhalo on 19.02.17.
@@ -29,35 +32,26 @@ public class UdpBroadcastManager  {
     private volatile static boolean listening = false;
     public volatile static boolean exitedFromSend = true;
     private volatile static boolean sending;
-    private static UdpBroadcastManager instance;
 
     public final static HashMap<String,Device> neighboors = new HashMap<>();
     private InetAddress broadcastAddress;
 
-    private UdpBroadcastManager() {
+    public UdpBroadcastManager() {
+
+    }
+
+    public void configureManager()
+    {
         try {
-            configureManager();
+            socket = new DatagramSocket();
+            socket.setReuseAddress(true);
         } catch (IOException e) {
             Loggout.e("Udp","Error in udp configure method");
         }
-    }
 
-    private void configureManager() throws IOException
-    {
-        socket = new DatagramSocket();
-        socket.setReuseAddress(true);
-    //    socket.setBroadcast(true);
     }
 
 
-    public static UdpBroadcastManager getInstance()
-    {
-        if(instance == null)
-        {
-            instance = new UdpBroadcastManager();
-        }
-        return instance;
-    }
 
 
     public void sendBroadcast(final String message, final int port)
@@ -113,33 +107,30 @@ public class UdpBroadcastManager  {
                 return;
             }
             listening = true;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+         executorService.submit(() -> {
 
-                    Loggout.d("Udp","start listening");
-                    final int bufferSize = 1024 * 5;
-                    byte[] data = new byte[bufferSize];
-                    while (listening) {
-                        DatagramPacket packet = new DatagramPacket(data, bufferSize);
-                        try {
-                            server.receive(packet);
-                            broadcastReceived(packet);
-                            data = new byte[bufferSize];
-                        }
-                        catch (Exception e) {
-                            Loggout.e("Udp", "UdpReceive exception + " + e.toString());
-                            listening = false;
-                            Communicator.getInstance().iamCrushedUdpListen();
-                            break;
-                        }
-                    }
-                    Loggout.d("Udp", "Stopping UDP listener");
-                    server.close();
-                    server = null;
-                    listening = false;
-                }
-            }).start();
+             Loggout.d("Udp","start listening");
+             final int bufferSize = 1024 * 5;
+             byte[] data = new byte[bufferSize];
+             while (listening) {
+                 DatagramPacket packet = new DatagramPacket(data, bufferSize);
+                 try {
+                     server.receive(packet);
+                     broadcastReceived(packet);
+                     data = new byte[bufferSize];
+                 }
+                 catch (Exception e) {
+                     Loggout.e("Udp", "UdpReceive exception + " + e.toString());
+                     listening = false;
+                     Communicator.getInstance().iamCrushedUdpListen();
+                     break;
+                 }
+             }
+             Loggout.d("Udp", "Stopping UDP listener");
+             server.close();
+             server = null;
+             listening = false;
+         });
 
     }
 
@@ -222,11 +213,11 @@ public class UdpBroadcastManager  {
     }
 
 
-    public static boolean isSending() {return sending;}
+    public boolean isSending() {return sending;}
 
-    public static void startSending() {sending = true;}
+    public void startSending() {sending = true;}
 
-    public static void stopSending()
+    public void stopSending()
     {
         sending = false;
     }
@@ -240,7 +231,7 @@ public class UdpBroadcastManager  {
     }
 
     public void connectRecconect(String id) {
-        Set<String> allCachedThings = SettingManager.getInstance().getAllCachedThings();
+        Set<String> allCachedThings =  BackgroundService.getSettingManager().getAllCachedThings();
         for (String allCachedThing : allCachedThings) {
             try {
                 sendUdp(InetAddress.getByName(allCachedThing),5667);

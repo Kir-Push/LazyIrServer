@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+
+  
+"name": "Getting started example",
+  "description": "This extension shows a Google Image search result for the current page",
+ 
+ "version": "1.0",
+
+ 
+ "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+,    "default_title": "Click here!"  },
+
+  "permissions": [
+  "http://localhost/*",
+  "background",
+    "tabs","storage" ],
+ "content_scripts": [
+    {
+ "matches": [
+        "*://*/*"
+      ],    "js": ["jquery.min.js","popup.js"]
+,
+"run_at": "document_end"   }
+  ]
+,
+ "background":
+    {
+        "scripts": ["jquery.min.js"]
+    }}

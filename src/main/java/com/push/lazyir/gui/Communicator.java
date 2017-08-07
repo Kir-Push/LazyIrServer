@@ -1,74 +1,67 @@
 package com.push.lazyir.gui;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.MainClass;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.managers.*;
-import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.notifications.*;
-import com.push.lazyir.modules.shareManager.ShareModule;
+import com.push.lazyir.modules.share.ShareModule;
+import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.*;
 
-import static com.push.lazyir.modules.notifications.ShowNotification.SHOW_NOTIFICATION;
+import static com.push.lazyir.MainClass.timerService;
+import static com.push.lazyir.managers.TcpConnectionManager.TCP_PAIR_RESULT;
 
 /**
  * Created by buhalo on 12.03.17.
  */
 //i think communication will be like rest (not exactly same)
-public class Communicator implements Runnable{
+public enum Communicator implements Runnable{
 
-    public final static String BS = "/";
+    INSTANCE;
+
+    private  static String BS = "/";
     // first blocks
-    public static String POST = "post";
-    public static String GET = "get";
-    public static String DELETE = "delete";
+    private String POST = "post";
+    private String GET = "get";
+    private String DELETE = "delete";
     // second blocks
-    public static String LOG = "log";
-    public static String COMMAND = "command";
-    public static String SETTING = "setting";
-    public static String STATE = "state";
+    private String LOG = "log";
+    private String COMMAND = "command";
+    private String SETTING = "setting";
+    private String STATE = "state";
     // third blocks include id or object name
     // and state blocks
-    public static String ALL = "all";
-    public static String TRUE = "true";
-    public static String FALSE = "false";
-
-    private static Communicator instance;
+    private String ALL = "all";
+    private String TRUE = "true";
+    private String FALSE = "false";
     private BufferedReader in;
    // private BufferedWriter out;
     private String commandFromGui;
     private boolean listenInput;
-    private Timer timer;
-    private boolean answer = true;
-
-    private static final String BATTERY = "battery";
-
-    private static final String DEVICE = "Device";
-    private static final String FOUND = "found";
-    private static final String PAIRED = "paired";
-    private static final String UNPAIRED = "unpaired";
-    private static final String LOST = "lost";
-
-    private static final String ALL_NOTIF = "All Notififications: ";
-    private static final String MESSENGERS = "messengers";
+    private ScheduledFuture<?> timerFuture;
+    private volatile boolean answer = true;
+    private  String BATTERY = "battery";
+    private String DEVICE = "Device";
+    private  String FOUND = "found";
+    private  String PAIRED = "paired";
+    private  String UNPAIRED = "unpaired";
+    private  String LOST = "lost";
+    private  String ALL_NOTIF = "allNotifs";
+    private  String MESSENGERS = "messengers";
 
 
     public static Communicator getInstance()
     {
-        if(instance == null)
-        {
-            instance = new Communicator();
-        }
-        return instance;
+        return INSTANCE;
     }
 
-    private Communicator() {
+    Communicator() {
        in = new BufferedReader(new InputStreamReader(System.in));
       setListenInput(true);
     }
@@ -94,26 +87,52 @@ public class Communicator implements Runnable{
 
     public void pingCheck()
     {
-        TimerTask tt =  new TimerTask() {
+        if(timerFuture != null && !timerFuture.isDone())
+        {
+            return;
+        }
+         timerFuture = timerService.scheduleAtFixedRate(new ExtScheduledThreadPoolExecutor.ScheludeRunnable() {
+                 @Override
+                 public void run() {
+                     if (answer) {
+                         sendToOut("ping");
+                         answer = false;
+                     } else {
+                         Loggout.e("Communicator", "Ending app");
+                         myFuture.cancel(true);
+                         //   tryToEraseAllResource();
+                         //    System.exit(0);
+                     }
+                 }
+        }, 10, 15, TimeUnit.SECONDS);
+
+    }
+
+    public static void main(String[] args) throws Exception
+    {
+        timerService.setRemoveOnCancelPolicy(true);
+        timerService.setKeepAliveTime(5,TimeUnit.SECONDS);
+        timerService.allowCoreThreadTimeOut(true);
+        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
+        scheduledThreadPoolExecutor.setKeepAliveTime(5,TimeUnit.SECONDS);
+        scheduledThreadPoolExecutor.setRemoveOnCancelPolicy(true);
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        threadPoolExecutor.allowCoreThreadTimeOut(true);
+        ExecutorService executorService =  Executors.unconfigurableExecutorService(threadPoolExecutor);
+      //  ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+       // scheduledExecutorService.setKeepAliveTime(1,TimeUnit.SECONDS);
+
+        timerService.scheduleAtFixedRate(new ExtScheduledThreadPoolExecutor.ScheludeRunnable() {
             @Override
             public void run() {
-                if(answer)
-                {
-                    sendToOut("ping");
-                    answer = false;
-                }
-                else
-                {
-                    timer.cancel();
-                    timer.purge();
-                    Loggout.e("Communicator","Ending app");
-                    tryToEraseAllResource();
-                    System.exit(0);
-                }
+                System.out.println("da");
+                myFuture.cancel(true);
             }
-        };
-        timer = new java.util.Timer();
-        timer.schedule(tt,10000,15000);
+        },1,1,TimeUnit.SECONDS);
+
+
+     //   dadada.cancel(false);
+
     }
 
     public synchronized void sendToOut(String msg)
@@ -152,18 +171,15 @@ public class Communicator implements Runnable{
             answer = true;
             return;
         }
-        else if(commandFromGui.startsWith(ALL_NOTIF))
+        Loggout.e("FromGUi: ",commandFromGui);
+        NetworkPackage cmdAnswr = new NetworkPackage(commandFromGui);
+        if(cmdAnswr.getData().equals(ALL_NOTIF))
         {
-            String substring = commandFromGui.substring(ALL_NOTIF.length());
-            NetworkPackage np = new NetworkPackage(substring);
-            String id = np.getValue("id");
+            String id = cmdAnswr.getValue("id");
             ShowNotification module = (ShowNotification) Device.getConnectedDevices().get(id).getEnabledModules().get(ShowNotification.class.getSimpleName());
             module.requestNotificationsFromDevice();
         }
-        Loggout.e("FromGUi: ",commandFromGui);
-        NetworkPackage cmdAnswr = new NetworkPackage(commandFromGui);
-
-        if(cmdAnswr.getData().equals("SmsAnswer"))
+        else if(cmdAnswr.getData().equals("SmsAnswer"))
         {
             SmsModule module = (SmsModule) Device.getConnectedDevices().get(cmdAnswr.getId()).getEnabledModules().get(SmsModule.class.getSimpleName());
             module.send_sms(cmdAnswr.getName(),cmdAnswr.getValue("text"),cmdAnswr.getId());
@@ -172,39 +188,43 @@ public class Communicator implements Runnable{
         {
             Messengers.sendAnswer(cmdAnswr.getValue("typeName"),cmdAnswr.getValue("text"),cmdAnswr.getId());
         }
-        //todo
         else if(cmdAnswr.getData().equals("Sync_Commands"))
         {
-            CommandManager commandManager = CommandManager.getInstance();
+            CommandManager commandManager = BackgroundService.getCommandManager();
             commandManager.syncCommands();
         }
         else if(cmdAnswr.getData().equals("Connect"))
         {
             String id = cmdAnswr.getId();
-            TcpConnectionManager.getInstance().StopListening(id);
-            UdpBroadcastManager.getInstance().connectRecconect(id);
+            BackgroundService.getTcp().StopListening(id);
+            BackgroundService.getUdp().connectRecconect(id);
 
         }
         else if(cmdAnswr.getData().equals("Disconnect"))
         {
             String id = cmdAnswr.getId();
-            TcpConnectionManager.getInstance().StopListening(id);
+            BackgroundService.getTcp().StopListening(id);
 
         } else if(cmdAnswr.getData().equals("ReconnectToSftp"))
         {
-        //todo
+            String id = cmdAnswr.getId();
+            Device device = Device.getConnectedDevices().get(id);
+            if(device != null)
+            {
+                ((ShareModule)device.getEnabledModules().get(ShareModule.class.getSimpleName())).recconectToSftp(id);
+            }
         }
         else if(cmdAnswr.getData().equals("Unpair"))
         {
-            TcpConnectionManager.getInstance().sendUnpair(cmdAnswr.getId());
+            BackgroundService.getTcp().sendUnpair(cmdAnswr.getId());
         }
         else if(cmdAnswr.getData().equals("Pair"))
         {
-            TcpConnectionManager.getInstance().requestPairDevice(cmdAnswr.getId());
+            BackgroundService.getTcp().requestPairDevice(cmdAnswr.getId());
         }
         else if(cmdAnswr.getData().equals("PairAnswr"))
         {
-          TcpConnectionManager.getInstance().pairResult(cmdAnswr);
+          BackgroundService.getTcp().pairResult(cmdAnswr);
         }
 
 
@@ -213,6 +233,11 @@ public class Communicator implements Runnable{
     public synchronized void requestPair(NetworkPackage np)
     {
        sendToOut(np.getMessage());
+       //todo only for test
+        NetworkPackage cmdAnswr = new NetworkPackage(TCP_PAIR_RESULT,np.getData());
+        cmdAnswr.setValue("id",np.getId());
+        cmdAnswr.setValue("answer","paired");
+        BackgroundService.getTcp().pairResult(cmdAnswr);
     }
 
     public synchronized void iamCrushed()

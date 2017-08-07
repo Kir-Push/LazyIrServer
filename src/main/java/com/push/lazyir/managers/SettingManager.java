@@ -13,8 +13,6 @@ import java.util.*;
  */
 public class SettingManager implements Manager {
 
-    private static SettingManager instance;
-
     protected String currentUsersHomeDir = System.getProperty("user.home");
     protected String settingFilePath =currentUsersHomeDir + File.separator + ".Jasech";
     protected String settingsFile = "settingFile.ini";
@@ -29,8 +27,7 @@ public class SettingManager implements Manager {
     private String mockId = null;
     private String keyPath;
 
-
-    protected SettingManager()
+    public SettingManager()
     {
         baseProp = "baseProp";
         properties = new Properties();
@@ -81,13 +78,6 @@ public class SettingManager implements Manager {
     }
 
 
-    public static SettingManager getInstance() {
-        if(instance == null)
-        {
-            instance = new SettingManager();
-        }
-        return instance;
-    }
 
     @Override
     public synchronized void delete(String key) {

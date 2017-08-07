@@ -5,6 +5,7 @@ import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.managers.TcpConnectionManager;
 import com.push.lazyir.modules.Module;
+import com.push.lazyir.service.BackgroundService;
 
 import static com.push.lazyir.modules.notifications.ShowNotification.NOTIFICATION_CLASS;
 import static com.push.lazyir.modules.notifications.ShowNotification.RECEIVE_NOTIFICATION;
@@ -34,7 +35,7 @@ public class SmsModule extends Module {
         NetworkPackage np = new NetworkPackage(SMS_TYPE,SEND);
         Sms message = new Sms(name,text);
         np.setObject(NetworkPackage.N_OBJECT,message);
-        TcpConnectionManager.getInstance().sendCommandToServer(dvId,np.getMessage());
+        BackgroundService.getTcp().sendCommandToServer(dvId,np.getMessage());
     }
 
 

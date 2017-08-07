@@ -3,6 +3,7 @@ package com.push.lazyir.managers;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.pojo.Command;
+import com.push.lazyir.service.BackgroundService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +17,6 @@ import java.util.Properties;
  * Created by buhalo on 12.03.17.
  */
 public class CommandManager extends SettingManager  {
-    private static CommandManager instance;
 
 
     protected String settingsFile = "commands.ini";
@@ -27,16 +27,7 @@ public class CommandManager extends SettingManager  {
 
 
 
-    public static CommandManager getInstance()
-    {
-        if(instance == null)
-        {
-            instance = new CommandManager();
-        }
-        return instance;
-    }
-
-    private CommandManager() {
+    public CommandManager() {
 //        super();
         if(isUnix())
         baseProp = "commands";
@@ -111,7 +102,7 @@ public class CommandManager extends SettingManager  {
 
     public synchronized void syncCommands(String id)
     {
-       TcpConnectionManager.getInstance().sendSynchoCommand(id);
+       BackgroundService.getTcp().sendSynchoCommand(id);
     }
 
 
