@@ -3,6 +3,7 @@ package com.push.lazyir.devices;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.push.lazyir.managers.tcp.ConnectionThread;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.ModuleFactory;
 
@@ -12,34 +13,30 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by buhalo on 19.02.17.
  */
 
 public class Device {
-    public final static Map<String,Device> connectedDevices = new HashMap<>();
-    private Socket socket;
+    public final static ConcurrentHashMap<String,Device> connectedDevices = new ConcurrentHashMap<>();
+    private ConnectionThread thread;
     private String id;
     private String name;
     private InetAddress ip;
     private volatile boolean paired;
-    private BufferedReader in;
-    private PrintWriter out;
     private volatile boolean listening;
     private volatile boolean pinging;
     private volatile boolean answer;
     private HashMap<String, Module> enabledMdules = new HashMap<>();
 
-
-    public Device(Socket socket, String id, String name, InetAddress ip, BufferedReader in, PrintWriter out) {
-        this.socket = socket;
+    public Device(String id, String name, InetAddress ip, ConnectionThread runnableThread) {
         this.id = id;
         this.name = name;
         this.ip = ip;
+        this.thread = runnableThread;
         this.paired = false;
-        this.out = out;
-        this.in = in;
         this.listening = true;
         this.pinging = false;
         this.answer = false;
@@ -47,17 +44,24 @@ public class Device {
             enabledMdules.put(registeredModule.getSimpleName(), ModuleFactory.instantiateModule(this,registeredModule));
         }
     }
+
+    public void printToOut(String message)
+    {
+        thread.printToOut(message);
+    }
+
+    public boolean isConnected()
+    {
+        return thread != null && thread.isConnected();
+    }
+
+    public void closeConnection()
+    {
+        thread.closeConnection();
+    }
+
     public static Map<String, Device> getConnectedDevices() {
         return connectedDevices;
-    }
-
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
     }
 
     public String getId() {
@@ -90,23 +94,6 @@ public class Device {
 
     public void setPaired(boolean paired) {
         this.paired = paired;
-    }
-
-
-    public PrintWriter getOut() {
-        return out;
-    }
-
-    public void setOut(PrintWriter out) {
-        this.out = out;
-    }
-
-    public BufferedReader getIn() {
-        return in;
-    }
-
-    public void setIn(BufferedReader in) {
-        this.in = in;
     }
 
     public boolean isListening() {

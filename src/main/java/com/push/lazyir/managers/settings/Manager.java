@@ -1,12 +1,10 @@
-package com.push.lazyir.managers;
+package com.push.lazyir.managers.settings;
 
 import com.push.lazyir.pojo.Command;
 
 import java.util.List;
 
-/**
- * Created by buhalo on 12.03.17.
- */
+
 public interface Manager {
 
     void delete(String string);

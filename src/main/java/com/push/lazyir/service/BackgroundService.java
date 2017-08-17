@@ -1,12 +1,9 @@
 package com.push.lazyir.service;
 
 import com.push.lazyir.devices.Device;
-import com.push.lazyir.gui.Communicator;
-import com.push.lazyir.managers.CommandManager;
-import com.push.lazyir.managers.SettingManager;
-import com.push.lazyir.managers.TcpConnectionManager;
-import com.push.lazyir.managers.UdpBroadcastManager;
-import com.push.lazyir.modules.clipboard.ClipboardJni;
+import com.push.lazyir.managers.settings.SettingManager;
+import com.push.lazyir.managers.tcp.TcpConnectionManager;
+import com.push.lazyir.managers.udp.UdpBroadcastManager;
 
 /**
  * Created by buhalo on 12.03.17.
@@ -15,7 +12,7 @@ public class BackgroundService {
 
 
 
-    private static BackgroundService instance;
+    private volatile static BackgroundService instance;
 
     public static BackgroundService getInstance()
     {
@@ -28,7 +25,6 @@ public class BackgroundService {
 
     private TcpConnectionManager tcp;
     private UdpBroadcastManager udp;
-    private CommandManager commandManager;
     private SettingManager settingManager;
 
 
@@ -61,8 +57,8 @@ public class BackgroundService {
 
     public synchronized void startTcpListening()
     {
-        tcp.startServer(5667);
-        tcp.startListening(5667);
+        tcp.startServer();
+        tcp.startListening();
     }
 
     public synchronized void eraseTcpConnections()
@@ -84,9 +80,6 @@ public class BackgroundService {
     public static TcpConnectionManager getTcp() {
         return getInstance().tcp;
     }
-    public void setCommandManager(CommandManager commandManager){this.commandManager = commandManager;}
-
-    public static CommandManager getCommandManager(){return getInstance().commandManager;}
 
     public void setSettingManager(SettingManager settingManager){this.settingManager = settingManager;}
 

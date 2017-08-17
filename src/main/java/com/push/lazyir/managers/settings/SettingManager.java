@@ -1,8 +1,7 @@
-package com.push.lazyir.managers;
+package com.push.lazyir.managers.settings;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.pojo.Command;
-import sun.rmi.runtime.Log;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -13,17 +12,12 @@ import java.util.*;
  */
 public class SettingManager implements Manager {
 
-    protected String currentUsersHomeDir = System.getProperty("user.home");
-    protected String settingFilePath =currentUsersHomeDir + File.separator + ".Jasech";
-    protected String settingsFile = "settingFile.ini";
-    protected String addressCacheFile = "adresses.txt";
-    protected File settings;
+    private File settings;
     protected File cache;
-    protected Properties properties;
-    FileInputStream fileInputStream;
-    FileOutputStream fileOutputStream;
-    protected String baseProp = "baseProp";
-
+    private Properties properties;
+    private FileInputStream fileInputStream;
+    private FileOutputStream fileOutputStream;
+    private String baseProp = "baseProp";
     private String mockId = null;
     private String keyPath;
 
@@ -31,8 +25,9 @@ public class SettingManager implements Manager {
     {
         baseProp = "baseProp";
         properties = new Properties();
-        settings = new File(settingFilePath+ File.separator+ settingsFile);
-        cache = new File(settingFilePath + File.separator + addressCacheFile);
+        String settingFilePath = System.getProperty("user.home") + File.separator + ".Jasech";
+        settings = new File(settingFilePath + File.separator+ "settingFile.ini");
+        cache = new File(settingFilePath + File.separator + "adresses.txt");
         keyPath = settingFilePath + File.separator + "keyFile.pem";
         File dir = new File(settingFilePath);
         if(!dir.exists())
@@ -54,7 +49,7 @@ public class SettingManager implements Manager {
 
     }
 
-    protected void copyFromBackupToActual() {
+    private synchronized void copyFromBackupToActual() {
         try {
             ClassLoader classLoader =getClass().getClassLoader();
             String file = classLoader.getResource(baseProp).getFile();
@@ -211,7 +206,7 @@ public class SettingManager implements Manager {
         mockId = id;
     }
 
-    public String getKeyPath() {
+    public synchronized String getKeyPath() {
         File file = new File(keyPath);
         if(!file.exists()) {
             try {

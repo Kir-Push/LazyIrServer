@@ -1,11 +1,9 @@
 package com.push.lazyir;
 
 import com.push.lazyir.gui.Communicator;
-import com.push.lazyir.managers.CommandManager;
-import com.push.lazyir.managers.SettingManager;
-import com.push.lazyir.managers.TcpConnectionManager;
-import com.push.lazyir.managers.UdpBroadcastManager;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.managers.settings.SettingManager;
+import com.push.lazyir.managers.tcp.TcpConnectionManager;
+import com.push.lazyir.managers.udp.UdpBroadcastManager;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
 import java.io.*;
@@ -28,8 +26,9 @@ public class MainClass {
         timerService.setRemoveOnCancelPolicy(true);
         timerService.setKeepAliveTime(10, TimeUnit.SECONDS);
         timerService.allowCoreThreadTimeOut(true);
-        executorService.submit(Communicator::getInstance);
-        getInstance().setCommandManager(new CommandManager());
+       // executorService.submit(Communicator::getInstance);
+        executorService.submit(Communicator.INSTANCE);
+     //   new Thread(Communicator.INSTANCE).start();
         getInstance().setSettingManager(new SettingManager());
         getInstance().setTcp(new TcpConnectionManager());
         getInstance().setUdp(new UdpBroadcastManager());

@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by buhalo on 02.04.17.
@@ -25,6 +27,9 @@ public class SftpServerProcess implements Runnable{
     private Process process;
     private  String currentUsersHomeDir;
     public String driveLetter;
+    private volatile boolean running;
+    private  int i = 1;
+    private Lock lock = new ReentrantLock();
 
     public SftpServerProcess(int port, InetAddress ip,String userName,String pass) {
         this.port = port;
@@ -40,7 +45,7 @@ public class SftpServerProcess implements Runnable{
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
-                Loggout.e("Sftp", e.toString());
+                Loggout.e("Sftp", "Constructor",e);
             }
             args.add(programm);
             args.add(userName + "@" + ip.getHostAddress() + ":" + mountPoint);
@@ -79,103 +84,106 @@ public class SftpServerProcess implements Runnable{
 
     @Override
     public void run() {
-        if(MainClass.isUnix()) {
-            ProcessBuilder pb = new ProcessBuilder(args);
-            BufferedWriter writer = null;
-            BufferedReader reader = null;
-            String answer = null;
-            int i = 1;
+        lock.lock();
+        try {
+            if (running) {
+                //stopProcess();
+                return;
+            }
+            if (MainClass.isUnix()) {
+                String answer = null;
+                try {
+                 answer = connect();
+                } catch (IOException | InterruptedException e) {
+                    Loggout.e("sftp","connect",e);
+                } finally {
+                    int tryCount = 5;
+                    while ((answer != null && (answer.contains("refused") || answer.contains("Error")) || i != 0) && tryCount > 0)
+                  {
+                        if (process != null)
+                            process.destroy();
+                        try {
+                            Thread.sleep(20000);
+                            answer = connect();
+                            Loggout.e("Second try sftp ", answer);
+                        } catch (InterruptedException | IOException e) {
+                            Loggout.e("Sftp", "run second try",e);
+                        }
+                       tryCount--;
+                    }
+                }
+            } else if (MainClass.isWindows()) {
+                try {
+                    ProcessBuilder pb = new ProcessBuilder(args);
+                    pb.start();
+                    running = true;
+                } catch (IOException e) {
+                    Loggout.e("Sftp", e.toString());
+                    running = false; //todo some stop
+                }
+            }
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    private String connect() throws IOException,InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder(args);
+        BufferedWriter writer = null;
+        BufferedReader reader = null;
+        String answer = null;
+        int i = 1;
+            process = pb.start();
+            // process.getInputStream();
+            writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            writer.write(pass + "\n");
+            writer.flush();
+            writer.close();
+            reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            answer = reader.readLine();
+            i = process.waitFor();
+            running = true;
             try {
-                process = pb.start();
-               // process.getInputStream();
-                writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-                writer.write(pass+"\n");
-                writer.flush();
                 writer.close();
-                reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                answer = reader.readLine();
-                i =  process.waitFor();
-            } catch (IOException | InterruptedException e) {
-                Loggout.e("Sftp", e.toString());
-
-            }finally {
-                if(answer != null  && (answer.contains("refused") || answer.contains("Error")) || i != 0)
-                {
-                    if(process != null)
-                    {
-                        process.destroy();
-                    }
-                    try {
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        Loggout.e("Sftp", e.toString());
-                    }
-                    ProcessBuilder pb2 = new ProcessBuilder(args);
-                    try {
-                        process = pb2.start();
-                        writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-                        writer.write(pass+"\n");
-                        writer.flush();
-                        writer.close();
-                        reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                        answer = reader.readLine();
-                        reader.close();
-                        Loggout.e("Second try sftp ", answer);
-                        process.waitFor();
-                    } catch (IOException | InterruptedException e) {
-                        Loggout.e("Sftp", e.toString());
-                    }
-                }
-
-
-                try {
-                    reader.close();
-                } catch (Exception e1) {
-                    Loggout.e("Sftp", e1.toString());
-                }
-                try {
-                    writer.close();
-                } catch (Exception e1) {
-                    Loggout.e("Sftp", e1.toString());
-                }
-
+                reader.close();
+            }catch (IOException e)
+            {
+                Loggout.e("Sftp", "run second try",e);
             }
-        }
-        else if(MainClass.isWindows())
-        {
-            try {
-                ProcessBuilder pb = new ProcessBuilder(args);
-                pb.start();
-            } catch (IOException e) {
-                Loggout.e("Sftp", e.toString());
-            }
-        }
+            return answer;
     }
 
 
     public void stopProcess()
     {
-        List<String> closeArgs = new ArrayList<>();
-        if(MainClass.isUnix()) {
-            closeArgs.add("fusermount");
-            closeArgs.add("-u");
-            closeArgs.add(currentUsersHomeDir);
-        }
-        if(MainClass.isWindows())
-        {
-            closeArgs.add(programm);
-            closeArgs.add(driveLetter);
-            closeArgs.add("/DELETE");
-        }
-        ProcessBuilder pb = new ProcessBuilder(closeArgs);
+        lock.lock();
         try {
-            Process unmount = pb.start();
-            unmount.waitFor();
-        } catch (IOException | InterruptedException e) {
-            Loggout.e("Sftp", e.toString());
+            List<String> closeArgs = new ArrayList<>();
+            if (MainClass.isUnix()) {
+                closeArgs.add("fusermount");
+                closeArgs.add("-u");
+                closeArgs.add(currentUsersHomeDir);
+            }
+            if (MainClass.isWindows()) {
+                closeArgs.add(programm);
+                closeArgs.add(driveLetter);
+                closeArgs.add("/DELETE");
+            }
+            ProcessBuilder pb = new ProcessBuilder(closeArgs);
+            try {
+                Process unmount = pb.start();
+                unmount.waitFor();
+            } catch (IOException | InterruptedException e) {
+                Loggout.e("Sftp", "stopProcess",e);
+            }
+            process.destroy();
+            Loggout.d("Sftp", "process stopped");
+        }finally {
+            lock.unlock();
         }
-        process.destroy();
-        Loggout.d("Sftp", "process stopped");
     }
 
+    public boolean isRunning() {
+        return running;
+    }
 }

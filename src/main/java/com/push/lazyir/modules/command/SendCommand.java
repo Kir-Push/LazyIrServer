@@ -5,11 +5,10 @@ package com.push.lazyir.modules.command;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.pojo.Command;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.managers.CommandManager;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.pojo.CommandsList;
-import com.push.lazyir.service.BackgroundService;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -33,8 +32,12 @@ public class SendCommand extends Module {
 
     }
 
+    @Override
+    public void endWork() {
+
+    }
+
     private void executeCommand(List<Command> commands) {
-     //   List<String> commandsByNames = CommandManager.getInstance().getCommandsByNames(commands);
         for(Command command : commands)
         {
             try {
@@ -46,8 +49,8 @@ public class SendCommand extends Module {
     }
 
 
-    private void saveCommand(List<Command> args)
+    private void saveCommandToClient(List<Command> args)
     {
-        BackgroundService.getCommandManager().save(args);
+
     }
 }

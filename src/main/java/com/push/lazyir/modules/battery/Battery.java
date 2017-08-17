@@ -24,5 +24,10 @@ public class Battery extends Module {
         Communicator.getInstance().batteryStatus(percenstage,status, Device.getConnectedDevices().get(id));
     }
 
+    @Override
+    public void endWork() {
+
+    }
+
 
 }

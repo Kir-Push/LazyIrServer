@@ -1,9 +1,9 @@
 package com.push.lazyir.modules.notifications;
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
-import com.push.lazyir.managers.TcpConnectionManager;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.service.BackgroundService;
@@ -39,7 +39,11 @@ public class ShowNotification extends Module {
                             else if(np.getData().equals(CALL))
                             {
                                 if(!CALLING) {
-                                    Mpris.pauseAll(np.getId());
+                                    Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
+                                    if(mpris != null)
+                                    {
+                                        mpris.pauseAll(np.getId());
+                                    }
                                     CALLING = true;
                                 }
                                 Communicator.getInstance().sendToOut(np.getMessage());
@@ -47,13 +51,25 @@ public class ShowNotification extends Module {
                             else if(np.getData().equals(ENDCALL) && CALLING)
                             {
                                 CALLING = false;
-                                Mpris.playAll(np.getId());
+                                Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
+                                if(mpris != null)
+                                {
+                                    mpris.playAll(np.getId());
+                                }
                             }
 
                     } catch(NullPointerException e){
-                            Loggout.e("ShowNotification", e.toString());
+                            Loggout.e("ShowNotification", "execute",e);
                         }
 }
+
+    @Override
+    public void endWork() {
+        if( Device.getConnectedDevices().size() == 0)
+        {
+            CALLING = false;
+        }
+    }
 
 
     public void sendNotifsToOut(Notifications allNotifications)

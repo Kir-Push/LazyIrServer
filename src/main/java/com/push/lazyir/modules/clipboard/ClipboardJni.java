@@ -3,11 +3,12 @@ package com.push.lazyir.modules.clipboard;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.MainClass;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.managers.TcpConnectionManager;
 import com.push.lazyir.service.BackgroundService;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.push.lazyir.MainClass.executorService;
 import static com.push.lazyir.modules.clipboard.ClipBoard.RECEIVE;
@@ -17,11 +18,13 @@ import static com.push.lazyir.modules.clipboard.ClipBoard.RECEIVE;
  */
 public class ClipboardJni {
 
-    private boolean listening = false;
+    private volatile boolean listening = false;
+    private Lock lock = new ReentrantLock();
 
 
     public ClipboardJni() {
         try {
+            System.out.println(new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard.so");;
           if(  MainClass.isUnix())
             System.load(new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard.so");
             else if(MainClass.isWindows())
@@ -48,26 +51,36 @@ public class ClipboardJni {
 
     public void startListening()
     {
-        if(listening)
-        {
-            return;
+        lock.lock();
+        try {
+
+            if (listening) {
+                return;
+            }
+            listening = true;
+            executorService.submit(() -> {
+                Loggout.d("ClipboardJni", "ListenerStarted");
+                startListener();
+                Loggout.d("ClipboardJni", "ListenerEnded");
+            });
+        }finally {
+            lock.unlock();
         }
-        listening = true;
-        executorService.submit(() -> {
-            Loggout.d("ClipboardJni","ListenerStarted");
-            startListener();
-            Loggout.d("ClipboardJni","ListenerEnded");
-        });
+
     }
 
     public void stopListening()
     {
-        if(!listening)
-        {
-            return;
+        lock.lock();
+        try {
+            if (!listening) {
+                return;
+            }
+            listening = false;
+            stopListener();
+        }finally {
+            lock.unlock();
         }
-        listening = false;
-        stopListener();
     }
 
     public void setClipboardData(String text)
@@ -76,7 +89,12 @@ public class ClipboardJni {
         {
             return;
         }
-        setClipboardText(text);
+        try {
+            setClipboardText(text);
+        }catch (Throwable e)
+        {
+           e.printStackTrace();
+        }
     }
 
 }

@@ -13,6 +13,8 @@ import com.push.lazyir.modules.share.ShareModule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by buhalo on 05.03.17.
@@ -22,13 +24,16 @@ public class ModuleFactory {
 
 
     private static List<Class> registeredModules;
+    private static Lock lock = new ReentrantLock();
 
     public static Module instantiateModule(Device dv, Class registeredModule)
     {
+        lock.lock();
         if(registeredModules == null)
         {
             registerModulesInit();
         }
+        lock.unlock();
         Module module = null;
         try {
             module = (Module)registeredModule.newInstance();
@@ -73,7 +78,9 @@ public class ModuleFactory {
     }
 
     public static void setRegisteredModules(List<Class> registeredModules) {
+        lock.lock();
         ModuleFactory.registeredModules = registeredModules;
+        lock.unlock();
     }
 
 }

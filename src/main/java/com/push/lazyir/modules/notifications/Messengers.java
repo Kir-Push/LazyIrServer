@@ -2,7 +2,6 @@ package com.push.lazyir.modules.notifications;
 
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
-import com.push.lazyir.managers.TcpConnectionManager;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
 
@@ -17,6 +16,11 @@ public class Messengers extends Module {
         {
             Communicator.getInstance().sendToOut(np.getMessage());
         }
+    }
+
+    @Override
+    public void endWork() {
+
     }
 
     public static void sendAnswer(String typeName,String text,String id)

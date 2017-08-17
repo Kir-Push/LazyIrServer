@@ -14,6 +14,7 @@ import com.push.lazyir.pojo.CommandsList;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -68,7 +69,7 @@ public class NetworkPackage {
         try {
             idNode = (ObjectNode) mapper.readTree(msg);
         } catch (IOException e) {
-            Loggout.e("NetworkPackage",e.toString());
+            Loggout.e("NetworkPackage","Error in Parse message",e);
         }
     }
 
@@ -138,7 +139,7 @@ public class NetworkPackage {
         try {
             return new ObjectMapper().readValue(object.toString(),tClass);
         } catch (Exception e) {
-            Loggout.e("NetworkPackage",e.toString());
+            Loggout.e("NetworkPackage","Error in getObject",e);
         }
         return null;
     }

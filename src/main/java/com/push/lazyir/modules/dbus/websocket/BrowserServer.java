@@ -4,40 +4,44 @@ import org.glassfish.tyrus.server.Server;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by buhalo on 04.07.17.
  */
 public class BrowserServer {
     private Server server;
-    private boolean running;
-    private int port = 11520;
+    private volatile boolean running;
+    private volatile int port = 11520;
     private String contextPath = "/lazyir";
-
+    private ReentrantLock lock = new ReentrantLock();
 
     public void start() throws Exception
     {
+        lock.lock();
+        try {
         if(running)
             return;
         running = true;
-        try {
-
             final Map<String, Object> serverProperties = new HashMap<String, Object>();
             serverProperties.put(Server.STATIC_CONTENT_ROOT, "./src/main/webapp");
-
             server = new Server("127.0.0.1", port, contextPath, serverProperties, PopupEndpoint.class);
             server.start();
         }catch (Exception e)
         {
             stop();
+        }finally {
+            lock.unlock();
         }
 
     }
 
     public void stop()
     {
+        lock.lock();
         running = false;
         server.stop();
+        lock.unlock();
     }
 
     public boolean isRunning() {

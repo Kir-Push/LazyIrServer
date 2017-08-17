@@ -3,19 +3,15 @@ package com.push.lazyir.gui;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.managers.*;
 import com.push.lazyir.modules.notifications.*;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.service.BackgroundService;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
 import java.io.*;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.*;
 
 import static com.push.lazyir.MainClass.timerService;
-import static com.push.lazyir.managers.TcpConnectionManager.TCP_PAIR_RESULT;
 
 /**
  * Created by buhalo on 12.03.17.
@@ -25,23 +21,7 @@ public enum Communicator implements Runnable{
 
     INSTANCE;
 
-    private  static String BS = "/";
-    // first blocks
-    private String POST = "post";
-    private String GET = "get";
-    private String DELETE = "delete";
-    // second blocks
-    private String LOG = "log";
-    private String COMMAND = "command";
-    private String SETTING = "setting";
-    private String STATE = "state";
-    // third blocks include id or object name
-    // and state blocks
-    private String ALL = "all";
-    private String TRUE = "true";
-    private String FALSE = "false";
     private BufferedReader in;
-   // private BufferedWriter out;
     private String commandFromGui;
     private boolean listenInput;
     private ScheduledFuture<?> timerFuture;
@@ -79,8 +59,8 @@ public enum Communicator implements Runnable{
                 }
                 Loggout.e("COMMAND PARSER START  ",commandFromGui);
                 commandParser(commandFromGui);
-            } catch (Exception e) {
-               Loggout.e("Error",e.toString());
+            } catch (IOException e) {
+               Loggout.e("Communicator","Error in run",e);
             }
         }
     }
@@ -100,38 +80,11 @@ public enum Communicator implements Runnable{
                      } else {
                          Loggout.e("Communicator", "Ending app");
                          myFuture.cancel(true);
-                         //   tryToEraseAllResource();
-                         //    System.exit(0);
+                         //tryToEraseAllResource();
+                         //System.exit(0);
                      }
                  }
         }, 10, 15, TimeUnit.SECONDS);
-
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-        timerService.setRemoveOnCancelPolicy(true);
-        timerService.setKeepAliveTime(5,TimeUnit.SECONDS);
-        timerService.allowCoreThreadTimeOut(true);
-        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
-        scheduledThreadPoolExecutor.setKeepAliveTime(5,TimeUnit.SECONDS);
-        scheduledThreadPoolExecutor.setRemoveOnCancelPolicy(true);
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        threadPoolExecutor.allowCoreThreadTimeOut(true);
-        ExecutorService executorService =  Executors.unconfigurableExecutorService(threadPoolExecutor);
-      //  ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-       // scheduledExecutorService.setKeepAliveTime(1,TimeUnit.SECONDS);
-
-        timerService.scheduleAtFixedRate(new ExtScheduledThreadPoolExecutor.ScheludeRunnable() {
-            @Override
-            public void run() {
-                System.out.println("da");
-                myFuture.cancel(true);
-            }
-        },1,1,TimeUnit.SECONDS);
-
-
-     //   dadada.cancel(false);
 
     }
 
@@ -142,36 +95,17 @@ public enum Communicator implements Runnable{
     }
 
     private void tryToEraseAllResource() {
-        for(Device device : Device.getConnectedDevices().values())
-        {
-            ShareModule module = (ShareModule) device.getEnabledModules().get(ShareModule.SHARE_T);
-            module.stopSftpServer();
-            try {
-                device.getSocket().close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                device.getIn().close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-            device.getOut().close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        Device.getConnectedDevices().values().forEach(device -> device.closeConnection());
     }
 
     public synchronized void commandParser(String commandFromGui)
     {
+        Loggout.e("FromGUi: ",commandFromGui);
         if(commandFromGui.equals("pong\n") || commandFromGui.equals("pong"))
         {
             answer = true;
             return;
         }
-        Loggout.e("FromGUi: ",commandFromGui);
         NetworkPackage cmdAnswr = new NetworkPackage(commandFromGui);
         if(cmdAnswr.getData().equals(ALL_NOTIF))
         {
@@ -187,11 +121,6 @@ public enum Communicator implements Runnable{
         else if(cmdAnswr.getData().equals("MsgAnswer"))
         {
             Messengers.sendAnswer(cmdAnswr.getValue("typeName"),cmdAnswr.getValue("text"),cmdAnswr.getId());
-        }
-        else if(cmdAnswr.getData().equals("Sync_Commands"))
-        {
-            CommandManager commandManager = BackgroundService.getCommandManager();
-            commandManager.syncCommands();
         }
         else if(cmdAnswr.getData().equals("Connect"))
         {
@@ -222,7 +151,7 @@ public enum Communicator implements Runnable{
         {
             BackgroundService.getTcp().requestPairDevice(cmdAnswr.getId());
         }
-        else if(cmdAnswr.getData().equals("PairAnswr"))
+        else if(cmdAnswr.getType().equals("PairAnswr"))
         {
           BackgroundService.getTcp().pairResult(cmdAnswr);
         }
@@ -233,11 +162,6 @@ public enum Communicator implements Runnable{
     public synchronized void requestPair(NetworkPackage np)
     {
        sendToOut(np.getMessage());
-       //todo only for test
-        NetworkPackage cmdAnswr = new NetworkPackage(TCP_PAIR_RESULT,np.getData());
-        cmdAnswr.setValue("id",np.getId());
-        cmdAnswr.setValue("answer","paired");
-        BackgroundService.getTcp().pairResult(cmdAnswr);
     }
 
     public synchronized void iamCrushed()
@@ -282,17 +206,12 @@ public enum Communicator implements Runnable{
     {
         String pair;
         if(paired)
-        {
             pair = PAIRED;
-        }
         else
-        {
             pair = UNPAIRED;
-        }
         NetworkPackage np = new NetworkPackage(DEVICE,pair);
         np.setValue("id",id);
-        String message = np.getMessage();
-        sendToOut(message);
+        sendToOut(np.getMessage());
     }
 
 

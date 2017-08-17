@@ -3,13 +3,8 @@ package com.push.lazyir.modules.notifications;
 
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
-import com.push.lazyir.managers.TcpConnectionManager;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
-
-import static com.push.lazyir.modules.notifications.ShowNotification.NOTIFICATION_CLASS;
-import static com.push.lazyir.modules.notifications.ShowNotification.RECEIVE_NOTIFICATION;
-import static com.push.lazyir.modules.notifications.ShowNotification.SHOW_NOTIFICATION;
 
 /**
  * Created by buhalo on 26.03.17.
@@ -28,6 +23,10 @@ public class SmsModule extends Module {
         {
             Communicator.getInstance().sendToOut(np.getMessage());
         }
+    }
+
+    @Override
+    public void endWork() {
 
     }
 

@@ -2,10 +2,8 @@ package com.push.lazyir.modules.dbus.strategies.win;
 
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.managers.SettingManager;
 import com.push.lazyir.modules.dbus.Player;
 import com.push.lazyir.modules.dbus.Players;
-import com.push.lazyir.service.BackgroundService;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -20,10 +18,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -39,7 +34,7 @@ public class Vlc implements Strategy {
     BufferedReader in;
     private volatile boolean instantiate = false;
     private volatile int countInit = 0;
-    ReentrantLock lock = new ReentrantLock();
+    private ReentrantLock lock = new ReentrantLock();
 
 
 
@@ -49,11 +44,12 @@ public class Vlc implements Strategy {
             saxParser =   SAXParserFactory.newInstance().newSAXParser();
             handler = new PlayerHandler();
         }  catch (SAXException | ParserConfigurationException e) {
-            Loggout.e("VlcStrategy",e.toString());
+            Loggout.e("VlcStrategy","Error in vlc constructor",e);
         }
     }
 
     public boolean initiate() {
+        lock.lock();
         try {
             if (instantiate && socket!= null)
                 return true;
@@ -66,12 +62,15 @@ public class Vlc implements Strategy {
         }catch (IOException e)
         {
             tryToEraseConnections();
-            Loggout.e("VlcStrategy",e.toString());
+            Loggout.e("VlcStrategy","Error in initiate",e);
             return false;
+        }finally {
+            lock.unlock();
         }
     }
 
     private void tryToEraseConnections() {
+        lock.lock();
         try{
         if(socket != null)
         {
@@ -90,7 +89,10 @@ public class Vlc implements Strategy {
         }
         }catch (IOException e)
         {
-            Loggout.e("VlcStrategy",e.toString());
+            Loggout.e("VlcStrategy","error in tryEraseconnection",e);
+        }
+        finally {
+            lock.unlock();
         }
     }
 
@@ -137,7 +139,7 @@ public class Vlc implements Strategy {
             saxParser.parse(inputSource,handler);
             return handler.isEnded() ? handler.getPlayer() :null;
         }  catch (SAXException |  IOException e) {
-            Loggout.e("VlcStrategy",e.toString());
+            Loggout.e("VlcStrategy","getOneplayer error",e);
         }
         return null;
     }
@@ -269,47 +271,6 @@ public class Vlc implements Strategy {
             return sb.toString();
     }
 
-    public static void main(String args[])
-    {
-
-        Vlc vlc = new Vlc();
-        vlc.initiate();
-        vlc.sendGet("requests/status.xml");
-        System.out.println(vlc.getLine());
-        System.out.println("i'm here");
-        System.out.println(  Thread.activeCount());
-        System.out.println(vlc.checkStatus());
-        vlc.sendGet("requests/status.xml");
-      //  System.out.println(vlc.getLine());
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        try {
-            SAXParser saxParser = factory.newSAXParser();
-            PlayerHandler handler = vlc.new PlayerHandler();
-            String line = vlc.getLine();
-            InputSource inputSource = new InputSource(new StringReader(line.substring(line.indexOf("<?xml version="))));
-            saxParser.parse(inputSource,handler);
-            if(handler.ended)
-            {
-                System.out.println(handler.getPlayer());
-            }
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        vlc.playPause("");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-       // vlc.sendGet("requests/status.xml?command=seek&val="+String.valueOf(+1000));
-        vlc.playPause("");
-        //   System.out.println(Thread.currentThread().);
-    }
 
     class PlayerHandler extends DefaultHandler{
 

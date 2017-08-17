@@ -26,6 +26,19 @@ public class Loggout {
         write(s,s2);
     }
 
+    public static void e(String s,String s2,Exception e)
+    {
+        StringBuilder sb = new StringBuilder(s2);
+        sb.append(e.toString());
+        sb.append(System.lineSeparator());
+        for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+            sb.append(stackTraceElement);
+            sb.append(System.lineSeparator());
+        }
+        write(s,sb.toString());
+    }
+
+
     private static void write(String s,String s2)
     {
           Calendar cal = Calendar.getInstance();
