@@ -77,6 +77,11 @@ public class Win implements OsStrategy {
     }
 
     @Override
+    public void loop(NetworkPackage np) {
+
+    }
+
+    @Override
     public List<Player> getAllPlayers() {
         List<Player> playerList = new ArrayList<>();
         for (Strategy strategy : strategies.values()) {

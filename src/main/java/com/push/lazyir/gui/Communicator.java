@@ -94,7 +94,7 @@ public enum Communicator implements Runnable{
         System.out.flush();
     }
 
-    private void tryToEraseAllResource() {
+    public static void tryToEraseAllResource() { //todo attention runtime.addhook in mainclass  mainmethod
         Device.getConnectedDevices().values().forEach(device -> device.closeConnection());
     }
 
@@ -107,34 +107,35 @@ public enum Communicator implements Runnable{
             return;
         }
         NetworkPackage cmdAnswr = new NetworkPackage(commandFromGui);
-        if(cmdAnswr.getData().equals(ALL_NOTIF))
+        String data = cmdAnswr.getData();
+        if(data.equals(ALL_NOTIF))
         {
             String id = cmdAnswr.getValue("id");
             ShowNotification module = (ShowNotification) Device.getConnectedDevices().get(id).getEnabledModules().get(ShowNotification.class.getSimpleName());
             module.requestNotificationsFromDevice();
         }
-        else if(cmdAnswr.getData().equals("SmsAnswer"))
+        else if(data.equals("SmsAnswer"))
         {
             SmsModule module = (SmsModule) Device.getConnectedDevices().get(cmdAnswr.getId()).getEnabledModules().get(SmsModule.class.getSimpleName());
             module.send_sms(cmdAnswr.getName(),cmdAnswr.getValue("text"),cmdAnswr.getId());
         }
-        else if(cmdAnswr.getData().equals("MsgAnswer"))
+        else if(data.equals("MsgAnswer"))
         {
             Messengers.sendAnswer(cmdAnswr.getValue("typeName"),cmdAnswr.getValue("text"),cmdAnswr.getId());
         }
-        else if(cmdAnswr.getData().equals("Connect"))
+        else if(data.equals("Connect"))
         {
             String id = cmdAnswr.getId();
             BackgroundService.getTcp().StopListening(id);
             BackgroundService.getUdp().connectRecconect(id);
 
         }
-        else if(cmdAnswr.getData().equals("Disconnect"))
+        else if(data.equals("Disconnect"))
         {
             String id = cmdAnswr.getId();
             BackgroundService.getTcp().StopListening(id);
 
-        } else if(cmdAnswr.getData().equals("ReconnectToSftp"))
+        } else if(data.equals("ReconnectToSftp"))
         {
             String id = cmdAnswr.getId();
             Device device = Device.getConnectedDevices().get(id);
@@ -143,11 +144,11 @@ public enum Communicator implements Runnable{
                 ((ShareModule)device.getEnabledModules().get(ShareModule.class.getSimpleName())).recconectToSftp(id);
             }
         }
-        else if(cmdAnswr.getData().equals("Unpair"))
+        else if(data.equals("Unpair"))
         {
             BackgroundService.getTcp().sendUnpair(cmdAnswr.getId());
         }
-        else if(cmdAnswr.getData().equals("Pair"))
+        else if(data.equals("Pair"))
         {
             BackgroundService.getTcp().requestPairDevice(cmdAnswr.getId());
         }
@@ -173,6 +174,13 @@ public enum Communicator implements Runnable{
     {
         sendToOut("ERROR CRUSH UDP");
     }
+
+    public synchronized void sftpConnectResult(boolean result,String id) {
+        System.out.println("da ja tut");;
+        NetworkPackage np = new NetworkPackage("Sftp","Result");
+        np.setValue("id",id);
+        np.setValue("result",String.valueOf(result));
+        sendToOut(np.getMessage());}
 
     public synchronized void newDeviceFound(Device device)
     {

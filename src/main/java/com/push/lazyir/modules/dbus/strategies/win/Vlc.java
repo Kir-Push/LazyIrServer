@@ -19,6 +19,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -33,7 +34,7 @@ public class Vlc implements Strategy {
     PrintWriter out;
     BufferedReader in;
     private volatile boolean instantiate = false;
-    private volatile int countInit = 0;
+    private AtomicInteger countInit = new AtomicInteger(0);
     private ReentrantLock lock = new ReentrantLock();
 
 
@@ -100,11 +101,13 @@ public class Vlc implements Strategy {
     public boolean Tryinitiate() {
         lock.lock();
         try {
-            if (countInit >= 20 || countInit == 0) {
-               countInit = countInit == 0 ? countInit++ : 0;
+            int i = countInit.get();
+            if (i >= 20 || i == 0) {
+                if(i == 0)
+                    countInit.incrementAndGet();
                 return initiate();
             }
-            countInit++;
+            countInit.incrementAndGet();
         }finally {
             lock.unlock();
         }
@@ -266,13 +269,13 @@ public class Vlc implements Strategy {
             {
 
             } catch (IOException e) {
-                e.printStackTrace();
+               Loggout.e("Vlc","getLine",e);
             }
             return sb.toString();
     }
 
 
-    class PlayerHandler extends DefaultHandler{
+  static class PlayerHandler extends DefaultHandler{
 
         String name;
         boolean nameb;

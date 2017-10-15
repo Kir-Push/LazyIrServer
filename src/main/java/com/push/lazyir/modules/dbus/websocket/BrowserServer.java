@@ -1,10 +1,14 @@
 package com.push.lazyir.modules.dbus.websocket;
 
+//import org.glassfish.tyrus.server.Server;
+
 import org.glassfish.tyrus.server.Server;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
+
 
 /**
  * Created by buhalo on 04.07.17.
@@ -29,6 +33,7 @@ public class BrowserServer {
             server.start();
         }catch (Exception e)
         {
+            e.printStackTrace();
             stop();
         }finally {
             lock.unlock();
@@ -39,9 +44,12 @@ public class BrowserServer {
     public void stop()
     {
         lock.lock();
+        try{
         running = false;
-        server.stop();
-        lock.unlock();
+        server.stop();}
+        finally {
+            lock.unlock();
+        }
     }
 
     public boolean isRunning() {

@@ -19,4 +19,5 @@ public interface OsStrategy {
     void playAll(String id);
     void pauseAll(String id);
     void endWork();
+    void loop(NetworkPackage np);
 }

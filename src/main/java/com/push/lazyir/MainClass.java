@@ -11,9 +11,6 @@ import java.util.concurrent.*;
 
 import static com.push.lazyir.service.BackgroundService.getInstance;
 
-/**
- * Created by buhalo on 12.03.17.
- */
 public class MainClass {
 
     public static String selected_id;
@@ -23,10 +20,19 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException { // main entry where started input output listening com.push.lazyir.gui & ipc thread and main thread;!
 
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+               Loggout.e("Closing Process quit signal","Pitajusj");
+                Communicator.tryToEraseAllResource();
+            }
+        });
         timerService.setRemoveOnCancelPolicy(true);
         timerService.setKeepAliveTime(10, TimeUnit.SECONDS);
         timerService.allowCoreThreadTimeOut(true);
        // executorService.submit(Communicator::getInstance);
+        ((ThreadPoolExecutor)executorService).setKeepAliveTime(10,TimeUnit.SECONDS);
+        ((ThreadPoolExecutor)executorService).allowCoreThreadTimeOut(true);
         executorService.submit(Communicator.INSTANCE);
      //   new Thread(Communicator.INSTANCE).start();
         getInstance().setSettingManager(new SettingManager());

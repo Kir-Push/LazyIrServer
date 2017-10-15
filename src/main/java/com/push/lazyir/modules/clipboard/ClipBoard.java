@@ -10,7 +10,7 @@ import java.awt.datatransfer.Clipboard;
  * Created by buhalo on 19.04.17.
  */
 public class ClipBoard extends Module {
-    public static String RECEIVE = "receive";
+    public final static String RECEIVE = "receive";
     private volatile static ClipboardJni clipboardJni;
 
     public ClipBoard() {
@@ -29,6 +29,7 @@ public class ClipBoard extends Module {
 
     @Override
     public void execute(NetworkPackage np) {
+        System.out.println(np.getMessage());
         if(np.getData().equals(RECEIVE))
         {
             onReceive(np);

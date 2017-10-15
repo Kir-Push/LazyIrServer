@@ -10,6 +10,7 @@ import com.push.lazyir.modules.notifications.ShowNotification;
 import com.push.lazyir.modules.notifications.SmsModule;
 import com.push.lazyir.modules.command.SendCommand;
 import com.push.lazyir.modules.share.ShareModule;
+import com.push.lazyir.modules.touch.TouchControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +30,12 @@ public class ModuleFactory {
     public static Module instantiateModule(Device dv, Class registeredModule)
     {
         lock.lock();
-        if(registeredModules == null)
-        {
-            registerModulesInit();
+        try {
+            if (registeredModules == null) {
+                registerModulesInit();
+            }}finally {
+            lock.unlock();
         }
-        lock.unlock();
         Module module = null;
         try {
             module = (Module)registeredModule.newInstance();
@@ -55,6 +57,7 @@ public class ModuleFactory {
         registeredModules.add(Mpris.class);
         registeredModules.add(ClipBoard.class);
         registeredModules.add(Messengers.class);
+        registeredModules.add(TouchControl.class);
     }
 
     public static Module instantiateModuleByName(Device dv,String name)

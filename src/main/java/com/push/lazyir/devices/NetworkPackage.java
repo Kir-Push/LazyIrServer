@@ -63,7 +63,7 @@ public class NetworkPackage {
         parseMessage();
     }
 
-    public void parseMessage()
+    public final void parseMessage()
     {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -144,7 +144,7 @@ public class NetworkPackage {
         return null;
     }
 
-    public String getMyId()
+    public final String getMyId()
     {
         try {
             return InetAddress.getLocalHost().getHostName();

@@ -12,8 +12,11 @@ import com.push.lazyir.pojo.CommandsList;
 import com.push.lazyir.service.BackgroundService;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
+import javax.net.ssl.*;
 import java.io.*;
 import java.net.*;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.concurrent.ScheduledFuture;
@@ -39,6 +42,7 @@ public class TcpConnectionManager {
     final static String TCP_SYNC = "sync";
 
     private int port = 5667;
+    private boolean tls;
 
     private ServerSocket myServerSocket;
 
@@ -51,13 +55,46 @@ public class TcpConnectionManager {
     public TcpConnectionManager() {
     }
 
-    public void startServer() //todo think about network(not wifi) connections, shout it work? and about security problems with it
+    private SSLContext createSSLContext(){
+        try{
+            KeyStore keyStore = KeyStore.getInstance("jks");
+            ClassLoader classLoader =getClass().getClassLoader();
+            String file = classLoader.getResource("bimka").getFile();
+            keyStore.load(new FileInputStream(file),"bimkaSamokat".toCharArray());
+            // Create key manager
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+            keyManagerFactory.init(keyStore, "bimkaSamokat".toCharArray());
+            KeyManager[] km = keyManagerFactory.getKeyManagers();
+            // Create trust manager
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+            TrustManager[] tm = trustManagerFactory.getTrustManagers();
+            // Initialize SSLContext
+             SSLContext sslContext = SSLContext.getInstance("TLS");
+             sslContext.init(km  ,  tm, null);
+            return sslContext;
+        } catch (Exception e){
+            Loggout.e("Tcp", "getContext",e);
+        }
+        return null;
+    }
+
+
+    public void startServer()
     {
         boolean trying = true;
         int firstTryPort = port;
+       // tls = Boolean.parseBoolean(BackgroundService.getSettingManager().get("TLS"));
+        tls = true;
         while(trying && firstTryPort < 5777) { //todo внимание проверь остальные порты чтоб не пересекались
             try {
-                myServerSocket = new ServerSocket(firstTryPort);
+                if(tls)
+                {
+                    SSLServerSocketFactory sslServerSocketFactory = createSSLContext().getServerSocketFactory();
+                    myServerSocket = sslServerSocketFactory.createServerSocket(firstTryPort);
+                }
+                else
+                    myServerSocket = new ServerSocket(firstTryPort);
                 this.port = firstTryPort;
                 trying = false;
             } catch (Exception e) {
@@ -68,6 +105,7 @@ public class TcpConnectionManager {
                     Communicator.getInstance().iamCrushed();
                     System.exit(-1);
                 }
+                trying = false; // for testing purposes /todo
             }
         }
     }

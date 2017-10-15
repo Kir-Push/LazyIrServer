@@ -7,6 +7,7 @@ import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
 
+import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -38,9 +39,14 @@ public class ConnectionThread implements Runnable {
             connection.setSoTimeout(25000);
         }
 
+     ConnectionThread(){
+
+    }
+
         @Override
         public void run() {
             try{
+                configureSSLSocket();
                 in = new BufferedReader(
                         new InputStreamReader(connection.getInputStream()));
                 out = new PrintWriter(
@@ -62,11 +68,23 @@ public class ConnectionThread implements Runnable {
             {
                 connectionRun = false;
                 Loggout.e("ConnectionThread","Error in tcp out",e);
+            }catch (Throwable e)
+            {
+                e.printStackTrace();
             }
             finally {
                 closeConnection();
             }
         }
+
+    private void configureSSLSocket() throws IOException
+    {
+        if(connection != null && connection instanceof SSLSocket)
+        {
+            ((SSLSocket)connection).setEnabledCipherSuites(((SSLSocket)connection).getSupportedCipherSuites());
+            ((SSLSocket)connection).startHandshake();
+        }
+    }
 
         private void determineWhatTodo(NetworkPackage np)
         {
@@ -79,7 +97,7 @@ public class ConnectionThread implements Runnable {
             try {
                 switch (type) {
                     case TCP_INTRODUCE:
-                        newConnectedDevice(np); //todo conncurent execption сделай булеан чтоб если уже было от этого сообщение интродусе не принимать пока не закончит это
+                        newConnectedDevice(np);
                         break;
                     case TCP_PING:
                         Device.getConnectedDevices().get(deviceId).setAnswer(true);

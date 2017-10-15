@@ -26,17 +26,18 @@ public class ShowNotification extends Module {
 
     @Override
     public void execute(NetworkPackage np) {
-                    try {
-                            if (np.getData().equals(RECEIVE_NOTIFICATION)) {
+        String data = np.getData();
+        try {
+                            if (RECEIVE_NOTIFICATION.equals(data)) {
                                 Communicator.getInstance().sendToOut(np.getMessage());
                             }
-                            else if(np.getData().equals("ALL NOTIFS"))
+                            else if("ALL NOTIFS".equals(data))
                             {
                                 Notifications notifications = np.getObject(NetworkPackage.N_OBJECT, Notifications.class);
                                 if(notifications.getNotifications().size() > 0)
                                 sendNotifsToOut(notifications);
                             }
-                            else if(np.getData().equals(CALL))
+                            else if(CALL.equals(data))
                             {
                                 if(!CALLING) {
                                     Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
@@ -48,7 +49,7 @@ public class ShowNotification extends Module {
                                 }
                                 Communicator.getInstance().sendToOut(np.getMessage());
                             }
-                            else if(np.getData().equals(ENDCALL) && CALLING)
+                            else if(CALLING && ENDCALL.equals(data))
                             {
                                 CALLING = false;
                                 Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());

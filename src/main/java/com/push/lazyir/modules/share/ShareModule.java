@@ -26,11 +26,11 @@ import static com.push.lazyir.MainClass.executorService;
  */
 public class ShareModule extends Module {
 
-    public static final String SHARE_T = "ShareModule";
-    public static final String SETUP_SERVER_AND_SEND_ME_PORT = "setup server and send me port";
-    public static final String CONNECT_TO_ME_AND_RECEIVE_FILES = "connect to me and receive files"; // first arg port,second number of files - others files
-    public static final String PORT = "port";
-    public static final String RECCONECT = "recconect";
+    private static final String SHARE_T = "ShareModule";
+    private static final String SETUP_SERVER_AND_SEND_ME_PORT = "setup server and send me port";
+    private static final String CONNECT_TO_ME_AND_RECEIVE_FILES = "connect to me and receive files"; // first arg port,second number of files - others files
+    private static final String PORT = "port";
+    private static final String RECCONECT = "recconect";
 
     private int port = 9000;
     private String userName;
@@ -43,6 +43,7 @@ public class ShareModule extends Module {
     @Override
     public void execute(NetworkPackage np) {
 
+        System.out.println(np.getMessage());
         if(np.getData().equals(CONNECT_TO_ME_AND_RECEIVE_FILES))
         {
             connectToSftpServer(np);
@@ -72,7 +73,7 @@ public class ShareModule extends Module {
             port = Integer.parseInt(value);
             userName = np.getValue("userName");
             pass = np.getValue("pass");
-            sftpServerProcess = new SftpServerProcess(port, Device.getConnectedDevices().get(np.getId()).getIp(), userName, pass);
+            sftpServerProcess = new SftpServerProcess(port, Device.getConnectedDevices().get(np.getId()).getIp(), userName, pass,device.getId());
             futuresftp = executorService.submit(sftpServerProcess);
         }finally {
           lock.unlock();
@@ -91,7 +92,7 @@ public class ShareModule extends Module {
        }
        else
        {
-          sftpServerProcess =(sftpServerProcess == null ?  new SftpServerProcess(port, Device.getConnectedDevices().get(id).getIp(),userName,pass) : sftpServerProcess);
+          sftpServerProcess =(sftpServerProcess == null ?  new SftpServerProcess(port, Device.getConnectedDevices().get(id).getIp(),userName,pass,device.getId()) : sftpServerProcess);
            futuresftp = executorService.submit(sftpServerProcess);
        }}finally {
             lock.unlock();
@@ -103,9 +104,10 @@ public class ShareModule extends Module {
         lock.lock();
         try{
         if(sftpServerProcess != null && futuresftp != null) {
-            sftpServerProcess.stopProcess();
             futuresftp.cancel(true);
         }}finally {
+            if(sftpServerProcess != null)
+                sftpServerProcess.stopProcess();
             lock.unlock();
         }
 

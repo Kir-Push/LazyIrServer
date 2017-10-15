@@ -69,23 +69,24 @@ public class BackgroundService {
 
     }
 
-    public static UdpBroadcastManager getUdp() {
+    public synchronized static UdpBroadcastManager getUdp() {
         return getInstance().udp;
     }
 
-    public void setUdp(UdpBroadcastManager udp) {
+    public synchronized void setUdp(UdpBroadcastManager udp) {
         this.udp = udp;
     }
 
-    public static TcpConnectionManager getTcp() {
+    public synchronized  static TcpConnectionManager getTcp() {
         return getInstance().tcp;
     }
+
 
     public void setSettingManager(SettingManager settingManager){this.settingManager = settingManager;}
 
     public static SettingManager getSettingManager(){return getInstance().settingManager;}
 
-    public void setTcp(TcpConnectionManager tcp) {
+    public synchronized void setTcp(TcpConnectionManager tcp) {
         this.tcp = tcp;
     }
 

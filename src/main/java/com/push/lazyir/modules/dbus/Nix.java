@@ -26,7 +26,7 @@ public class Nix implements OsStrategy {
     public void seek(NetworkPackage np) {
         String playerValue = np.getValue(player);
         String seekValue = np.getValue(seek);
-        Long ss = Long.parseLong(seekValue);
+        Long ss = Long.valueOf(seekValue);
         ss *= 1000000;
         seekValue = Long.toString(ss);
         dbusSend(DbusCommandFabric.seek(playerValue, seekValue));
@@ -155,6 +155,11 @@ public class Nix implements OsStrategy {
         }catch (Exception e){
             return new Player(org,"","",0,0,0,"0/0");
         }
+    }
+
+    @Override
+    public void loop(NetworkPackage np) {
+
     }
 
     private String getTime(String org) {

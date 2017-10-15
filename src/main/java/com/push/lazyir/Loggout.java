@@ -44,7 +44,7 @@ public class Loggout {
           Calendar cal = Calendar.getInstance();
            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
        //     Communicator.getInstance().sendToOut(sdf.format(cal.getTime()) + ": " + s + " " + s2);
-       logger.debug(s+ " " +s2);
+       logger.debug(s+ " " + s2,s2);
            System.out.println(sdf.format(cal.getTime()) + ": " + s + " " + s2);
     }
 }

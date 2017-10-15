@@ -59,9 +59,9 @@ public class Mpris extends Module {
                             Loggout.e("Mpris", "Constructor-BrowserServer Start",e);
                         }
                     }
-            if (isUnix() && strategy == null) {
+            if (strategy == null && isUnix()) {
                 strategy = new Nix();
-            } else if (isWindows() && strategy == null) {
+            } else if ( strategy == null && isWindows()) {
                 strategy = new Win();
             }
             if (browserStrategy == null) {
@@ -76,14 +76,16 @@ public class Mpris extends Module {
     @Override
     public void endWork() {
        lock.lock();
+       try{
             if( Device.getConnectedDevices().size() == 0) {
                 if (browserServer != null) {
                     browserServer.stop();
                 }
                 strategy.endWork();
                 browserStrategy.endWork();
-            }
-        lock.unlock();
+            }}finally {
+           lock.unlock();
+       }
     }
 
     @Override

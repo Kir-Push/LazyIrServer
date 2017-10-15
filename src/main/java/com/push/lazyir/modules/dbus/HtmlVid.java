@@ -40,7 +40,10 @@ public class HtmlVid implements OsStrategy {
     @Override
     public void previous(NetworkPackage np) {
         String playerValue = np.getValue(player);
+        PopupEndpoint.sendStatus(playerValue.substring(10),"previous");
     }
+
+
 
     @Override
     public void playPause(NetworkPackage np) {
@@ -113,5 +116,11 @@ public class HtmlVid implements OsStrategy {
     @Override
     public void endWork() {
         pausedPlayersBrowser.clear();
+    }
+
+    @Override
+    public void loop(NetworkPackage np) {
+        String playerValue = np.getValue(player);
+        PopupEndpoint.sendStatus(playerValue.substring(10),"loop");
     }
 }

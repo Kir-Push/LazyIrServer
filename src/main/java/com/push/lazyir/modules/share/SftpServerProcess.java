@@ -2,6 +2,7 @@ package com.push.lazyir.modules.share;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.MainClass;
+import com.push.lazyir.gui.Communicator;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -23,6 +25,7 @@ public class SftpServerProcess implements Runnable{
     private String userName;
     private String programm;
     private String mountPoint;
+    private String id;
     private List<String> args;
     private Process process;
     private  String currentUsersHomeDir;
@@ -31,12 +34,13 @@ public class SftpServerProcess implements Runnable{
     private  int i = 1;
     private Lock lock = new ReentrantLock();
 
-    public SftpServerProcess(int port, InetAddress ip,String userName,String pass) {
+    public SftpServerProcess(int port, InetAddress ip,String userName,String pass,String id) {
         this.port = port;
         this.ip = ip;
         this.pass = pass;
         this.userName = userName;
         this.mountPoint = "/storage/emulated/0";
+        this.id = id;
         args = new ArrayList<>();
         if(MainClass.isUnix()) {
             programm = "sshfs";
@@ -62,6 +66,8 @@ public class SftpServerProcess implements Runnable{
 //        args.add("-o");
 //        args.add("HostKeyAlgorithms=ssh-dss");
             args.add("-o");
+            args.add("reconnect");
+            args.add("-o");
             args.add("ServerAliveInterval=60");
             args.add("-o");
             args.add("password_stdin");
@@ -77,15 +83,12 @@ public class SftpServerProcess implements Runnable{
             args.add(ip.getHostAddress()+mountPoint);
             args.add(pass);
             args.add("/USER:"+userName);
-            args.add("/PORT:"+port);
-
+            args.add("/PORT:"+String.valueOf(port));
         }
     }
 
     @Override
     public void run() {
-        lock.lock();
-        try {
             if (running) {
                 //stopProcess();
                 return;
@@ -94,23 +97,25 @@ public class SftpServerProcess implements Runnable{
                 String answer = null;
                 try {
                  answer = connect();
-                } catch (IOException | InterruptedException e) {
-                    Loggout.e("sftp","connect",e);
-                } finally {
                     int tryCount = 5;
                     while ((answer != null && (answer.contains("refused") || answer.contains("Error")) || i != 0) && tryCount > 0)
-                  {
+                    {
                         if (process != null)
                             process.destroy();
                         try {
-                            Thread.sleep(20000);
+                            Thread.sleep(10000);
                             answer = connect();
                             Loggout.e("Second try sftp ", answer);
                         } catch (InterruptedException | IOException e) {
                             Loggout.e("Sftp", "run second try",e);
+                            running = false;
+                            break;
                         }
-                       tryCount--;
+                        tryCount--;
                     }
+                    running = i == 0;
+                } catch (IOException | InterruptedException e) {
+                    Loggout.e("sftp","connect",e);
                 }
             } else if (MainClass.isWindows()) {
                 try {
@@ -122,9 +127,7 @@ public class SftpServerProcess implements Runnable{
                     running = false; //todo some stop
                 }
             }
-        }finally {
-            lock.unlock();
-        }
+        Communicator.getInstance().sftpConnectResult(running,id);
     }
 
     private String connect() throws IOException,InterruptedException {
@@ -132,17 +135,15 @@ public class SftpServerProcess implements Runnable{
         BufferedWriter writer = null;
         BufferedReader reader = null;
         String answer = null;
-        int i = 1;
             process = pb.start();
-            // process.getInputStream();
+            process.getInputStream();
             writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             writer.write(pass + "\n");
             writer.flush();
             writer.close();
             reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             answer = reader.readLine();
-            i = process.waitFor();
-            running = true;
+            i = (process.waitFor(200,TimeUnit.MILLISECONDS)) ? 1 : 0 ;
             try {
                 writer.close();
                 reader.close();
@@ -152,7 +153,7 @@ public class SftpServerProcess implements Runnable{
             }
             return answer;
     }
-
+//todo handle error mountpoint not empty
 
     public void stopProcess()
     {
@@ -172,13 +173,15 @@ public class SftpServerProcess implements Runnable{
             ProcessBuilder pb = new ProcessBuilder(closeArgs);
             try {
                 Process unmount = pb.start();
-                unmount.waitFor();
+                unmount.waitFor(1000, TimeUnit.MILLISECONDS);
             } catch (IOException | InterruptedException e) {
                 Loggout.e("Sftp", "stopProcess",e);
             }
-            process.destroy();
+          //
+            running = false;
             Loggout.d("Sftp", "process stopped");
         }finally {
+            process.destroy();
             lock.unlock();
         }
     }

@@ -85,6 +85,10 @@ function parseResponse(data)
     {
         pause();
     }
+    else if(json.command === "previous")
+    {
+        previous();
+    }
     else if(json.command === "play")
     {
         play();
@@ -160,6 +164,11 @@ function sendNext() {
 
 }
 
+function previous() {
+    MyJasechvideo.currentTime = -1;
+}
+
+
 function sendInfo() {
     var obj = {"type":"getInfo","title":getTitle(),"status":getStatus(),"time":getTime(),"duration":getDuration(),"volume":getVolume()};
     var myJSON = JSON.stringify(obj);
@@ -215,8 +224,6 @@ function play() {
 function getTime() {
     return MyJasechvideo.currentTime;
 }
-
-
 
 
 function youtubePageChange()

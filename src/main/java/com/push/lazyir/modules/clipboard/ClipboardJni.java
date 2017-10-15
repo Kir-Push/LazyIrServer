@@ -43,6 +43,7 @@ public class ClipboardJni {
 
     public static void clipboardChanged(String text)
     {
+
         Loggout.d("ClipboardJni","  Clipboard java received - " + text);
         NetworkPackage np = new NetworkPackage(ClipBoard.class.getSimpleName(),RECEIVE);
         np.setValue("text",text);
