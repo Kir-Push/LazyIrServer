@@ -13,6 +13,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -24,7 +26,6 @@ import static com.push.lazyir.managers.tcp.TcpConnectionManager.*;
 
 public class ConnectionThread implements Runnable {
 
-       private static  String pingPackage = new NetworkPackage(TCP_PING,TCP_PING).getMessage();
 
         private volatile Socket connection;
         private String deviceId = null;
@@ -61,16 +62,13 @@ public class ConnectionThread implements Runnable {
                         connectionRun = false;
                         continue;
                     }
-                    NetworkPackage np = new NetworkPackage(clientCommand);
+                    NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(clientCommand);
                     determineWhatTodo(np);
                 }
             }catch (IOException e)
             {
                 connectionRun = false;
                 Loggout.e("ConnectionThread","Error in tcp out",e);
-            }catch (Throwable e)
-            {
-                e.printStackTrace();
             }
             finally {
                 closeConnection();
@@ -124,7 +122,7 @@ public class ConnectionThread implements Runnable {
     private void sendIntroduce() {
         try {
             String temp =String.valueOf(InetAddress.getLocalHost().getHostName().hashCode());
-            NetworkPackage networkPackage = new NetworkPackage(TCP_INTRODUCE,temp);
+            NetworkPackage networkPackage =  NetworkPackage.Cacher.getOrCreatePackage(TCP_INTRODUCE,temp);
             printToOut(networkPackage.getMessage());
         } catch (UnknownHostException e) {
             Loggout.e("ConnectionThread","Send Introduce",e);
@@ -187,7 +185,7 @@ public class ConnectionThread implements Runnable {
 
         private void ping()
         {
-           printToOut(pingPackage);
+           printToOut(NetworkPackage.Cacher.getOrCreatePackage(TCP_PING,TCP_PING).getMessage());
         }
 
         public void commandFromClient(NetworkPackage np)
@@ -233,11 +231,12 @@ public class ConnectionThread implements Runnable {
         lock.lock();
         try {
             if (timerFuture != null && !timerFuture.isDone()) {
-                timerFuture.cancel(false);
+                timerFuture.cancel(true);
             }
-            Device.getConnectedDevices().get(deviceId).getEnabledModules().values().forEach(module -> module.endWork());
+            Device.getConnectedDevices().get(deviceId).getEnabledModules().values().forEach(module ->  module.endWork());
             Device.getConnectedDevices().remove(deviceId);
             Communicator.getInstance().deviceLost(deviceId);
+            // calling after because can throw exception and remove from hashmap won't be done
             in.close();
             out.close();
             connection.close();

@@ -132,7 +132,7 @@ public class UdpBroadcastManager  {
     private void broadcastReceived(DatagramPacket packet) throws UnknownHostException
     {
         String pck = new String(packet.getData(),packet.getOffset(),packet.getLength());
-        NetworkPackage np = new NetworkPackage(pck);
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(pck);
         String myid = getMyId();
        if(np.getType().equals(BROADCAST_INTRODUCE) && !np.getId().equals(myid))
         {
@@ -152,7 +152,7 @@ public class UdpBroadcastManager  {
     private void sendUdp(InetAddress address, int port) {
         lock.lock();
         try {
-            NetworkPackage np = new NetworkPackage(BROADCAST_INTRODUCE, BROADCAST_INTRODUCE_MSG);
+            NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(BROADCAST_INTRODUCE, BROADCAST_INTRODUCE_MSG);
             String fromTypeAndData = np.getMessage();
             if (fromTypeAndData == null)
                 return;

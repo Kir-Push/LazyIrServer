@@ -42,8 +42,6 @@ public class ShareModule extends Module {
 
     @Override
     public void execute(NetworkPackage np) {
-
-        System.out.println(np.getMessage());
         if(np.getData().equals(CONNECT_TO_ME_AND_RECEIVE_FILES))
         {
             connectToSftpServer(np);
@@ -55,7 +53,6 @@ public class ShareModule extends Module {
              if(userName != null && pass != null)
              recconectToSftp(np.getId());
         }
-
     }
 
 
@@ -87,7 +84,7 @@ public class ShareModule extends Module {
        stopSftpServer();
        if(userName == null || pass == null)
        {
-           NetworkPackage np = new NetworkPackage(SHARE_T,RECCONECT);
+           NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SHARE_T,RECCONECT);
            BackgroundService.getTcp().sendCommandToServer(id,np.getMessage());
        }
        else
@@ -115,7 +112,7 @@ public class ShareModule extends Module {
 
     public static void sendSetupServerCommand(String dvID)
     {
-        NetworkPackage np = new NetworkPackage(SHARE_T,SETUP_SERVER_AND_SEND_ME_PORT);
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SHARE_T,SETUP_SERVER_AND_SEND_ME_PORT);
         String os  = System.getProperty("os.name").toLowerCase();
         if(os.indexOf("win") >= 0)
         {

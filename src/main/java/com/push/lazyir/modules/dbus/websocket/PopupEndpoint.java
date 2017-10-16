@@ -60,7 +60,7 @@ public class PopupEndpoint {
 
     @OnMessage
     public void onMessage(Session session, String msg) {
-           NetworkPackage np = new NetworkPackage(msg);
+           NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(msg);
            if(np.getValue("type").equals("getInfo"))
            {
                try {
@@ -102,14 +102,14 @@ public class PopupEndpoint {
     //play or pause
     public static void sendStatus(String id,String status)
     {
-        NetworkPackage np = new NetworkPackage("Web","JS");
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage("Web","JS");
         np.setValue("command",status);
         sendMessage(np.getMessage(),id);
     }
 
     public static void sendVolume(String id,String volume)
     {
-        NetworkPackage np = new NetworkPackage("Web","JS");
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage("Web","JS");
         np.setValue("command","setVolume");
         np.setValue("volume",volume);
         sendMessage(np.getMessage(),id);
@@ -117,7 +117,7 @@ public class PopupEndpoint {
 
     public static void sendTime(String id,String time)
     {
-        NetworkPackage np = new NetworkPackage("Web","JS");
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage("Web","JS");
         np.setValue("command","setTime");
         np.setValue("time",time);
         sendMessage(np.getMessage(),id);
@@ -126,7 +126,7 @@ public class PopupEndpoint {
     public static void sendGetInfo()
     {
         System.out.println("sending ingfo");
-        NetworkPackage np = new NetworkPackage("Web","JS");
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage("Web","JS");
         np.setValue("command","getInfo");
         expectedCount = connectedSessions.size();
         for (Session session : connectedSessions.values()) {

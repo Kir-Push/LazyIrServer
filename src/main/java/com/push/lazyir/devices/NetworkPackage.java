@@ -8,12 +8,16 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.push.lazyir.Loggout;
+import com.push.lazyir.modules.dbus.Mpris;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.push.lazyir.managers.tcp.TcpConnectionManager.TCP_PING;
+import static com.push.lazyir.modules.dbus.Mpris.allPlayers;
 
 /**
  * Created by buhalo on 05.03.17.
@@ -27,6 +31,10 @@ public class NetworkPackage {
     public final static String DATA = "data";
     public final static String N_OBJECT = "object";
     public final static String DEVICE_TYPE = "deviceType";
+
+
+    private final static  NetworkPackage pingPackage = new NetworkPackage(TCP_PING,TCP_PING);
+    private final static NetworkPackage mprisPackage = new NetworkPackage(Mpris.class.getSimpleName(),allPlayers);
 
 
     //todo in Android version
@@ -48,7 +56,7 @@ public class NetworkPackage {
         this.idNode = idNode;
     }
 
-    public NetworkPackage(String type, String data) {
+    private NetworkPackage(String type, String data) {
        // args = new ArrayList<>();
         factory = JsonNodeFactory.instance;
         idNode = factory.objectNode();
@@ -59,7 +67,7 @@ public class NetworkPackage {
         idNode.put(DEVICE_TYPE,DEVICE);
     }
 
-    public NetworkPackage(String message)
+    private NetworkPackage(String message)
     {
         this.msg = message;
         parseMessage();
@@ -219,7 +227,6 @@ public class NetworkPackage {
                 }
                 networkPackageCache.remove(hashForRemove);
                 usableCounter.remove(hashForRemove);
-
             }
         }
 
@@ -231,6 +238,9 @@ public class NetworkPackage {
         //try get from cache, if null create and return new Object, increase counter by one, and add to cache if number ~10
         public static NetworkPackage getOrCreatePackage(String type, String data)
         {
+            NetworkPackage networkPackage;
+            if((networkPackage = checkForMostUsefulTypes(type,data)) != null)
+                return networkPackage;
             //todo test this hairy hash method
             int hash = type.hashCode() | data.hashCode();
 
@@ -241,6 +251,15 @@ public class NetworkPackage {
             }
             return result;
         }
+
+        private static NetworkPackage checkForMostUsefulTypes(String type, String data) {
+            if(type.equals(TCP_PING))
+                return pingPackage;
+            else  if(type.equals(Mpris.class.getSimpleName()) && mprisPackage.getData().equals(data))
+                return mprisPackage;
+            return null;
+        }
+
         //similar to other method, but for parsing answer message
         public static NetworkPackage getOrCreatePackage(String message)
         {

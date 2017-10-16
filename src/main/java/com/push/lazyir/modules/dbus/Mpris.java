@@ -36,7 +36,7 @@ public class Mpris extends Module {
      static final String openUri = "openUri";
      static final String setPosition = "setPosition";
      static final String volume = "volume";
-     static final String allPlayers = "allPlayers";
+     public static final String allPlayers = "allPlayers";
 
      static final String[] getAllMpris = {"/bin/sh", "-c", DbusCommandFabric.getGetAll()};
 
@@ -148,7 +148,7 @@ public class Mpris extends Module {
 
     private void getAllPlayers() {
         executorService.submit(()->{
-            NetworkPackage np = new NetworkPackage(Mpris.class.getSimpleName(),allPlayers);
+            NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(Mpris.class.getSimpleName(),allPlayers);
             List<Player> playerList = new ArrayList<>();
             playerList.addAll(strategy.getAllPlayers());
             playerList.addAll(browserStrategy.getAllPlayers());

@@ -25,7 +25,7 @@ public class Messengers extends Module {
 
     public static void sendAnswer(String typeName,String text,String id)
     {
-        NetworkPackage np = new NetworkPackage(Messengers.class.getSimpleName(),ANSWER);
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(Messengers.class.getSimpleName(),ANSWER);
         np.setValue("typeName",typeName);
         np.setValue("text",text);
         BackgroundService.getTcp().sendCommandToServer(id,np.getMessage());

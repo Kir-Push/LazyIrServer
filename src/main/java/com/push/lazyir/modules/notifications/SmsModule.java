@@ -31,7 +31,7 @@ public class SmsModule extends Module {
     }
 
     public void send_sms(String name,String text,String dvId) {
-        NetworkPackage np = new NetworkPackage(SMS_TYPE,SEND);
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SMS_TYPE,SEND);
         Sms message = new Sms(name,text);
         np.setObject(NetworkPackage.N_OBJECT,message);
         BackgroundService.getTcp().sendCommandToServer(dvId,np.getMessage());

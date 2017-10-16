@@ -75,14 +75,14 @@ public class ShowNotification extends Module {
 
     public void sendNotifsToOut(Notifications allNotifications)
     {
-        NetworkPackage toOut = new NetworkPackage(SHOW_NOTIFICATION, "NOTIF TO ID");
+        NetworkPackage toOut =  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION, "NOTIF TO ID");
         toOut.setObject(NetworkPackage.N_OBJECT, allNotifications);
         Communicator.getInstance().sendToOut(toOut.getMessage());
     }
 
 
     public void requestNotificationsFromDevice() {
-        NetworkPackage np = new NetworkPackage(SHOW_NOTIFICATION,"ALL NOTIFS");
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION,"ALL NOTIFS");
         BackgroundService.getTcp().sendCommandToServer(device.getId(),np.getMessage());
     }
 }

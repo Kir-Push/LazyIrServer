@@ -35,6 +35,8 @@ public enum Communicator implements Runnable{
     private  String ALL_NOTIF = "allNotifs";
     private  String MESSENGERS = "messengers";
 
+    private final static String guiPing = "ping";
+
 
     public static Communicator getInstance()
     {
@@ -75,7 +77,7 @@ public enum Communicator implements Runnable{
                  @Override
                  public void run() {
                      if (answer) {
-                         sendToOut("ping");
+                         sendToOut(guiPing);
                          answer = false;
                      } else {
                          Loggout.e("Communicator", "Ending app");
@@ -106,7 +108,7 @@ public enum Communicator implements Runnable{
             answer = true;
             return;
         }
-        NetworkPackage cmdAnswr = new NetworkPackage(commandFromGui);
+        NetworkPackage cmdAnswr = NetworkPackage.Cacher.getOrCreatePackage(commandFromGui);
         String data = cmdAnswr.getData();
         if(data.equals(ALL_NOTIF))
         {
@@ -176,15 +178,14 @@ public enum Communicator implements Runnable{
     }
 
     public synchronized void sftpConnectResult(boolean result,String id) {
-        System.out.println("da ja tut");;
-        NetworkPackage np = new NetworkPackage("Sftp","Result");
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage("Sftp","Result");
         np.setValue("id",id);
         np.setValue("result",String.valueOf(result));
         sendToOut(np.getMessage());}
 
     public synchronized void newDeviceFound(Device device)
     {
-        NetworkPackage np = new NetworkPackage(DEVICE,FOUND);
+        NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(DEVICE,FOUND);
         np.setValue("name",device.getName());
         np.setValue("id",device.getId());
         String message = np.getMessage();
@@ -193,7 +194,7 @@ public enum Communicator implements Runnable{
 
     public synchronized void batteryStatus(String percentage,String status,Device device)
     {
-        NetworkPackage np = new NetworkPackage(DEVICE,BATTERY);
+        NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(DEVICE,BATTERY);
         np.setValue("name",device.getName());
         np.setValue("id",device.getId());
         np.setValue("battery",percentage);
@@ -204,7 +205,7 @@ public enum Communicator implements Runnable{
 
     public synchronized void deviceLost(String id)
     {
-        NetworkPackage np = new NetworkPackage(DEVICE,LOST);
+        NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(DEVICE,LOST);
         np.setValue("id",id);
         String message = np.getMessage();
         sendToOut(message);
@@ -217,7 +218,7 @@ public enum Communicator implements Runnable{
             pair = PAIRED;
         else
             pair = UNPAIRED;
-        NetworkPackage np = new NetworkPackage(DEVICE,pair);
+        NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(DEVICE,pair);;
         np.setValue("id",id);
         sendToOut(np.getMessage());
     }

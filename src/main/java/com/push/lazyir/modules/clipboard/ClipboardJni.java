@@ -45,7 +45,7 @@ public class ClipboardJni {
     {
 
         Loggout.d("ClipboardJni","  Clipboard java received - " + text);
-        NetworkPackage np = new NetworkPackage(ClipBoard.class.getSimpleName(),RECEIVE);
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(ClipBoard.class.getSimpleName(),RECEIVE);
         np.setValue("text",text);
         BackgroundService.getTcp().sendCommandToAll(np.getMessage());
     }

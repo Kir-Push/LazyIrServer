@@ -32,7 +32,7 @@ import static com.push.lazyir.devices.NetworkPackage.N_OBJECT;
 
 public class TcpConnectionManager {
     final static String TCP_INTRODUCE = "tcpIntroduce";
-    final static String TCP_PING = "ping pong";
+    public final static String TCP_PING = "ping pong";
     final static String TCP_PAIR_RESULT = "pairedresult";
     final static String RESULT = "result";
     final static String OK = "ok";
@@ -59,8 +59,8 @@ public class TcpConnectionManager {
         try{
             KeyStore keyStore = KeyStore.getInstance("jks");
             ClassLoader classLoader =getClass().getClassLoader();
-            String file = classLoader.getResource("bimka").getFile();
-            keyStore.load(new FileInputStream(file),"bimkaSamokat".toCharArray());
+            URL bimka = classLoader.getResource("bimka");
+            keyStore.load( bimka.openStream(),"bimkaSamokat".toCharArray());
             // Create key manager
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
             keyManagerFactory.init(keyStore, "bimkaSamokat".toCharArray());
@@ -172,13 +172,13 @@ public class TcpConnectionManager {
 
     public void requestPairDevice(String id)
     {
-        NetworkPackage np = new NetworkPackage(TCP_PAIR,"REQUEST");
+        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(TCP_PAIR,"REQUEST");
         sendCommandToServer(id,np.getMessage());
     }
 
     void sendPairResult(String id,String result) {
         try {
-            NetworkPackage np = new NetworkPackage(TCP_PAIR_RESULT,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
+            NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(TCP_PAIR_RESULT,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
             np.setValue(RESULT,result);
             sendCommandToServer(id,np.getMessage());
             if(result.equals(OK))
@@ -191,7 +191,7 @@ public class TcpConnectionManager {
 
     public void sendUnpair(String id)
     {
-        sendCommandToServer(id,new NetworkPackage(TCP_UNPAIR,TCP_UNPAIR).getMessage());
+        sendCommandToServer(id, NetworkPackage.Cacher.getOrCreatePackage(TCP_UNPAIR,TCP_UNPAIR).getMessage());
         Device.getConnectedDevices().get(id).setPaired(false);
         BackgroundService.getSettingManager().delete(id);
         Communicator.getInstance().devicePaired(id,false);
