@@ -17,6 +17,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.push.lazyir.managers.tcp.TcpConnectionManager.TCP_PING;
+import static com.push.lazyir.managers.udp.UdpBroadcastManager.BROADCAST_INTRODUCE;
+import static com.push.lazyir.managers.udp.UdpBroadcastManager.BROADCAST_INTRODUCE_MSG;
 import static com.push.lazyir.modules.dbus.Mpris.allPlayers;
 
 /**
@@ -34,6 +36,7 @@ public class NetworkPackage {
 
 
     private final static  NetworkPackage pingPackage = new NetworkPackage(TCP_PING,TCP_PING);
+    private final static NetworkPackage introducePackage = new NetworkPackage(BROADCAST_INTRODUCE,BROADCAST_INTRODUCE_MSG);
     private final static NetworkPackage mprisPackage = new NetworkPackage(Mpris.class.getSimpleName(),allPlayers);
 
 
@@ -255,6 +258,8 @@ public class NetworkPackage {
         private static NetworkPackage checkForMostUsefulTypes(String type, String data) {
             if(type.equals(TCP_PING))
                 return pingPackage;
+            else if(type.equals(BROADCAST_INTRODUCE))
+                return introducePackage;
             else  if(type.equals(Mpris.class.getSimpleName()) && mprisPackage.getData().equals(data))
                 return mprisPackage;
             return null;

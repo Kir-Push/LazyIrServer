@@ -1,2 +1,3 @@
 Vlc-port=9090
 Vlc-pass=567
+TLS=true

@@ -23,8 +23,8 @@ import static com.push.lazyir.MainClass.executorService;
 
 public class UdpBroadcastManager  {
 
-    private static final String BROADCAST_INTRODUCE = "broadcast introduce";
-    private static final String BROADCAST_INTRODUCE_MSG = "I search Adventures";
+    public static final String BROADCAST_INTRODUCE = "broadcast introduce";
+    public static final String BROADCAST_INTRODUCE_MSG = "I search Adventures";
     private DatagramSocket socket;
     private  DatagramSocket server;
     private int send_period = 30000;

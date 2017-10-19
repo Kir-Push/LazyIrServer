@@ -6,8 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f696011-2726-4df9-993f-c5deebd9f80a" name="Default" comment="finally added ssl">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/findbugs-idea.xml" />
+    <list default="true" id="5f696011-2726-4df9-993f-c5deebd9f80a" name="Default" comment="cache improved">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/LazyIrServer-0.1-SNAPSHOT.jar" afterPath="$PROJECT_DIR$/target/LazyIrServer-0.1-SNAPSHOT.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/push/lazyir/Loggout.class" afterPath="$PROJECT_DIR$/target/classes/com/push/lazyir/Loggout.class" />
@@ -32,12 +31,14 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/push/lazyir/pojo/CommandsList.class" afterPath="$PROJECT_DIR$/target/classes/com/push/lazyir/pojo/CommandsList.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/push/lazyir/service/BackgroundService.class" afterPath="$PROJECT_DIR$/target/classes/com/push/lazyir/service/BackgroundService.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/LazyIrServer_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/LazyIrServer_jar.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/ConnectionThread.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/ConnectionThread.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/udp/UdpBroadcastManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/udp/UdpBroadcastManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" afterPath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/baseProp" afterPath="$PROJECT_DIR$/target/classes/baseProp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/logback.xml" afterPath="$PROJECT_DIR$/target/classes/logback.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -65,28 +66,101 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="NetworkPackage.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java">
+      <file leaf-file-name="Messengers.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Messengers.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
-              <caret line="205" column="41" lean-forward="false" selection-start-line="205" selection-start-column="41" selection-end-line="205" selection-end-column="41" />
-              <folding>
-                <element signature="e#2330#2331#0" expanded="true" />
-                <element signature="e#2385#2386#0" expanded="true" />
-                <element signature="e#5742#5743#0" expanded="true" />
-                <element signature="e#5802#5803#0" expanded="true" />
-                <element signature="e#7107#7108#0" expanded="true" />
-                <element signature="e#7166#7167#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="408">
+              <caret line="27" column="69" lean-forward="false" selection-start-line="27" selection-start-column="69" selection-end-line="27" selection-end-column="69" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Device.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/Device.java">
+      <file leaf-file-name="Notifications.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Notifications.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="22" column="41" lean-forward="false" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="41" />
+            <state relative-caret-position="136">
+              <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Notification.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Notification.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="782">
+              <caret line="66" column="13" lean-forward="false" selection-start-line="66" selection-start-column="13" selection-end-line="66" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConnectionThread.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/ConnectionThread.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1849">
+              <caret line="239" column="114" lean-forward="false" selection-start-line="239" selection-start-column="114" selection-end-line="239" selection-end-column="114" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="NetworkPackage.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="34" column="4" lean-forward="false" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="58" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UdpBroadcastManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/udp/UdpBroadcastManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="154" column="118" lean-forward="false" selection-start-line="154" selection-start-column="95" selection-end-line="154" selection-end-column="118" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="logback.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/logback.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="408">
+              <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainClass.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/MainClass.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="26" column="37" lean-forward="false" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Communicator.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/Communicator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1445">
+              <caret line="99" column="76" lean-forward="false" selection-start-line="99" selection-start-column="76" selection-end-line="99" selection-end-column="76" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SftpServerProcess.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcess.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1564">
+              <caret line="105" column="0" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -106,9 +180,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>afte</find>
-      <find>fter class</find>
-      <find>&quot;after ping check</find>
       <find>after ping check</find>
       <find>sync</find>
       <find>currentUsersHomeDir</find>
@@ -136,6 +207,9 @@
       <find>not</find>
       <find>avail</find>
       <find>jks</find>
+      <find>new NetworkPackage</find>
+      <find>ping</find>
+      <find>timerFuture</find>
     </findStrings>
     <replaceStrings>
       <replace>Communicator.getInstance().</replace>
@@ -150,6 +224,9 @@
       <replace>MyJasechvideo</replace>
       <replace>BackgroundService.getTcp</replace>
       <replace>void</replace>
+      <replace>NetworkPackge.Cachier</replace>
+      <replace>NetworkPackage.Cachier</replace>
+      <replace>Cacher</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/src/main/java/com/push</dir>
@@ -173,7 +250,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/VlcStategy.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/Module.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Strategy.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Messengers.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/DbusCommandFabric.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/TcpConnectionManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/SettingManager.java" />
@@ -181,9 +257,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/battery/Battery.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/push/lazyir/managers/ConnectionThreadTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/UdpBroadcastManager.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/udp/UdpBroadcastManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/command/SendCommand.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/SmsModule.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/settings/Manager.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ir/IrModule.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/settings/SettingManager.java" />
@@ -197,25 +271,28 @@
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipBoard.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Nix.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ModuleFactory.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Mpris.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/ShowNotification.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Vlc.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/touch/TouchControl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/Communicator.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcess.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/MainClass.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipboardJni.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/logback.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/Loggout.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/ConnectionThread.java" />
         <option value="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/BrowserServer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/baseProp" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/TcpConnectionManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/udp/UdpBroadcastManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipboardJni.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Messengers.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/ShowNotification.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/SmsModule.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/Communicator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Mpris.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/ConnectionThread.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/logback.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java" />
       </list>
     </option>
@@ -301,10 +378,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
       <pane id="AndroidView" />
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -345,15 +421,6 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="push" type="462c0819:PsiDirectoryNode" />
-              <item name="chrome" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="push" type="462c0819:PsiDirectoryNode" />
               <item name="lazyir" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -385,6 +452,17 @@
               <item name="push" type="462c0819:PsiDirectoryNode" />
               <item name="lazyir" type="462c0819:PsiDirectoryNode" />
               <item name="managers" type="462c0819:PsiDirectoryNode" />
+              <item name="settings" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="managers" type="462c0819:PsiDirectoryNode" />
               <item name="tcp" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -395,7 +473,73 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="push" type="462c0819:PsiDirectoryNode" />
               <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="managers" type="462c0819:PsiDirectoryNode" />
+              <item name="udp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="battery" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="clipboard" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="command" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="notifications" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="touch" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
@@ -416,10 +560,11 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.45363638" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -1303,7 +1448,14 @@
       <workItem from="1507999189170" duration="366000" />
       <workItem from="1508072286152" duration="42000" />
       <workItem from="1508073679683" duration="65000" />
-      <workItem from="1508083947566" duration="11853000" />
+      <workItem from="1508083947566" duration="11929000" />
+      <workItem from="1508170819788" duration="2647000" />
+      <workItem from="1508174883319" duration="1681000" />
+      <workItem from="1508176577729" duration="1783000" />
+      <workItem from="1508256693932" duration="3990000" />
+      <workItem from="1508351531323" duration="605000" />
+      <workItem from="1508436830483" duration="136000" />
+      <workItem from="1508437006421" duration="4793000" />
     </task>
     <task id="LOCAL-00001" summary="windows ftp and server pair methods">
       <created>1495381598585</created>
@@ -1354,7 +1506,21 @@
       <option name="project" value="LOCAL" />
       <updated>1508093681817</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Start work for cache in networkPackage">
+      <created>1508098906594</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1508098906594</updated>
+    </task>
+    <task id="LOCAL-00009" summary="cache improved">
+      <created>1508179018092</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1508179018092</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1390,7 +1556,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="713439000" />
+    <option name="totallyTimeSpent" value="729150000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1406,28 +1572,24 @@
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="FindBugs-IDEA" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27975738" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17892343" sideWeight="0.5055688" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16830903" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297953" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24940334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24940334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3768006" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22482967" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31690675" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="FindBugs-IDEA" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27975738" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329296" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17892343" sideWeight="0.5055688" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16799048" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297953" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26914328" sideWeight="0.4944312" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32931727" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1789976" sideWeight="0.49676225" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25625473" sideWeight="0.49642006" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18546465" sideWeight="0.49676225" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297953" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24940334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24900715" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.159109" sideWeight="0.5032377" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1438,11 +1600,15 @@
       <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24980111" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37623012" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31642696" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24791509" sideWeight="0.4944312" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25586677" sideWeight="0.49642006" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1496,7 +1662,9 @@
     <MESSAGE value="hz" />
     <MESSAGE value="refactored" />
     <MESSAGE value="finally added ssl" />
-    <option name="LAST_COMMIT_MESSAGE" value="finally added ssl" />
+    <MESSAGE value="Start work for cache in networkPackage" />
+    <MESSAGE value="cache improved" />
+    <option name="LAST_COMMIT_MESSAGE" value="cache improved" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1507,23 +1675,11 @@
           <properties field="countInit" class="com.push.lazyir.modules.dbus.strategies.win.Vlc" />
           <option name="timeStamp" value="230" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/Device.java</url>
-          <line>43</line>
-          <properties />
-          <option name="timeStamp" value="247" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/Device.java</url>
-          <line>42</line>
-          <properties />
-          <option name="timeStamp" value="248" />
-        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="250" />
+      <option name="time" value="262" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1532,167 +1688,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/battery/Battery.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="23" column="52" lean-forward="false" selection-start-line="23" selection-start-column="52" selection-end-line="23" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Win.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1853">
-          <caret line="119" column="0" lean-forward="false" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Vlc.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="884">
-          <caret line="89" column="9" lean-forward="false" selection-start-line="89" selection-start-column="9" selection-end-line="89" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/logback.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="77" lean-forward="true" selection-start-line="7" selection-start-column="77" selection-end-line="7" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/Loggout.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hs_err_pid18020.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-662">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hs_err_pid24512.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="uml://MAVEN/LazyIrServer:LazyIrServer:0.1-SNAPSHOT">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>MAVEN</ID>
-          <OriginalElement>LazyIrServer:LazyIrServer:0.1-SNAPSHOT</OriginalElement>
-          <nodes>
-            <node x="" y="">LazyIrServer:LazyIrServer:0.1-SNAPSHOT</node>
-            <node x="" y="">com.fasterxml.jackson.core:jackson-databind:jar:2.8.6</node>
-            <node x="" y="">com.fasterxml.jackson.core:jackson-databind:jar:2.8.6/com.fasterxml.jackson.core:jackson-annotations:jar:2.8.0</node>
-            <node x="" y="">com.fasterxml.jackson.core:jackson-core:jar:2.8.6</node>
-            <node x="" y="">com.fasterxml.jackson.core:jackson-annotations:jar:2.8.6</node>
-            <node x="" y="">ch.qos.logback:logback-classic:jar:1.2.3</node>
-            <node x="" y="">ch.qos.logback:logback-classic:jar:1.2.3/ch.qos.logback:logback-core:jar:1.2.3</node>
-            <node x="" y="">ch.qos.logback:logback-classic:jar:1.2.3/org.slf4j:slf4j-api:jar:1.7.25</node>
-            <node x="" y="">javax.websocket:javax.websocket-api:jar:1.1</node>
-            <node x="" y="">org.glassfish:javax.json:jar:1.0.4</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1/org.glassfish.grizzly:grizzly-framework:jar:2.3.25</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1/org.glassfish.grizzly:grizzly-http-server:jar:2.3.25</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1/org.glassfish.grizzly:grizzly-http-server:jar:2.3.25/org.glassfish.grizzly:grizzly-http:jar:2.3.25</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1/org.glassfish.tyrus:tyrus-server:jar:1.13.1</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1/org.glassfish.tyrus:tyrus-server:jar:1.13.1/org.glassfish.tyrus:tyrus-client:jar:1.13.1</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1/org.glassfish.tyrus:tyrus-server:jar:1.13.1/org.glassfish.tyrus:tyrus-client:jar:1.13.1/org.glassfish.tyrus:tyrus-core:jar:1.13.1</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1/org.glassfish.tyrus:tyrus-server:jar:1.13.1/org.glassfish.tyrus:tyrus-client:jar:1.13.1/org.glassfish.tyrus:tyrus-core:jar:1.13.1/org.glassfish.tyrus:tyrus-spi:jar:1.13.1</node>
-            <node x="" y="">org.glassfish.tyrus:tyrus-container-grizzly-server:jar:1.13.1/org.glassfish.tyrus:tyrus-container-grizzly-client:jar:1.13.1</node>
-            <node x="" y="">junit:junit:jar:4.12</node>
-            <node x="" y="">junit:junit:jar:4.12/org.hamcrest:hamcrest-core:jar:1.3</node>
-            <node x="" y="">org.mockito:mockito-core:jar:2.8.47</node>
-            <node x="" y="">org.mockito:mockito-core:jar:2.8.47/net.bytebuddy:byte-buddy:jar:1.6.14</node>
-            <node x="" y="">org.mockito:mockito-core:jar:2.8.47/net.bytebuddy:byte-buddy-agent:jar:1.6.14</node>
-            <node x="" y="">org.mockito:mockito-core:jar:2.8.47/org.objenesis:objenesis:jar:2.5</node>
-            <node x="" y="">io.undertow:undertow-core:jar:1.4.12.Final</node>
-            <node x="" y="">io.undertow:undertow-core:jar:1.4.12.Final/org.jboss.logging:jboss-logging:jar:3.2.1.Final</node>
-            <node x="" y="">io.undertow:undertow-core:jar:1.4.12.Final/org.jboss.xnio:xnio-api:jar:3.3.6.Final</node>
-            <node x="" y="">io.undertow:undertow-core:jar:1.4.12.Final/org.jboss.xnio:xnio-nio:jar:3.3.6.Final</node>
-            <node x="" y="">io.undertow:undertow-servlet:jar:1.4.12.Final</node>
-            <node x="" y="">io.undertow:undertow-servlet:jar:1.4.12.Final/org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:jar:1.0.0.Final</node>
-            <node x="" y="">io.undertow:undertow-servlet:jar:1.4.12.Final/org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec:jar:1.0.0.Final</node>
-            <node x="" y="">io.undertow:undertow-websockets-jsr:jar:1.4.12.Final</node>
-            <node x="" y="">io.undertow:undertow-websockets-jsr:jar:1.4.12.Final/org.jboss.spec.javax.websocket:jboss-websocket-api_1.1_spec:jar:1.1.0.Final</node>
-          </nodes>
-          <notes />
-          <edges />
-          <settings layout="Hierarchic Group" zoom="1.0" x="881.0" y="330.0" />
-          <SelectedNodes />
-          <Categories />
-          <SCOPE>All</SCOPE>
-          <VISIBILITY>All</VISIBILITY>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-core/1.4.12.Final/undertow-core-1.4.12.Final-sources.jar!/io/undertow/server/HttpHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="26" column="17" lean-forward="false" selection-start-line="26" selection-start-column="17" selection-end-line="26" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-core/1.4.12.Final/undertow-core-1.4.12.Final-sources.jar!/io/undertow/websockets/client/WebSocketClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="76" column="5" lean-forward="true" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-core/1.4.12.Final/undertow-core-1.4.12.Final-sources.jar!/io/undertow/websockets/core/WebSockets.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="39" column="13" lean-forward="false" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-core/1.4.12.Final/undertow-core-1.4.12.Final-sources.jar!/io/undertow/Undertow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="430">
-          <caret line="476" column="42" lean-forward="true" selection-start-line="476" selection-start-column="42" selection-end-line="476" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-core/1.4.12.Final/undertow-core-1.4.12.Final-sources.jar!/io/undertow/server/handlers/PathHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="129" column="36" lean-forward="false" selection-start-line="129" selection-start-column="36" selection-end-line="129" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-core/1.4.12.Final/undertow-core-1.4.12.Final-sources.jar!/io/undertow/websockets/core/WebSocketUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="42" column="19" lean-forward="false" selection-start-line="42" selection-start-column="19" selection-end-line="42" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-core/1.4.12.Final/undertow-core-1.4.12.Final-sources.jar!/io/undertow/websockets/spi/AsyncWebSocketHttpServerExchange.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="59" column="13" lean-forward="false" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-core/1.4.12.Final/undertow-core-1.4.12.Final-sources.jar!/io/undertow/websockets/WebSocketProtocolHandshakeHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="18" column="22" lean-forward="true" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/io/undertow/undertow-websockets-jsr/1.4.12.Final/undertow-websockets-jsr-1.4.12.Final-sources.jar!/io/undertow/websockets/jsr/WebSocketDeploymentInfo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -1704,7 +1699,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="17" column="17" lean-forward="false" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1712,15 +1706,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="782">
           <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcess.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="918">
-          <caret line="67" column="27" lean-forward="false" selection-start-line="67" selection-start-column="27" selection-end-line="67" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1728,7 +1713,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="833">
           <caret line="49" column="66" lean-forward="false" selection-start-line="49" selection-start-column="57" selection-end-line="49" selection-end-column="66" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1754,31 +1738,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1071">
-          <caret line="79" column="42" lean-forward="false" selection-start-line="79" selection-start-column="42" selection-end-line="79" selection-end-column="42" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/BrowserServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="15" column="19" lean-forward="false" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/udp/UdpBroadcastManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="52" column="26" lean-forward="false" selection-start-line="52" selection-start-column="16" selection-end-line="52" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1786,7 +1749,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1794,7 +1756,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="2" column="3" lean-forward="false" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1802,7 +1763,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="318">
           <caret line="133" column="11" lean-forward="false" selection-start-line="133" selection-start-column="11" selection-end-line="133" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1810,7 +1770,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="293">
           <caret line="980" column="21" lean-forward="false" selection-start-line="980" selection-start-column="18" selection-end-line="980" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1818,7 +1777,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
           <caret line="49" column="42" lean-forward="false" selection-start-line="49" selection-start-column="42" selection-end-line="49" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1826,7 +1784,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
           <caret line="48" column="44" lean-forward="false" selection-start-line="48" selection-start-column="44" selection-end-line="48" selection-end-column="44" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1834,50 +1791,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
           <caret line="75" column="75" lean-forward="false" selection-start-line="75" selection-start-column="63" selection-end-line="75" selection-end-column="75" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/TcpConnectionManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="126" column="43" lean-forward="true" selection-start-line="126" selection-start-column="43" selection-end-line="126" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/ConnectionThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="79" column="35" lean-forward="false" selection-start-line="79" selection-start-column="17" selection-end-line="79" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/settings/SettingManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="19" column="24" lean-forward="false" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/socket.io.js.map">
+      <provider editor-type-id="sourcemapFileViewerProvider">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
-      </provider>
-      <provider editor-type-id="sourcemapFileViewerProvider">
-        <state />
       </provider>
     </entry>
     <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/java.base/java/util/Map.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="430">
           <caret line="589" column="8" lean-forward="false" selection-start-line="589" selection-start-column="8" selection-end-line="589" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1885,10 +1815,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="663">
           <caret line="830" column="28" lean-forward="true" selection-start-line="830" selection-start-column="28" selection-end-line="830" selection-end-column="28" />
-          <folding>
-            <element signature="e#25500#25501#0" expanded="false" />
-            <element signature="e#25543#25544#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1896,23 +1822,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1559">
           <caret line="1202" column="13" lean-forward="false" selection-start-line="1202" selection-start-column="13" selection-end-line="1202" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/touch/TouchControl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Mpris.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1920,7 +1829,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1928,15 +1836,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="20" column="13" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/Device.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="22" column="41" lean-forward="false" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="41" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1944,7 +1843,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="422">
           <caret line="2031" column="13" lean-forward="false" selection-start-line="2031" selection-start-column="13" selection-end-line="2031" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1952,7 +1850,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="430">
           <caret line="171" column="22" lean-forward="false" selection-start-line="171" selection-start-column="22" selection-end-line="171" selection-end-column="22" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1960,7 +1857,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="481">
           <caret line="1514" column="52" lean-forward="true" selection-start-line="1514" selection-start-column="52" selection-end-line="1514" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1968,22 +1864,200 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="430">
           <caret line="387" column="14" lean-forward="false" selection-start-line="387" selection-start-column="14" selection-end-line="387" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipboardJni.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="47" column="69" lean-forward="false" selection-start-line="47" selection-start-column="69" selection-end-line="47" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="605">
+          <caret line="128" column="69" lean-forward="false" selection-start-line="128" selection-start-column="69" selection-end-line="128" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/ShowNotification.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="683">
+          <caret line="84" column="69" lean-forward="false" selection-start-line="84" selection-start-column="69" selection-end-line="84" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/SmsModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="33" column="69" lean-forward="false" selection-start-line="33" selection-start-column="69" selection-end-line="33" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Mpris.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="710">
+          <caret line="170" column="42" lean-forward="false" selection-start-line="170" selection-start-column="42" selection-end-line="170" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="646">
+          <caret line="54" column="9" lean-forward="false" selection-start-line="54" selection-start-column="9" selection-end-line="54" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/settings/SettingManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-837">
+          <caret line="19" column="24" lean-forward="false" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/java.base/java/util/concurrent/Future.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="110" column="12" lean-forward="false" selection-start-line="110" selection-start-column="12" selection-end-line="110" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/java.base/java/util/function/Consumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="373">
+          <caret line="48" column="9" lean-forward="false" selection-start-line="48" selection-start-column="9" selection-end-line="48" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/TcpConnectionManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1199">
+          <caret line="112" column="32" lean-forward="false" selection-start-line="112" selection-start-column="32" selection-end-line="112" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/battery/Battery.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipBoard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/command/SendCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="17" column="13" lean-forward="false" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/touch/TouchControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="23" column="8" lean-forward="false" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Messengers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="27" column="69" lean-forward="false" selection-start-line="27" selection-start-column="69" selection-end-line="27" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Notifications.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Notification.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="782">
+          <caret line="66" column="13" lean-forward="false" selection-start-line="66" selection-start-column="13" selection-end-line="66" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcess.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1564">
+          <caret line="105" column="0" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/java.base/java/net/Socket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="305">
+          <caret line="1305" column="7" lean-forward="true" selection-start-line="1305" selection-start-column="7" selection-end-line="1305" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/MainClass.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="26" column="37" lean-forward="false" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/Device.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="57" column="16" lean-forward="false" selection-start-line="57" selection-start-column="16" selection-end-line="57" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/Communicator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1445">
+          <caret line="99" column="76" lean-forward="false" selection-start-line="99" selection-start-column="76" selection-end-line="99" selection-end-column="76" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/logback.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/tcp/ConnectionThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1849">
+          <caret line="239" column="114" lean-forward="false" selection-start-line="239" selection-start-column="114" selection-end-line="239" selection-end-column="114" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/managers/udp/UdpBroadcastManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="154" column="118" lean-forward="false" selection-start-line="154" selection-start-column="95" selection-end-line="154" selection-end-column="118" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="205" column="41" lean-forward="false" selection-start-line="205" selection-start-column="41" selection-end-line="205" selection-end-column="41" />
-          <folding>
-            <element signature="e#2330#2331#0" expanded="true" />
-            <element signature="e#2385#2386#0" expanded="true" />
-            <element signature="e#5742#5743#0" expanded="true" />
-            <element signature="e#5802#5803#0" expanded="true" />
-            <element signature="e#7107#7108#0" expanded="true" />
-            <element signature="e#7166#7167#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="289">
+          <caret line="34" column="4" lean-forward="false" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="58" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1994,8 +2068,8 @@
         <settings>
           <artifact-editor>
             <show-content>
-              <type id="library" />
               <type id="artifact" />
+              <type id="library" />
               <type id="javaee-facet-resources" />
               <type id="jpa-descriptors" />
             </show-content>

@@ -37,7 +37,8 @@ public class ConnectionThread implements Runnable {
 
         ConnectionThread(Socket socket) throws SocketException {
             this.connection = socket;
-            connection.setSoTimeout(25000);
+            connection.setKeepAlive(true);
+            connection.setSoTimeout(60000);
         }
 
      ConnectionThread(){
@@ -169,10 +170,12 @@ public class ConnectionThread implements Runnable {
 
         private void pingCheck()
         {
-            if(timerFuture!=null && !timerFuture.isDone()) {
-                timerFuture.cancel(true);
-            }
-            timerFuture = timerService.scheduleAtFixedRate(()->{
+//            if(timerFuture!=null && !timerFuture.isDone()) {
+//                timerFuture.cancel(true);
+//            }
+            // start only if timer future null or not running
+            if(timerFuture == null || timerFuture.isDone() || timerFuture.isCancelled())
+            timerFuture = timerService.scheduleWithFixedDelay(()->{
                     Device device = Device.getConnectedDevices().get(deviceId);
                     if(device != null && device.isAnswer())
                     {
@@ -180,11 +183,12 @@ public class ConnectionThread implements Runnable {
                         ping();
 
                     }
-            },20,20, TimeUnit.SECONDS);
+            },0,20, TimeUnit.SECONDS);
         }
 
         private void ping()
         {
+            System.out.println("PING to" + deviceId  + NetworkPackage.Cacher.getOrCreatePackage(TCP_PING,TCP_PING).getMessage());
            printToOut(NetworkPackage.Cacher.getOrCreatePackage(TCP_PING,TCP_PING).getMessage());
         }
 
@@ -233,7 +237,7 @@ public class ConnectionThread implements Runnable {
             if (timerFuture != null && !timerFuture.isDone()) {
                 timerFuture.cancel(true);
             }
-            Device.getConnectedDevices().get(deviceId).getEnabledModules().values().forEach(module ->  module.endWork());
+            Device.getConnectedDevices().get(deviceId).getEnabledModules().values().forEach(module ->  module.endWork()); // todo something here nullpointer exception!
             Device.getConnectedDevices().remove(deviceId);
             Communicator.getInstance().deviceLost(deviceId);
             // calling after because can throw exception and remove from hashmap won't be done
