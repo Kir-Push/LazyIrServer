@@ -1,23 +1,13 @@
 package com.push.lazyir.modules.dbus;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.MainClass;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.modules.dbus.strategies.win.Strategy;
-import com.push.lazyir.modules.dbus.strategies.win.Vlc;
 import com.push.lazyir.modules.dbus.websocket.BrowserServer;
-import com.push.lazyir.modules.dbus.websocket.PopupEndpoint;
 import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.utils.SettableFuture;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -36,7 +26,7 @@ public class Mpris extends Module {
      static final String openUri = "openUri";
      static final String setPosition = "setPosition";
      static final String volume = "volume";
-     public static final String allPlayers = "allPlayers";
+     public static final String ALL_PLAYERS = "ALL_PLAYERS";
 
      static final String[] getAllMpris = {"/bin/sh", "-c", DbusCommandFabric.getGetAll()};
 
@@ -97,7 +87,7 @@ public class Mpris extends Module {
         try {
             OsStrategy tempStrat;
             String data = np.getData();
-            if(data.equals(allPlayers))
+            if(data.equals(ALL_PLAYERS))
             {
                 getAllPlayers();
                 return;
@@ -148,14 +138,14 @@ public class Mpris extends Module {
 
     private void getAllPlayers() {
         executorService.submit(()->{
-            NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(Mpris.class.getSimpleName(),allPlayers);
+            NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(Mpris.class.getSimpleName(), ALL_PLAYERS);
             List<Player> playerList = new ArrayList<>();
             playerList.addAll(strategy.getAllPlayers());
             playerList.addAll(browserStrategy.getAllPlayers());
             Players players = new Players(playerList);
             if(players.getPlayerList().size()> 0)
             {
-                np.setObject(allPlayers, players);
+                np.setObject(ALL_PLAYERS, players);
                 sendAnswer(np.getMessage());
             }
         });

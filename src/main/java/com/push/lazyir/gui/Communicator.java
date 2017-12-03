@@ -16,6 +16,7 @@ import static com.push.lazyir.MainClass.timerService;
 /**
  * Created by buhalo on 12.03.17.
  */
+// todo rewrite to socket
 //i think communication will be like rest (not exactly same)
 public enum Communicator implements Runnable{
 
@@ -161,6 +162,8 @@ public enum Communicator implements Runnable{
 
 
     }
+
+
 
     public synchronized void requestPair(NetworkPackage np)
     {

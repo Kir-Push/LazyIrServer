@@ -10,6 +10,7 @@ import com.push.lazyir.service.BackgroundService;
  * Created by buhalo on 26.03.17.
  */
 
+// todo big message (consist of two or more sms one time) showing only first message, fix it,
 public class SmsModule extends Module {
 
     private static final String SMS_TYPE = "SmsModule";
@@ -32,7 +33,7 @@ public class SmsModule extends Module {
 
     public void send_sms(String name,String text,String dvId) {
         NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SMS_TYPE,SEND);
-        Sms message = new Sms(name,text);
+        Sms message = new Sms(name,text,null,null); // todo image
         np.setObject(NetworkPackage.N_OBJECT,message);
         BackgroundService.getTcp().sendCommandToServer(dvId,np.getMessage());
     }

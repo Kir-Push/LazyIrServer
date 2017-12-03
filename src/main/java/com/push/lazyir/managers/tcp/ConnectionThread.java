@@ -200,6 +200,7 @@ public class ConnectionThread implements Runnable {
                     return;
                 }
                 Module module = device.getEnabledModules().get(np.getType());
+                if(module != null)
                 module.execute(np);
             }catch (Exception e)
             {

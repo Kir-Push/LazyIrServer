@@ -79,10 +79,10 @@ public class UdpBroadcastManager  {
                     }
                 } catch (Exception e) {
                     Loggout.e("Udp", "UdpReceive exception ", e);
-                    Communicator.getInstance().iamCrushedUdpListen();
+                    Communicator.getInstance().iamCrushedUdpListen(); //todo don't stop if error
                 } finally {
                     Loggout.d("Udp", "Stopping UDP listener");
-                    stopUdpListener();
+                    stopUdpListener(); //todo
                 }
             });
         }finally {

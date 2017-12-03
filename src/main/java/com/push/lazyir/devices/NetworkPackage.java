@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.push.lazyir.managers.tcp.TcpConnectionManager.TCP_PING;
 import static com.push.lazyir.managers.udp.UdpBroadcastManager.BROADCAST_INTRODUCE;
 import static com.push.lazyir.managers.udp.UdpBroadcastManager.BROADCAST_INTRODUCE_MSG;
-import static com.push.lazyir.modules.dbus.Mpris.allPlayers;
+import static com.push.lazyir.modules.dbus.Mpris.ALL_PLAYERS;
 
 /**
  * Created by buhalo on 05.03.17.
@@ -37,12 +37,12 @@ public class NetworkPackage {
 
     private final static  NetworkPackage pingPackage = new NetworkPackage(TCP_PING,TCP_PING);
     private final static NetworkPackage introducePackage = new NetworkPackage(BROADCAST_INTRODUCE,BROADCAST_INTRODUCE_MSG);
-    private final static NetworkPackage mprisPackage = new NetworkPackage(Mpris.class.getSimpleName(),allPlayers);
+    private final static NetworkPackage mprisPackage = new NetworkPackage(Mpris.class.getSimpleName(), ALL_PLAYERS);
 
 
     //todo in Android version
     //This variable depends on app version(pc or android)
-    public final static String DEVICE = "pc";
+    private final static String DEVICE = "pc";
 
     private Device dv;
 
@@ -142,10 +142,11 @@ public class NetworkPackage {
         idNode.put(key,value);
     }
 
-    public <T> void setObject(String key,T object)
+    public <T> NetworkPackage setObject(String key,T object)
     {
         JsonNode node = new ObjectMapper().convertValue(object, JsonNode.class);
         idNode.set(key,node);
+        return this;
     }
 
     public <T> T getObject(String key,Class<T> tClass)
@@ -214,16 +215,13 @@ public class NetworkPackage {
         }
 
         //if in cache more than 20 items clear less useful items
-        //todo test this method carefully
         private static void clearIfNeeded() {
-            if(networkPackageCache.size() > 20)
-            {
-                int lessValue = 10000;
+            if (networkPackageCache.size() > 20) {
+                int lessValue = Integer.MAX_VALUE;
                 int hashForRemove = -1;
                 for (Map.Entry<Integer, Integer> integerIntegerEntry : usableCounter.entrySet()) {
                     Integer value = integerIntegerEntry.getValue();
-                    if(lessValue > value)
-                    {
+                    if (lessValue > value) {
                         lessValue = value;
                         hashForRemove = integerIntegerEntry.getKey();
                     }
@@ -233,70 +231,68 @@ public class NetworkPackage {
             }
         }
 
-        private static NetworkPackage getFromCache(Integer hash)
-        {
+        private static NetworkPackage getFromCache(Integer hash) {
             return networkPackageCache.get(hash);
         }
 
         //try get from cache, if null create and return new Object, increase counter by one, and add to cache if number ~10
-        public static NetworkPackage getOrCreatePackage(String type, String data)
-        {
+        public static NetworkPackage getOrCreatePackage(String type, String data) {
             NetworkPackage networkPackage;
-            if((networkPackage = checkForMostUsefulTypes(type,data)) != null)
+            if ((networkPackage = checkForMostUsefulTypes(type, data)) != null)
                 return networkPackage;
-            //todo test this hairy hash method
-            int hash = type.hashCode() | data.hashCode();
+            int hash = getHash(type, data);
 
             NetworkPackage result = getFromCache(hash);
-            if(result == null) {
-                 result = createNewNetworkPackage(type, data);
-                countCacheAndAdd(hash,result);
+            if (result == null) {
+                result = createNewNetworkPackage(type, data);
+                countCacheAndAdd(hash, result);
             }
             return result;
         }
 
         private static NetworkPackage checkForMostUsefulTypes(String type, String data) {
-            if(type.equals(TCP_PING))
+            if (type.equals(TCP_PING))
                 return pingPackage;
-            else if(type.equals(BROADCAST_INTRODUCE))
+            else if (type.equals(BROADCAST_INTRODUCE))
                 return introducePackage;
-            else  if(type.equals(Mpris.class.getSimpleName()) && mprisPackage.getData().equals(data))
+            else if (type.equals(Mpris.class.getSimpleName()) && mprisPackage.getData().equals(data))
                 return mprisPackage;
             return null;
         }
 
         //similar to other method, but for parsing answer message
-        public static NetworkPackage getOrCreatePackage(String message)
-        {
+        public static NetworkPackage getOrCreatePackage(String message) {
             int hash = message.hashCode();
             NetworkPackage result = getFromCache(hash);
-            if(result == null) {
+            if (result == null) {
                 result = createNewNetworkPackage(message);
-                countCacheAndAdd(hash,result);
+                countCacheAndAdd(hash, result);
             }
             return result;
         }
 
-        private static void countCacheAndAdd(int hash,NetworkPackage np)
-        {
-            if(usableCounter.merge(hash,1,(value,one)->value + one) >= 10)
-                addToCache(hash,np);
+        private static void countCacheAndAdd(int hash, NetworkPackage np) {
+            // get value from map, increment it, and put back. Check if size of map
+            // >= 10 and add to cache if true.
+            Integer integer = usableCounter.get(hash);
+            if(integer == null)
+                integer = 0;
+            usableCounter.put(hash, integer + 1);
+            if (usableCounter.get(hash) >= 10)
+                addToCache(hash, np);
         }
 
-        private static NetworkPackage createNewNetworkPackage(String message)
-        {
-            return  new NetworkPackage(message);
+        private static NetworkPackage createNewNetworkPackage(String message) {
+            return new NetworkPackage(message);
         }
 
-        private static NetworkPackage createNewNetworkPackage(String type, String data)
-        {
-            return  new NetworkPackage(type,data);
+        private static NetworkPackage createNewNetworkPackage(String type, String data) {
+            return new NetworkPackage(type, data);
         }
 
+    }
 
-
-
-
-
+    public static int getHash(String type, String data) {
+        return type.hashCode() | data.hashCode();
     }
 }

@@ -11,16 +11,20 @@ public class Notification {
     private String pack;
     private String ticker;
     private String id;
+    private String icon;
+    private String picture;
 
     public Notification() {
     }
 
-    public Notification(String text, String title, String pack, String ticker, String id) {
+    public Notification(String text, String title, String pack, String ticker, String id,String icon,String picture) {
         this.text = text;
         this.title = title;
         this.pack = pack;
         this.ticker = ticker;
         this.id = id;
+        this.icon = icon;  // if null, server will use standart's icon
+        this.picture = picture; // if null, don't show
     }
 
     public String getText() {
@@ -86,5 +90,21 @@ public class Notification {
         result = 31 * result + (ticker != null ? ticker.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

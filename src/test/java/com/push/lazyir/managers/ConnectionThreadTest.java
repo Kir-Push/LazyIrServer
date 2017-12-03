@@ -19,6 +19,12 @@ import static org.mockito.Mockito.when;
  */
 public class ConnectionThreadTest {
 
+    public static void main(String args[])
+    {
+        System.out.println(5/2);
+    }
+
+
 //
 //    private Socket socket;
 //    private TcpConnectionManager instanceForTest;

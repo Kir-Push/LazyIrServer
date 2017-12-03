@@ -39,6 +39,8 @@ public class SftpServerProcess implements Runnable{
         this.ip = ip;
         this.pass = pass;
         this.userName = userName;
+        //todo in android send info about all path, uncluding emolated/1 /2 and sd card path
+        // todo and here create folders with these path!
         this.mountPoint = "/storage/emulated/0";
         this.id = id;
         args = new ArrayList<>();
