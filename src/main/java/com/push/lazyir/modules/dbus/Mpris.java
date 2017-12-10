@@ -26,7 +26,7 @@ public class Mpris extends Module {
      static final String openUri = "openUri";
      static final String setPosition = "setPosition";
      static final String volume = "volume";
-     public static final String ALL_PLAYERS = "ALL_PLAYERS";
+     public static final String ALL_PLAYERS = "allPlayers";
 
      static final String[] getAllMpris = {"/bin/sh", "-c", DbusCommandFabric.getGetAll()};
 

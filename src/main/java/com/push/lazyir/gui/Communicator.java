@@ -115,7 +115,7 @@ public enum Communicator implements Runnable{
         {
             String id = cmdAnswr.getValue("id");
             ShowNotification module = (ShowNotification) Device.getConnectedDevices().get(id).getEnabledModules().get(ShowNotification.class.getSimpleName());
-            module.requestNotificationsFromDevice();
+            module.requestNotificationsFromDevice(id);
         }
         else if(data.equals("SmsAnswer"))
         {

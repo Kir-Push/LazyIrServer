@@ -5,6 +5,7 @@ import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.gui.GuiCommunicator;
+import com.push.lazyir.modules.notifications.Notification;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
@@ -26,7 +27,10 @@ import javafx.scene.text.Text;
 import javafx.stage.StageStyle;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 
@@ -153,7 +157,7 @@ public class MainController {
                     ImageView delete48 = new ImageView( GuiUtils.getImage("delete48",15,15));
                     delete48.setPreserveRatio(true);
                     button.setGraphic(delete48);
-                    button.setOnAction(event -> GuiCommunicator.removeNotification(personList.getSelectionModel().getSelectedIndex(), item.getId()));
+                    button.setOnAction(event -> GuiCommunicator.removeNotification(personList.getSelectionModel().getSelectedItem().getId(), item.getId()));
 
                     // https://stackoverflow.com/questions/32553658/about-javafx-need-to-align-a-node-that-is-inside-a-listview-to-the-far-right
                     GridPane listCellContents = new GridPane();
@@ -205,7 +209,11 @@ public class MainController {
     }
 
     public void openSmsDialog(NotificationDevice item, String deviceId) {
-
+        try {
+            GuiCommunicator.show_notification("id",new Notification("У вас пять неотвеченных сообщений: \n Бля ну где ты есть ёмаё","sms","Новое сообщение(5)","java","huj","mabva",new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/jaja"))),new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/kote")))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

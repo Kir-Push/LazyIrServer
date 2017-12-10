@@ -4,6 +4,7 @@ import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.service.BackgroundService;
@@ -18,8 +19,11 @@ public class ShowNotification extends Module {
     public static final String SHOW_NOTIFICATION = "ShowNotification";
     public static final String RECEIVE_NOTIFICATION = "receiveNotification";
     public static final String NOTIFICATION_CLASS = "notificationClass";
+    public static final String REMOVE_NOTIFICATION = "removeNotification";
     public static final String CALL = "com.android.call";
     public static final String ENDCALL = "com.android.endCall";
+    public static final String ALL_NOTIFS = "ALL NOTIFS";
+    public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
     private static volatile boolean CALLING = false;
 
     private Lock lock =new ReentrantLock();
@@ -31,11 +35,11 @@ public class ShowNotification extends Module {
                             if (RECEIVE_NOTIFICATION.equals(data)) {
                                 Communicator.getInstance().sendToOut(np.getMessage());
                             }
-                            else if("ALL NOTIFS".equals(data))
+                            else if(ALL_NOTIFS.equals(data))
                             {
                                 Notifications notifications = np.getObject(NetworkPackage.N_OBJECT, Notifications.class);
                                 if(notifications.getNotifications().size() > 0)
-                                sendNotifsToOut(notifications);
+                                    GuiCommunicator.receive_notifications(device.getId(),notifications.getNotifications());
                             }
                             else if(CALL.equals(data))
                             {
@@ -81,8 +85,13 @@ public class ShowNotification extends Module {
     }
 
 
-    public void requestNotificationsFromDevice() {
-        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION,"ALL NOTIFS");
-        BackgroundService.getTcp().sendCommandToServer(device.getId(),np.getMessage());
+    public static void requestNotificationsFromDevice(String id) {
+        BackgroundService.sendToDevice(id,  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION,ALL_NOTIFS).getMessage());
+    }
+
+    public static void sendRemoveNotification(String ownerId, String notificationId) {
+        NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION, REMOVE_NOTIFICATION);
+        np.setValue(NOTIFICATION_ID,notificationId);
+        BackgroundService.sendToDevice(ownerId,np.getMessage());
     }
 }

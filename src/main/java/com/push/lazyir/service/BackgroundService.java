@@ -90,4 +90,7 @@ public class BackgroundService {
         this.tcp = tcp;
     }
 
+    public static void sendToDevice(String id, String msg) {
+        // todo something like android version
+    }
 }
