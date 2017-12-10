@@ -25,6 +25,7 @@ public class Device {
     private String id;
     private String name;
     private InetAddress ip;
+    private String deviceType;
     private volatile boolean paired;
     private volatile boolean listening;
     private volatile boolean pinging;
@@ -40,6 +41,7 @@ public class Device {
         this.listening = true;
         this.pinging = false;
         this.answer = false;
+        this.deviceType = "phone";
         for (Class registeredModule : ModuleFactory.getRegisteredModules()) {
             enabledMdules.put(registeredModule.getSimpleName(), ModuleFactory.instantiateModule(this,registeredModule));
         }
@@ -135,4 +137,11 @@ public class Device {
         return enabledMdules;
     }
 
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
 }

@@ -1,5 +1,9 @@
 package com.push.gui.systray;
 
+import com.push.gui.basew.MainWin;
+import com.push.gui.controllers.MainController;
+import com.push.gui.entity.PhoneDevice;
+import com.push.lazyir.gui.GuiCommunicator;
 import javafx.application.*;
 import javafx.geometry.Pos;
 import javafx.scene.*;
@@ -14,6 +18,7 @@ import java.net.URL;
 import java.text.*;
 import java.util.*;
 
+import static java.awt.Image.SCALE_AREA_AVERAGING;
 import static javafx.stage.StageStyle.UTILITY;
 
 // Java 8 code
@@ -21,11 +26,12 @@ public class JavaFXTrayIconSample extends Application {
 
     // one icon location is shared between the application tray icon and task bar icon.
     // you could also use multiple icons to allow for clean display of tray icons on hi-dpi devices.
-    private static final String iconImageLoc =
-            "http://icons.iconarchive.com/icons/scafer31000/bubble-circle-3/16/GameCenter-icon.png";
+    private static final String iconImageLoc = null;
 
     // application stage is stored so that it can be shown and hidden based on system tray icon operations.
     private Stage stage;
+
+    private  MainWin mainWin;
 
     // a timer allowing the tray icon to provide a periodic notification event.
     private Timer notificationTimer = new Timer();
@@ -44,47 +50,21 @@ public class JavaFXTrayIconSample extends Application {
         Platform.setImplicitExit(false);
 
         // sets up the tray icon (using awt code run on the swing thread).
-        javax.swing.SwingUtilities.invokeLater(this::addAppToTray);
+      //  javax.swing.SwingUtilities.invokeLater(this::addAppToTray);
+        addAppToTray();
 
-        // out stage will be translucent, so give it a transparent style.
-        stage.initStyle(StageStyle.UNDECORATED);
-     //   stage.initStyle(UTILITY);
+        mainWin = new MainWin();
+        try {
+            mainWin.start(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ;
 
-        // create the layout for the javafx stage.
-        StackPane layout = new StackPane(createContent());
-        layout.setStyle(
-                "-fx-background-color: rgba(255, 255, 255, 0.5);"
-        );
-        layout.setPrefSize(300, 200);
-
-        // this dummy app just hides itself when the app screen is clicked.
-        // a real app might have some interactive UI and a separate icon which hides the app window.
-        layout.setOnMouseClicked(event -> stage.hide());
-
-        // a scene with a transparent fill is necessary to implement the translucent app window.
-        Scene scene = new Scene(layout);
-        scene.setFill(Color.TRANSPARENT);
-
-        stage.setScene(scene);
+       // stage.setScene(scene);
     }
 
-    /**
-     * For this dummy app, the (JavaFX scenegraph) content, just says "hello, world".
-     * A real app, might load an FXML or something like that.
-     *
-     * @return the main window application content.
-     */
-    private Node createContent() {
-        Label hello = new Label("hello, world");
-        hello.setStyle("-fx-font-size: 40px; -fx-text-fill: forestgreen;");
-        Label instructions = new Label("(click to hide)");
-        instructions.setStyle("-fx-font-size: 12px; -fx-text-fill: orange;");
 
-        VBox content = new VBox(10, hello, instructions);
-        content.setAlignment(Pos.CENTER);
-
-        return content;
-    }
 
     /**
      * Sets up a system tray icon for the application.
@@ -102,18 +82,19 @@ public class JavaFXTrayIconSample extends Application {
 
             // set up a system tray icon.
             java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
-            URL imageLoc = new URL(
-                    iconImageLoc
-            );
-            java.awt.Image image = ImageIO.read(imageLoc);
-            java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image);
+//            URL imageLoc = new URL(
+//                    iconImageLoc
+//            );
+            java.awt.Image image = ImageIO.read(JavaFXTrayIconSample.class.getClassLoader().getResource("icons/callPhone.png"));
+            java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image.getScaledInstance(27,27,SCALE_AREA_AVERAGING));
+            trayIcon.setImageAutoSize(true);
 
             // if the user double-clicks on the tray icon, show the main app stage.
             trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
 
             // if the user selects the default menu item (which includes the app name), 
             // show the main app stage.
-            java.awt.MenuItem openItem = new java.awt.MenuItem("hello, world");
+            java.awt.MenuItem openItem = new java.awt.MenuItem("Open");
             openItem.addActionListener(event -> Platform.runLater(this::showStage));
 
             // the convention for tray icons seems to be to set the default icon for opening
@@ -139,24 +120,6 @@ public class JavaFXTrayIconSample extends Application {
             popup.add(exitItem);
             trayIcon.setPopupMenu(popup);
 
-            // create a timer which periodically displays a notification message.
-            notificationTimer.schedule(
-                    new TimerTask() {
-                        @Override
-                        public void run() {
-                            javax.swing.SwingUtilities.invokeLater(() ->
-                                    trayIcon.displayMessage(
-                                            "hello",
-                                            "The time is now " + timeFormat.format(new Date()),
-                                            java.awt.TrayIcon.MessageType.INFO
-                                    )
-                            );
-                        }
-                    },
-                    5_000,
-                    60_000
-            );
-
             // add the application tray icon to the system tray.
             tray.add(trayIcon);
         } catch (java.awt.AWTException | IOException e) {
@@ -172,6 +135,12 @@ public class JavaFXTrayIconSample extends Application {
         if (stage != null) {
             stage.show();
             stage.toFront();
+            int selectedIndex = mainWin.getController().getPersonList().getSelectionModel().getSelectedIndex();
+            if(mainWin.getConnectedDevices().size() <= selectedIndex || selectedIndex == -1)
+            mainWin.getController().getPersonList().getSelectionModel().select(0);
+            PhoneDevice selectedItem = mainWin.getController().getPersonList().getSelectionModel().getSelectedItem();
+            if(selectedItem != null)
+            GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
         }
     }
 

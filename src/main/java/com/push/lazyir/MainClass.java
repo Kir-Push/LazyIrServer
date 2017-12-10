@@ -24,7 +24,8 @@ public class MainClass {
             @Override
             public void run() {
                Loggout.e("Closing Process quit signal","Pitajusj");
-                Communicator.tryToEraseAllResource();
+              //  Communicator.tryToEraseAllResource();
+                System.exit(1);
             }
         });
         timerService.setRemoveOnCancelPolicy(true);

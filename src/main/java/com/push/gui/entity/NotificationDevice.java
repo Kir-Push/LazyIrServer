@@ -1,5 +1,6 @@
 package com.push.gui.entity;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -11,12 +12,26 @@ public class NotificationDevice {
     private StringProperty pack;
     private StringProperty ticker;
     private StringProperty id;
+    private StringProperty type;
     private StringProperty icon;
     private StringProperty picture;
     private StringProperty ownerId;
 
     public NotificationDevice(String text, String title, String pack, String ticker, String id, String icon, String picture) {
         this.text = new SimpleStringProperty(text);
+        // обычное - не sms и messenger уведомление
+        this.type = new SimpleStringProperty("notification");
+        this.title = new SimpleStringProperty(title);
+        this.pack = new SimpleStringProperty(pack);
+        this.ticker = new SimpleStringProperty(ticker);
+        this.id = new SimpleStringProperty(id);
+        this.icon = new SimpleStringProperty(icon);
+        this.picture = new SimpleStringProperty(picture);
+    }
+
+    public NotificationDevice(String text,String type, String title, String pack, String ticker, String id, String icon, String picture) {
+        this.text = new SimpleStringProperty(text);
+        this.type = new SimpleStringProperty(type);
         this.title = new SimpleStringProperty(title);
         this.pack = new SimpleStringProperty(pack);
         this.ticker = new SimpleStringProperty(ticker);
@@ -114,4 +129,11 @@ public class NotificationDevice {
     public StringProperty ownerIdProperty() { return ownerId; }
 
     public void setOwnerId(String ownerId) { this.ownerId.set(ownerId); }
+
+
+    public String getType() { return type.get(); }
+
+    public StringProperty typeProperty() { return type; }
+
+    public void setType(String type) { this.type.set(type); }
 }

@@ -1,6 +1,7 @@
 package com.push.gui.entity;
 
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class PhoneDevice {
@@ -12,6 +13,7 @@ public class PhoneDevice {
     private BooleanProperty charging;
     private BooleanProperty paired;
     private BooleanProperty mounted;
+    private LongProperty freeSpace; // todo
     private ListProperty<String> enabledModules;
     private ListProperty<NotificationDevice> notifications;
 
@@ -23,6 +25,7 @@ public class PhoneDevice {
         this.charging = new SimpleBooleanProperty(charging);
         this.paired =  new SimpleBooleanProperty(paired);
         this.mounted =  new SimpleBooleanProperty(mounted);
+        this.notifications = new SimpleListProperty<>(FXCollections.observableArrayList());
     }
 
     public String getId() {
