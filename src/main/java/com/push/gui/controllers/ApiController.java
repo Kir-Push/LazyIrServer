@@ -1,6 +1,7 @@
 package com.push.gui.controllers;
 
 import com.push.gui.basew.MainWin;
+import com.push.gui.basew.Popup;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.gui.utils.GuiUtils;
@@ -101,39 +102,7 @@ public class ApiController {
      return   mainController.getMainApp().getConnectedDevices().stream().filter(device -> device.getId().equals(id)).findFirst().get();
     }
 
-    public void showNotification(String id, Notification notification) {
-        Platform.runLater(()->{
-            GridPane listCellContents = new GridPane();
-            listCellContents.setHgap(10);
-            if(notification.getIcon() != null && notification.getIcon().length() > 1)
-            listCellContents.add(new ImageView(GuiUtils.pictureFromBase64(notification.getIcon(),40,40)),0,0);
-
-            VBox vBox = new VBox();
-            Text title = new Text();
-            title.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
-            title.setText(notification.getTitle()+"\n");
-            Text text = new Text();
-            text.setText(notification.getText());
-            vBox.getChildren().addAll(title, text);
-            vBox.setAlignment(Pos.TOP_LEFT);
-            listCellContents.add(vBox,1,0);
-
-            ColumnConstraints leftCol = new ColumnConstraints();
-            ColumnConstraints centerCol = new ColumnConstraints();
-            ColumnConstraints rightCol = new ColumnConstraints();
-
-            if(notification.getPicture() != null && notification.getPicture().length() > 1)
-           listCellContents.add(new ImageView(GuiUtils.pictureFromBase64(notification.getPicture(),120,120)),2,0);
-            rightCol.setHalignment(HPos.RIGHT);
-            rightCol.setHgrow(Priority.ALWAYS);
-            centerCol.setHalignment(HPos.CENTER);
-            centerCol.setHgrow(Priority.ALWAYS);
-            listCellContents.getColumnConstraints().addAll(leftCol,centerCol,rightCol);
-            listCellContents.setMinHeight(100);
-            listCellContents.setAlignment(Pos.CENTER);
-            Notifications.create().text("").title("")
-                    .graphic(listCellContents)
-                    .show();
-        });
+    public void showNotification(String id, NotificationDevice notification) {
+        Popup.show(id,notification,mainController);
     }
 }

@@ -191,6 +191,8 @@ public class MainController {
                             answer.setOnAction(event -> openSmsDialog(item,selectedDevice.getId()));
                         else if(item.getType().equals("messenger"))
                             answer.setOnAction(event -> openMessengerDialog(item,selectedDevice.getId()));
+                        else if(item.getType().equals("call"))
+                            answer.setOnAction(event -> recall(item,selectedDevice.getId()));
                         listCellContents.add(answer,3,0);
                     }
                     listCellContents.add(button,4,0);
@@ -205,7 +207,13 @@ public class MainController {
         notifTList.setItems(mainApp.getNotificationsList());
     }
 
+    private void recall(NotificationDevice item, String id) {
+
+    }
+
     public void openMessengerDialog(NotificationDevice item, String deviceId) {
+
+        System.out.println("da");
     }
 
     public void openSmsDialog(NotificationDevice item, String deviceId) {

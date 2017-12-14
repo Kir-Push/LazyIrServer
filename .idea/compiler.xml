@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="9">
-      <module name="LazyIrServer" target="1.9" />
+      <module name="LazyIrServer" target="9" />
     </bytecodeTargetLevel>
   </component>
 </project>

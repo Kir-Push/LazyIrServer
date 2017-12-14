@@ -69,6 +69,6 @@ public class GuiCommunicator {
         NotificationDevice notificationDevice = new NotificationDevice(notification.getText(), notification.getType(),
                 notification.getTitle(), notification.getPack(), notification.getTicker(),
                 notification.getId(), notification.getIcon(), notification.getPicture());
-        ApiController.getInstance().showNotification(id,notification);
+        ApiController.getInstance().showNotification(id,notificationDevice);
     }
 }

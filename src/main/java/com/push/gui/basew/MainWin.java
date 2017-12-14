@@ -81,7 +81,7 @@ public class MainWin  {
             ApiController.setMainController(controller);
             // Тут не вызывает show stage потомучто мы будем вызывать из systray класса.
             PhoneDevice phone = new PhoneDevice("lg-d855", "lg-d855", "phone", 5, false, true, false);
-            phone.setNotifications(FXCollections.observableArrayList(new NotificationDevice("dadadadadadadadadadadadadaAgasj","sms","aga","java","huj","mabva",new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/jaja"))),new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/kote")))),new NotificationDevice("samka","sms","da","java","huj","mabva",null,null)));
+            phone.setNotifications(FXCollections.observableArrayList(new NotificationDevice("dadadadadadadadadadadadadaAgasj","sms","aga","java","huj","mabva",new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/jaja"))),new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/kote")))),new NotificationDevice("samka","notification","da","java","huj","mabva",null,null)));
             connectedDevices.add(phone);
             connectedDevices.add(new PhoneDevice("lg-d8552","lg-d8552","phone",75,false,false,false));
             connectedDevices.add(new PhoneDevice("lg-d85522","lg-d8552","phone",25,true,false,false));
