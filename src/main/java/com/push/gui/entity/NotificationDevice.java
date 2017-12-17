@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class NotificationDevice {
-
     private StringProperty text;
     private StringProperty title;
     private StringProperty pack;
@@ -136,4 +135,19 @@ public class NotificationDevice {
     public StringProperty typeProperty() { return type; }
 
     public void setType(String type) { this.type.set(type); }
+
+    @Override
+    public String toString() {
+        return "NotificationDevice{" +
+                "text=" + text +
+                ", title=" + title +
+                ", pack=" + pack +
+                ", ticker=" + ticker +
+                ", id=" + id +
+                ", type=" + type +
+                ", icon=" + icon +
+                ", picture=" + picture +
+                ", ownerId=" + ownerId +
+                '}';
+    }
 }

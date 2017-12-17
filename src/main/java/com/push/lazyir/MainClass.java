@@ -1,11 +1,14 @@
 package com.push.lazyir;
 
+import com.push.gui.basew.MainWin;
+import com.push.gui.systray.JavaFXTrayIconSample;
 import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.managers.settings.SettingManager;
 import com.push.lazyir.managers.tcp.TcpConnectionManager;
 import com.push.lazyir.managers.udp.UdpBroadcastManager;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
+import java.awt.*;
 import java.io.*;
 import java.util.concurrent.*;
 
@@ -20,28 +23,28 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException { // main entry where started input output listening com.push.lazyir.gui & ipc thread and main thread;!
 
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-               Loggout.e("Closing Process quit signal","Pitajusj");
-              //  Communicator.tryToEraseAllResource();
-                System.exit(1);
-            }
-        });
+//        Runtime.getRuntime().addShutdownHook(new Thread(){
+//            @Override
+//            public void run() {
+//                executorService.shutdownNow();
+//                timerService.shutdownNow();
+//             //  Loggout.e("Closing Process quit signal","Pitajusj");
+//                System.exit(1);
+//            }
+//        });
         timerService.setRemoveOnCancelPolicy(true);
         timerService.setKeepAliveTime(10, TimeUnit.SECONDS);
         timerService.allowCoreThreadTimeOut(true);
-       // executorService.submit(Communicator::getInstance);
         ((ThreadPoolExecutor)executorService).setKeepAliveTime(10,TimeUnit.SECONDS);
         ((ThreadPoolExecutor)executorService).allowCoreThreadTimeOut(true);
-        executorService.submit(Communicator.INSTANCE);
-     //   new Thread(Communicator.INSTANCE).start();
+
         getInstance().setSettingManager(new SettingManager());
         getInstance().setTcp(new TcpConnectionManager());
         getInstance().setUdp(new UdpBroadcastManager());
         getInstance().startTcpListening();
         getInstance().startUdpListening();
         getInstance().connectCached();
+
     }
 
     public static boolean isWindows() {

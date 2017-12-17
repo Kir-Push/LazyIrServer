@@ -91,6 +91,7 @@ public class BackgroundService {
     }
 
     public static void sendToDevice(String id, String msg) {
+        getTcp().sendCommandToServer(id,msg);
         // todo something like android version
     }
 }

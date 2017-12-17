@@ -3,6 +3,7 @@ package com.push.lazyir.modules.battery;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 
 import java.awt.*;
@@ -21,7 +22,7 @@ public class Battery extends Module {
         String id = np.getId();
         String percenstage = np.getValue(PERCENTAGE);
         String status = np.getValue(STATUS);
-        Communicator.getInstance().batteryStatus(percenstage,status, Device.getConnectedDevices().get(id));
+        GuiCommunicator.batteryStatus(percenstage,status, device);
     }
 
     @Override

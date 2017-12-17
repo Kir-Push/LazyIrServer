@@ -55,7 +55,7 @@ public class ModuleFactory {
         registeredModules.add(SmsModule.class);
         registeredModules.add(Battery.class);
         registeredModules.add(Mpris.class);
-        registeredModules.add(ClipBoard.class);
+       // registeredModules.add(ClipBoard.class);
         registeredModules.add(Messengers.class);
         registeredModules.add(TouchControl.class);
     }

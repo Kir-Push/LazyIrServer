@@ -1,5 +1,6 @@
 package com.push.gui.controllers;
 
+import com.push.gui.basew.Dialogs;
 import com.push.gui.basew.MainWin;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
@@ -32,6 +33,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Objects;
 
 
 public class MainController {
@@ -86,54 +88,29 @@ public class MainController {
                     vBox.setId(item.getId());
                     vBox.getChildren().addAll(imageView,text);
                    setGraphic(vBox);
+                    PhoneDevice selectedItem = personList.getSelectionModel().getSelectedItem();
+
+                    if(selectedItem != null && item.getId().equals(selectedItem.getId())) {
+                        onSelectDevice(selectedItem);
+                    }
                 }
             }
         });
+
+        personList.setOnMouseClicked(event -> {
+            PhoneDevice selectedItem = personList.getSelectionModel().getSelectedItem();
+            if(selectedItem != null)
+            GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
+        });
+
+//        personList.getSelectionModel().selectedItemProperty().
         // при выборе устройства из списка присваиваем иконки и дейтсвия кнопкам в зависимости от состояния устройсва.
-        personList.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) ->{
-            if(newSelection != null){
-                VBox rootLayout = mainApp.getRootLayout();
-
-
-                ImageView batteryImg = (ImageView) rootLayout.lookup("#batteryImg");
-                batteryImg.setImage(GuiUtils.getImageByBattery(newSelection.getBattery(),newSelection.isCharging()));
-                Label batteryText = (Label) rootLayout.lookup("#batteryText");
-                batteryText.setText(newSelection.getBattery() + " %");
-
-
-                Button pairedBtn = (Button) rootLayout.lookup("#pairBtn");
-                if(newSelection.isPaired()){
-                    pairedBtn.setText("Unpair");
-                    pairedBtn.setOnAction(event -> GuiCommunicator.unPair(newSelection.getId()));
-                }else{
-                    pairedBtn.setText("Pair");
-                    pairedBtn.setOnAction(event -> GuiCommunicator.pair(newSelection.getId()));
-                }
-
-
-                Button reconnect = (Button) rootLayout.lookup("#reconnectBtn");
-                reconnect.setOnAction(event -> GuiCommunicator.reconnect(newSelection.getId()));
-
-
-                Button mount = (Button) rootLayout.lookup("#mountBtn");
-                if(newSelection.isMounted()){
-                    mount.setText("Unmount");
-                    mount.setOnAction(event -> GuiCommunicator.unMount(newSelection.getId()));
-                }else{
-                    mount.setText("Mount");
-                    mount.setOnAction(event -> GuiCommunicator.mount(newSelection.getId()));
-                }
-
-
-                Button ping = (Button) rootLayout.lookup("#pingBtn");
-                ping.setOnAction(event -> GuiCommunicator.ping(newSelection.getId()));
-
-                // присваиваем списку уведомление, список из текущего устройсва
-                mainApp.getNotificationsList().clear();
-                mainApp.getNotificationsList().addAll(newSelection.getNotifications());
-
-            }
-        });
+//        personList.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) ->{
+//            System.out.println("clicked");
+//            if(newSelection != null && oldSelection != null && !newSelection.getId().equals(oldSelection.getId())){
+//              GuiCommunicator.sendToGetAllNotif(newSelection.getId());
+//            }
+//        });
 
         notifTList.setCellFactory(notifTList -> new ListCell<>(){
 
@@ -187,8 +164,10 @@ public class MainController {
                         Button answer = new Button();
                         answer.setText("Answer");
                         PhoneDevice selectedDevice = personList.getSelectionModel().getSelectedItem();
-                        if(item.getType().equals("sms"))
-                            answer.setOnAction(event -> openSmsDialog(item,selectedDevice.getId()));
+                        if(item.getType().equals("sms")){
+//                            answer.setOnAction(event -> openSmsDialog(item,selectedDevice.getId()));
+                            //todo
+                            }
                         else if(item.getType().equals("messenger"))
                             answer.setOnAction(event -> openMessengerDialog(item,selectedDevice.getId()));
                         else if(item.getType().equals("call"))
@@ -207,21 +186,64 @@ public class MainController {
         notifTList.setItems(mainApp.getNotificationsList());
     }
 
+    private void onSelectDevice(PhoneDevice newSelection){
+        System.out.println("onSelectDevice " + newSelection.getId());
+        VBox rootLayout = mainApp.getRootLayout();
+
+        ImageView batteryImg = (ImageView) rootLayout.lookup("#batteryImg");
+        batteryImg.setImage(GuiUtils.getImageByBattery(newSelection.getBattery(),newSelection.isCharging()));
+        Label batteryText = (Label) rootLayout.lookup("#batteryText");
+        batteryText.setText(newSelection.getBattery() + " %");
+
+
+        Button pairedBtn = (Button) rootLayout.lookup("#pairBtn");
+        if(newSelection.isPaired()){
+            pairedBtn.setText("Unpair");
+            pairedBtn.setOnAction(event -> GuiCommunicator.unPair(newSelection.getId()));
+        }else{
+            pairedBtn.setText("Pair");
+            pairedBtn.setOnAction(event -> GuiCommunicator.pair(newSelection.getId()));
+        }
+
+
+        Button reconnect = (Button) rootLayout.lookup("#reconnectBtn");
+        reconnect.setOnAction(event -> GuiCommunicator.reconnect(newSelection.getId()));
+
+
+        Button mount = (Button) rootLayout.lookup("#mountBtn");
+        if(newSelection.isMounted()){
+            mount.setText("Unmount");
+            mount.setOnAction(event -> GuiCommunicator.unMount(newSelection.getId()));
+        }else{
+            mount.setText("Mount");
+            mount.setOnAction(event -> GuiCommunicator.mount(newSelection.getId()));
+        }
+
+
+        Button ping = (Button) rootLayout.lookup("#pingBtn");
+        ping.setOnAction(event -> GuiCommunicator.ping(newSelection.getId()));
+
+        // присваиваем списку уведомление, список из текущего устройсва
+        mainApp.getNotificationsList().clear();
+        mainApp.getNotificationsList().addAll(newSelection.getNotifications());
+    }
+
     private void recall(NotificationDevice item, String id) {
 
     }
 
     public void openMessengerDialog(NotificationDevice item, String deviceId) {
 
-        System.out.println("da");
+        System.out.println("openMessengerDialog");
     }
 
     public void openSmsDialog(NotificationDevice item, String deviceId) {
-        try {
-            GuiCommunicator.show_notification("id",new Notification("У вас пять неотвеченных сообщений: \n Бля ну где ты есть ёмаё","sms","Новое сообщение(5)","java","huj","mabva",new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/jaja"))),new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/kote")))));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Dialogs().showAnswerMessenger(deviceId,item,this);
+//        try {
+//            GuiCommunicator.show_notification("id",new Notification("У вас пять неотвеченных сообщений: \n Бля ну где ты есть ёмаё","messenger","Новое сообщение(5)","java","huj","mabva",new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/jaja"))),new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/kote")))));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @FXML

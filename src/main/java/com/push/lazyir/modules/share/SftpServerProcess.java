@@ -3,6 +3,7 @@ package com.push.lazyir.modules.share;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.MainClass;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.gui.GuiCommunicator;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -129,7 +130,7 @@ public class SftpServerProcess implements Runnable{
                     running = false; //todo some stop
                 }
             }
-        Communicator.getInstance().sftpConnectResult(running,id);
+        GuiCommunicator.sftpConnectResult(running,id);
     }
 
     private String connect() throws IOException,InterruptedException {

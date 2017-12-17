@@ -3,6 +3,7 @@ package com.push.lazyir.managers.tcp;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.pojo.Command;
 import com.push.lazyir.devices.Device;
@@ -102,7 +103,7 @@ public class TcpConnectionManager {
                 firstTryPort++;
                 if(firstTryPort >= 5777)
                 {
-                    Communicator.getInstance().iamCrushed();
+                    GuiCommunicator.iamCrushed();
                     System.exit(-1);
                 }
                 trying = false; // for testing purposes /todo
@@ -167,7 +168,7 @@ public class TcpConnectionManager {
     }
 
     void reguestPair(NetworkPackage np) {
-            Communicator.getInstance().requestPair(np);
+           GuiCommunicator.requestPair(np);
     }
 
     public void requestPairDevice(String id)
@@ -194,7 +195,7 @@ public class TcpConnectionManager {
         sendCommandToServer(id, NetworkPackage.Cacher.getOrCreatePackage(TCP_UNPAIR,TCP_UNPAIR).getMessage());
         Device.getConnectedDevices().get(id).setPaired(false);
         BackgroundService.getSettingManager().delete(id);
-        Communicator.getInstance().devicePaired(id,false);
+        GuiCommunicator.devicePaired(id,false);
     }
 
 
@@ -206,14 +207,14 @@ public class TcpConnectionManager {
             BackgroundService.getSettingManager().saveValue(id,np.getData());
             Device.getConnectedDevices().get(id).setPaired(true);
             sendPairResult(id,OK);
-            Communicator.getInstance().devicePaired(id,true);
+            GuiCommunicator.devicePaired(id,true);
         }
         else
         {
             Device.getConnectedDevices().get(id).setPaired(false);
             BackgroundService.getSettingManager().delete(id);
             sendPairResult(id,REFUSE);
-            Communicator.getInstance().devicePaired(id,false);
+            GuiCommunicator.devicePaired(id,false);
         }
     }
 

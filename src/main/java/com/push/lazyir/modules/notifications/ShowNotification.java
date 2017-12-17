@@ -9,6 +9,7 @@ import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.service.BackgroundService;
 
+import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -33,13 +34,19 @@ public class ShowNotification extends Module {
         String data = np.getData();
         try {
                             if (RECEIVE_NOTIFICATION.equals(data)) {
-                                Communicator.getInstance().sendToOut(np.getMessage());
+                                Notification not = np.getObject(NetworkPackage.N_OBJECT, Notification.class);
+                                GuiCommunicator.show_notification(device.getId(),not);
                             }
                             else if(ALL_NOTIFS.equals(data))
                             {
                                 Notifications notifications = np.getObject(NetworkPackage.N_OBJECT, Notifications.class);
-                                if(notifications.getNotifications().size() > 0)
-                                    GuiCommunicator.receive_notifications(device.getId(),notifications.getNotifications());
+                                if(notifications.getNotifications().size() > 0) {
+                                    notifications.getNotifications().forEach(notification -> notification.setType("notification"));
+                                    GuiCommunicator.receive_notifications(device.getId(), notifications.getNotifications());
+                                }
+                                else{
+                                    GuiCommunicator.receive_notifications(device.getId(), new ArrayList<>());
+                                }
                             }
                             else if(CALL.equals(data))
                             {
@@ -51,7 +58,7 @@ public class ShowNotification extends Module {
                                     }
                                     CALLING = true;
                                 }
-                                Communicator.getInstance().sendToOut(np.getMessage());
+                                GuiCommunicator.call_Notif(np);
                             }
                             else if(CALLING && ENDCALL.equals(data))
                             {
@@ -77,12 +84,12 @@ public class ShowNotification extends Module {
     }
 
 
-    public void sendNotifsToOut(Notifications allNotifications)
-    {
-        NetworkPackage toOut =  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION, "NOTIF TO ID");
-        toOut.setObject(NetworkPackage.N_OBJECT, allNotifications);
-        Communicator.getInstance().sendToOut(toOut.getMessage());
-    }
+//    public void sendNotifsToOut(Notifications allNotifications)
+//    {
+//        NetworkPackage toOut =  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION, "NOTIF TO ID");
+//        toOut.setObject(NetworkPackage.N_OBJECT, allNotifications);
+//        Communicator.getInstance().sendToOut(toOut.getMessage());
+//    }
 
 
     public static void requestNotificationsFromDevice(String id) {

@@ -25,8 +25,11 @@ import javafx.scene.text.Text;
 import org.controlsfx.control.Notifications;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+// Class wich actually update gui
 public class ApiController {
 
     private static MainController mainController;
@@ -53,13 +56,14 @@ public class ApiController {
     }
 
     public void deviceDisconnected(String id){
-        PhoneDevice deviceById = getDeviceById(id);
-        Platform.runLater(() -> mainController.getMainApp().getConnectedDevices().remove(deviceById));
+        Platform.runLater(
+                () -> {  PhoneDevice deviceById = getDeviceById(id);
+                        mainController.getMainApp().getConnectedDevices().remove(deviceById);});
     }
 
     public void setBatteryStatus(String id,int battery,boolean charging){
-        PhoneDevice deviceById = getDeviceById(id);
        Platform.runLater(()-> {
+           PhoneDevice deviceById = getDeviceById(id);
            deviceById.setBattery(battery);
            deviceById.setCharging(charging);
            refreshSelection(id);
@@ -67,24 +71,24 @@ public class ApiController {
     }
 
     public void setDevicePaired(String id,boolean paired){
-        PhoneDevice deviceById = getDeviceById(id);
         Platform.runLater(()->{
+            PhoneDevice deviceById = getDeviceById(id);
             deviceById.setPaired(paired);
             refreshSelection(id);
         });
     }
 
     public void setDeviceMounted(String id,boolean mounted){
-        PhoneDevice deviceById = getDeviceById(id);
         Platform.runLater(()->{
+            PhoneDevice deviceById = getDeviceById(id);
             deviceById.setPaired(mounted);
             refreshSelection(id);
         });
     }
 
     public void setDeviceNotifications(String id, List<NotificationDevice> notifications){
-        PhoneDevice deviceById = getDeviceById(id);
         Platform.runLater(()->{
+            PhoneDevice deviceById = getDeviceById(id);
             deviceById.setNotifications(FXCollections.observableArrayList(notifications));
             refreshSelection(id);
         });
@@ -92,17 +96,18 @@ public class ApiController {
 
     private void refreshSelection(String id){
         int selectedIndex = mainController.getPersonList().getSelectionModel().getSelectedIndex();
-        if(mainController.getPersonList().getSelectionModel().getSelectedItem().getId().equals(id)){
-            mainController.getPersonList().getSelectionModel().clearSelection(selectedIndex);
-            mainController.getPersonList().getSelectionModel().select(selectedIndex);
-        }
+        System.out.println("refresh");
+        mainController.getPersonList().getSelectionModel().select(-1);
+        mainController.getPersonList().getSelectionModel().select(selectedIndex);
     }
 
     private PhoneDevice getDeviceById(String id){
-     return   mainController.getMainApp().getConnectedDevices().stream().filter(device -> device.getId().equals(id)).findFirst().get();
+        Optional<PhoneDevice> first = mainController.getMainApp().getConnectedDevices().stream().filter(device -> device.getId().equals(id)).findFirst();
+        return first.orElse(null);
     }
 
     public void showNotification(String id, NotificationDevice notification) {
         Popup.show(id,notification,mainController);
     }
+
 }

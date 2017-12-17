@@ -9,20 +9,20 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.AnswerWindow">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
    <children>
       <VBox layoutY="2.0" prefHeight="402.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox prefHeight="146.0" prefWidth="600.0">
                <children>
-                  <TextArea prefHeight="167.0" prefWidth="605.0" />
-                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                  <TextArea id="messageText" prefHeight="167.0" prefWidth="605.0" />
+                  <ImageView id="messageImg" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </HBox>
-            <TextArea prefHeight="259.0" prefWidth="600.0" promptText="                                                       DROP FILE HERE" />
-            <ButtonBar prefHeight="40.0" prefWidth="200.0">
+            <TextArea id="answerText" prefHeight="259.0" prefWidth="600.0" promptText="                                                       DROP FILE HERE" />
+            <ButtonBar id="buttonBar" prefHeight="40.0" prefWidth="200.0">
               <buttons>
-                <Button mnemonicParsing="false" text="Answer" />
+                <Button id="answerBtn" mnemonicParsing="false" text="Answer" />
               </buttons>
             </ButtonBar>
          </children>

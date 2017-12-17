@@ -3,6 +3,7 @@ package com.push.gui.systray;
 import com.push.gui.basew.MainWin;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.PhoneDevice;
+import com.push.lazyir.MainClass;
 import com.push.lazyir.gui.GuiCommunicator;
 import javafx.application.*;
 import javafx.geometry.Pos;
@@ -59,7 +60,13 @@ public class JavaFXTrayIconSample extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ;
+        new Thread(() -> {
+            try {
+                MainClass.main(null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
 
        // stage.setScene(scene);
     }
@@ -110,6 +117,7 @@ public class JavaFXTrayIconSample extends Application {
             exitItem.addActionListener(event -> {
                 notificationTimer.cancel();
                 Platform.exit();
+                System.exit(0);
                 tray.remove(trayIcon);
             });
 
@@ -149,5 +157,6 @@ public class JavaFXTrayIconSample extends Application {
         // Due to way the application is coded, the application will remain running
         // until the user selects the Exit menu option from the tray icon.
         launch(args);
+
     }
 }

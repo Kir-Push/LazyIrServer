@@ -3,6 +3,7 @@ package com.push.lazyir.modules.notifications;
 
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
 
@@ -13,7 +14,7 @@ import com.push.lazyir.service.BackgroundService;
 // todo big message (consist of two or more sms one time) showing only first message, fix it,
 public class SmsModule extends Module {
 
-    private static final String SMS_TYPE = "SmsModule";
+    public static final String SMS_TYPE = "SmsModule";
     private static final String SEND = "send";
     public static final String RECEIVE = "receive";
     private static final String RESPONSE = "response";
@@ -22,7 +23,8 @@ public class SmsModule extends Module {
     public void execute(NetworkPackage np) {
         if(np.getData().equals(RECEIVE))
         {
-            Communicator.getInstance().sendToOut(np.getMessage());
+            Sms sms = np.getObject(NetworkPackage.N_OBJECT, Sms.class);
+            GuiCommunicator.show_sms(device.getId(),sms);
         }
     }
 
@@ -31,7 +33,7 @@ public class SmsModule extends Module {
 
     }
 
-    public void send_sms(String name,String text,String dvId) {
+    public static void send_sms(String name,String text,String dvId) {
         NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SMS_TYPE,SEND);
         Sms message = new Sms(name,text,null,null); // todo image
         np.setObject(NetworkPackage.N_OBJECT,message);

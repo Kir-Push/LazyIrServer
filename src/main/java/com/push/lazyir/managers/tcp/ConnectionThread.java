@@ -4,6 +4,7 @@ import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
 
@@ -148,10 +149,10 @@ public class ConnectionThread implements Runnable {
                 }
                 ping();
                 pingCheck();
-                Communicator.getInstance().newDeviceFound(device);
+                GuiCommunicator.newDeviceConnected(device);
                 if(device.isPaired())
                 {
-                    Communicator.getInstance().devicePaired(deviceId,true);
+                    GuiCommunicator.devicePaired(deviceId,true);
                 }
         }
 
@@ -160,7 +161,7 @@ public class ConnectionThread implements Runnable {
         {
             Device.getConnectedDevices().get(deviceId).setPaired(false);
             BackgroundService.getSettingManager().delete(deviceId);
-            Communicator.getInstance().devicePaired(deviceId,false);
+            GuiCommunicator.devicePaired(deviceId,false);
         }
 
         private void pair(NetworkPackage np)
@@ -240,7 +241,7 @@ public class ConnectionThread implements Runnable {
             }
             Device.getConnectedDevices().get(deviceId).getEnabledModules().values().forEach(module ->  module.endWork()); // todo something here nullpointer exception!
             Device.getConnectedDevices().remove(deviceId);
-            Communicator.getInstance().deviceLost(deviceId);
+            GuiCommunicator.deviceLost(deviceId);
             // calling after because can throw exception and remove from hashmap won't be done
             in.close();
             out.close();

@@ -64,20 +64,13 @@ public interface Popup {
                 .position(bottomRight)
                 .hideAfter(Duration.seconds(20));
         String type = notification.getType();
-        if (type.equals("sms") || type.equals("messenger")) {
-//            Button reply = new Button("Reply");
-//            reply.setOnAction(action -> mainController.openMessengerDialog(notification,id));
-//            listCellContents.add(reply,3,0);
-            Action reply = new Action("Reply");
-            reply = new Action(consumer->{
-                System.out.println("da");
+        if (type.equals("messenger") || type.equals("sms")) {
+            Action reply = new Action(consumer->{
                 GuiUtils.hideNotif(notif,bottomRight);
-                consumer.getSource();
+                new Dialogs().showAnswerMessenger(id,notification,mainController);
             });
             reply.setText("Reply");
             notif.action(reply);
-
-
         }
 
             Platform.runLater(() -> notif.show());

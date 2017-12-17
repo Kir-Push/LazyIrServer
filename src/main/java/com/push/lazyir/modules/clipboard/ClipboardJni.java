@@ -1,5 +1,6 @@
 package com.push.lazyir.modules.clipboard;
 
+import com.push.gui.basew.MainWin;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.MainClass;
 import com.push.lazyir.devices.NetworkPackage;
@@ -24,9 +25,9 @@ public class ClipboardJni {
 
     public ClipboardJni() {
         try {
-            System.out.println(new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard.so");;
+            System.out.println(new File(MainWin.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard.so");;
           if(  MainClass.isUnix())
-            System.load(new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard.so");
+            System.load(new File(MainWin.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard.so");
             else if(MainClass.isWindows())
           {
               //todo // System.load(new File(MainClass.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard.dll");

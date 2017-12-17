@@ -2,6 +2,7 @@ package com.push.lazyir.modules.notifications;
 
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
 
@@ -14,7 +15,8 @@ public class Messengers extends Module {
     public void execute(NetworkPackage np) {
         if(np.getData().equals(ANSWER))
         {
-            Communicator.getInstance().sendToOut(np.getMessage());
+            Notification message = np.getObject(NetworkPackage.N_OBJECT, Notification.class);
+            GuiCommunicator.show_notification(device.getId(),message);
         }
     }
 

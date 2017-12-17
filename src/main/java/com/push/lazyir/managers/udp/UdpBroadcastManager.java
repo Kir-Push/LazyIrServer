@@ -7,6 +7,7 @@ import com.push.lazyir.MainClass;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.Communicator;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.service.BackgroundService;
 
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class UdpBroadcastManager  {
                     }
                 } catch (Exception e) {
                     Loggout.e("Udp", "UdpReceive exception ", e);
-                    Communicator.getInstance().iamCrushedUdpListen(); //todo don't stop if error
+                    GuiCommunicator.iamCrushedUdpListen(); //todo don't stop if error
                 } finally {
                     Loggout.d("Udp", "Stopping UDP listener");
                     stopUdpListener(); //todo
