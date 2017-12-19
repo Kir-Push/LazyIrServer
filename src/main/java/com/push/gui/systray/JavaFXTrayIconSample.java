@@ -3,6 +3,7 @@ package com.push.gui.systray;
 import com.push.gui.basew.MainWin;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.PhoneDevice;
+import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.MainClass;
 import com.push.lazyir.gui.GuiCommunicator;
 import javafx.application.*;
@@ -70,6 +71,8 @@ public class JavaFXTrayIconSample extends Application {
 
        // stage.setScene(scene);
     }
+
+
 
 
 

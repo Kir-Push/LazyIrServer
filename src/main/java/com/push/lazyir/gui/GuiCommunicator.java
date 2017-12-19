@@ -1,15 +1,30 @@
 package com.push.lazyir.gui;
 
+import com.push.gui.basew.Dialogs;
 import com.push.gui.controllers.ApiController;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
+import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.notifications.*;
 import com.push.lazyir.service.BackgroundService;
 import com.push.lazyir.service.BackgroundServiceCmds;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
+import org.controlsfx.control.action.Action;
 
 import java.io.File;
 import java.util.List;
@@ -49,12 +64,7 @@ public class GuiCommunicator {
     }
 
     public static void sendToGetAllNotif(String id) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ShowNotification.requestNotificationsFromDevice(id);
-            }
-        }).start();
+      ShowNotification.requestNotificationsFromDevice(id);
     }
 
     public static void newDeviceConnected(Device device){
@@ -86,8 +96,8 @@ public class GuiCommunicator {
     }
 
     public static void show_sms(String id, Sms sms) {
-        NotificationDevice notificationDevice = new NotificationDevice(sms.getText(),"sms",sms.getName(),SMS_TYPE,sms.getNumber(),sms.getNumber(),sms.getIcon(),sms.getPicture());
-        ApiController.getInstance().showNotification(id,notificationDevice);
+        NotificationDevice notification = new NotificationDevice(sms.getText(),"sms",sms.getName(),SMS_TYPE,sms.getNumber(),sms.getNumber(),sms.getIcon(),sms.getPicture());
+        ApiController.getInstance().showNotification(id,notification);
     }
 
 

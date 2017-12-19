@@ -4,6 +4,8 @@ import com.push.gui.controllers.ApiController;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
+import com.push.gui.entity.Widget;
+import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.MainClass;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -31,6 +33,12 @@ import java.nio.file.Paths;
 public class MainWin  {
 
     private Stage primaryStage;
+
+    public Stage getHideStage() {
+        return hideStage;
+    }
+
+    private Stage hideStage;
     private VBox rootLayout;
     private Scene scene;
     private  MainController controller;
@@ -58,6 +66,7 @@ public class MainWin  {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainWin.class.getClassLoader().getResource("fxml/newGui.fxml"));
             rootLayout = (VBox) loader.load();
+
 
             // Отображаем сцену, содержащую корневой макет.
             scene = new Scene(rootLayout);

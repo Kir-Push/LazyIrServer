@@ -2,13 +2,21 @@ package com.push.gui.utils;
 
 import com.push.gui.controllers.MainController;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.stage.*;
 import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
 import org.controlsfx.control.Notifications;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -89,6 +97,17 @@ public class GuiUtils {
 
     }
 
+    public static ImageIcon pictureFromBase64Swing(String base64,int width,int height){
+        byte[] dencodedImg = Base64.getMimeDecoder().decode(base64);
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new ByteArrayInputStream(dencodedImg));
+        } catch (IOException e) {
+           return null;
+        }
+        return new ImageIcon(image.getScaledInstance(width,height,java.awt.Image.SCALE_SMOOTH));
+    }
+
     public static String formatText(String text){
       // todo
         return null;
@@ -166,5 +185,21 @@ public class GuiUtils {
         } catch (Throwable e) {
             e.printStackTrace();
         }
+    }
+
+    public static Stage createDummyStage() {
+        Stage owner = new Stage(StageStyle.UTILITY);
+        StackPane root = new StackPane();
+        root.setStyle("-fx-background-color: TRANSPARENT");
+        Scene scene = new Scene(root, 1, 1);
+        scene.setFill(Color.TRANSPARENT);
+        owner.setScene(scene);
+        owner.setWidth(1);
+        owner.setHeight(1);
+      //  owner.setX(Double.MAX_VALUE);
+        //owner.toBack();
+        owner.show();
+        return owner;
+
     }
 }
