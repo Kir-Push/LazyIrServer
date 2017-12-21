@@ -93,12 +93,12 @@ public class ShowNotification extends Module {
 
 
     public static void requestNotificationsFromDevice(String id) {
-        BackgroundService.sendToDevice(id,  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION,ALL_NOTIFS).getMessage());
+      BackgroundService.submitNewTask(()->{  BackgroundService.sendToDevice(id,  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION,ALL_NOTIFS).getMessage());});
     }
 
     public static void sendRemoveNotification(String ownerId, String notificationId) {
         NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION, REMOVE_NOTIFICATION);
         np.setValue(NOTIFICATION_ID,notificationId);
-        BackgroundService.sendToDevice(ownerId,np.getMessage());
+      BackgroundService.submitNewTask(()->{BackgroundService.sendToDevice(ownerId,np.getMessage())});
     }
 }

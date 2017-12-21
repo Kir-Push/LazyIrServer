@@ -16,5 +16,5 @@ Class-Path:  libs/tyrus-spi-1.13.1.jar
                      libs/grizzly-http-server-2.3.25.jar
                      libs/grizzly-http-2.3.25.jar
                      libs/grizzly-framework-2.3.25.jar
-Main-Class: com.push.lazyir.MainClass
+Main-Class: com.push.lazyir.service.MainClass
 

@@ -1,27 +1,18 @@
 package com.push.gui.systray;
 
 import com.push.gui.basew.MainWin;
-import com.push.gui.controllers.MainController;
 import com.push.gui.entity.PhoneDevice;
-import com.push.gui.utils.GuiUtils;
-import com.push.lazyir.MainClass;
+import com.push.lazyir.service.MainClass;
 import com.push.lazyir.gui.GuiCommunicator;
 import javafx.application.*;
-import javafx.geometry.Pos;
-import javafx.scene.*;
-import javafx.scene.control.Label;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.*;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.net.URL;
 import java.text.*;
 import java.util.*;
 
 import static java.awt.Image.SCALE_AREA_AVERAGING;
-import static javafx.stage.StageStyle.UTILITY;
 
 // Java 8 code
 public class JavaFXTrayIconSample extends Application {

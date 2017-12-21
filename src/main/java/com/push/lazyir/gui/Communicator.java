@@ -11,7 +11,7 @@ import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 import java.io.*;
 import java.util.concurrent.*;
 
-import static com.push.lazyir.MainClass.timerService;
+import static com.push.lazyir.service.MainClass.timerService;
 
 /**
  * Created by buhalo on 12.03.17.

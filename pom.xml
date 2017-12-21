@@ -120,7 +120,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass> com.push.lazyir.MainClass</mainClass>
+                            <mainClass>com.push.lazyir.service.MainClass</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -130,7 +130,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.push.lazyir.MainClass</mainClass>
+                            <mainClass>com.push.lazyir.service.MainClass</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

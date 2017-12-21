@@ -1,18 +1,6 @@
 package com.push.lazyir.managers;
 
-import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.managers.tcp.TcpConnectionManager;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.*;
-import java.lang.reflect.Field;
-import java.net.InetAddress;
-import java.net.Socket;
-
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by buhalo on 19.07.17.

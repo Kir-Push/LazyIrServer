@@ -1,12 +1,10 @@
-package com.push.lazyir.managers.udp;
+package com.push.lazyir.service;
 
 
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.MainClass;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.service.BackgroundService;
 
@@ -16,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.MainClass.executorService;
+import static com.push.lazyir.service.MainClass.executorService;
 
 /**
  * Created by buhalo on 19.02.17.

@@ -143,4 +143,8 @@ public class GuiCommunicator {
     public static void call_Notif(NetworkPackage np) {
 
     }
+
+    public static void tcpClosed() {
+
+    }
 }

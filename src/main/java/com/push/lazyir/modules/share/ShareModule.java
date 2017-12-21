@@ -2,23 +2,16 @@ package com.push.lazyir.modules.share;
 
 
 
-import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
 
-import javax.swing.filechooser.FileSystemView;
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.MainClass.executorService;
+import static com.push.lazyir.service.MainClass.executorService;
 
 
 /**

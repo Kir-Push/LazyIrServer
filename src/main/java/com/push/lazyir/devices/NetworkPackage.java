@@ -16,9 +16,9 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.push.lazyir.managers.tcp.TcpConnectionManager.TCP_PING;
-import static com.push.lazyir.managers.udp.UdpBroadcastManager.BROADCAST_INTRODUCE;
-import static com.push.lazyir.managers.udp.UdpBroadcastManager.BROADCAST_INTRODUCE_MSG;
+import static com.push.lazyir.service.TcpConnectionManager.TCP_PING;
+import static com.push.lazyir.service.UdpBroadcastManager.BROADCAST_INTRODUCE;
+import static com.push.lazyir.service.UdpBroadcastManager.BROADCAST_INTRODUCE_MSG;
 import static com.push.lazyir.modules.dbus.Mpris.ALL_PLAYERS;
 
 /**

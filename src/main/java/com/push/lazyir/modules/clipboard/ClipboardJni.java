@@ -2,7 +2,7 @@ package com.push.lazyir.modules.clipboard;
 
 import com.push.gui.basew.MainWin;
 import com.push.lazyir.Loggout;
-import com.push.lazyir.MainClass;
+import com.push.lazyir.service.MainClass;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.service.BackgroundService;
 
@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.MainClass.executorService;
+import static com.push.lazyir.service.MainClass.executorService;
 import static com.push.lazyir.modules.clipboard.ClipBoard.RECEIVE;
 
 /**

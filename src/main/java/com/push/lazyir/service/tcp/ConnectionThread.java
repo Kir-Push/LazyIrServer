@@ -1,9 +1,8 @@
-package com.push.lazyir.managers.tcp;
+package com.push.lazyir.service.tcp;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
@@ -14,15 +13,12 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.MainClass.timerService;
-import static com.push.lazyir.managers.tcp.TcpConnectionManager.*;
+import static com.push.lazyir.service.TcpConnectionManager.*;
 
 
 public class ConnectionThread implements Runnable {
@@ -36,15 +32,11 @@ public class ConnectionThread implements Runnable {
         private ScheduledFuture<?> timerFuture;
         private Lock lock = new ReentrantLock();
 
-        ConnectionThread(Socket socket) throws SocketException {
+        public ConnectionThread(Socket socket) throws SocketException {
             this.connection = socket;
             connection.setKeepAlive(true);
             connection.setSoTimeout(60000);
         }
-
-     ConnectionThread(){
-
-    }
 
         @Override
         public void run() {
@@ -60,7 +52,7 @@ public class ConnectionThread implements Runnable {
                 while (connectionRun)
                 {
                     String clientCommand = in.readLine();
-                    if(!BackgroundService.getTcp().isServerOn() || clientCommand == null) {
+                    if(!BackgroundService.isServerOn() || clientCommand == null) {
                         connectionRun = false;
                         continue;
                     }
@@ -86,12 +78,30 @@ public class ConnectionThread implements Runnable {
         }
     }
 
+
+    public void receivePairResult(NetworkPackage np)
+    {
+        String id = np.getId();
+        Device device = Device.getConnectedDevices().get(id);
+        if(np.getValue("answer").equals("paired")) {
+            BackgroundService.getSettingManager().saveValue(id,np.getData());
+            if(device != null)
+            device.setPaired(true);
+            GuiCommunicator.devicePaired(id,true);
+        }
+        else {
+            if(device != null)
+            device.setPaired(false);
+            BackgroundService.getSettingManager().delete(id);
+            GuiCommunicator.devicePaired(id,false);
+        }
+    }
+
         private void determineWhatTodo(NetworkPackage np)
         {
 
             String type = np.getType();
-            if( deviceId == null && !type.equals(TCP_INTRODUCE))
-            {
+            if( deviceId == null && !type.equals(TCP_INTRODUCE)) {
                 return;
             }
             try {
@@ -107,6 +117,9 @@ public class ConnectionThread implements Runnable {
                         break;
                     case TCP_UNPAIR:
                         unpair();
+                        break;
+                    case TCP_PAIR_RESULT:
+                        receivePairResult(np);
                         break;
                     default:
                         Device.getConnectedDevices().get(deviceId).setAnswer(true);
@@ -142,54 +155,45 @@ public class ConnectionThread implements Runnable {
                 Device  device = new Device(deviceId, np.getName(), connection.getInetAddress(), this);
                 Device.getConnectedDevices().put(deviceId, device);
             String data = np.getData();
-            if(data != null && !data.equalsIgnoreCase("null") && data.equals( BackgroundService.getSettingManager().get(deviceId)))
-                {
+            if(data != null && !data.equalsIgnoreCase("null") && data.equals( BackgroundService.getSettingManager().get(deviceId))) {
                     device.setPaired(true);
-                    BackgroundService.getTcp().sendPairResult(deviceId,OK);
+                    BackgroundService.pairResultFromGui(deviceId,OK);
                 }
                 ping();
                 pingCheck();
                 GuiCommunicator.newDeviceConnected(device);
-                if(device.isPaired())
-                {
+                if(device.isPaired()) {
                     GuiCommunicator.devicePaired(deviceId,true);
                 }
         }
 
 
-        private void unpair()
-        {
+        private void unpair() {
             Device.getConnectedDevices().get(deviceId).setPaired(false);
             BackgroundService.getSettingManager().delete(deviceId);
             GuiCommunicator.devicePaired(deviceId,false);
         }
 
-        private void pair(NetworkPackage np)
-        {
-            BackgroundService.getTcp().reguestPair(np);
+        private void pair(NetworkPackage np) {
+            reguestPair(np);
         }
 
-        private void pingCheck()
-        {
-//            if(timerFuture!=null && !timerFuture.isDone()) {
-//                timerFuture.cancel(true);
-//            }
-            // start only if timer future null or not running
+      private void reguestPair(NetworkPackage np) {
+        GuiCommunicator.requestPair(np);
+    }
+
+        private void pingCheck() {
             if(timerFuture == null || timerFuture.isDone() || timerFuture.isCancelled())
-            timerFuture = timerService.scheduleWithFixedDelay(()->{
+            timerFuture = BackgroundService.getTimerService().scheduleWithFixedDelay(()->{
                     Device device = Device.getConnectedDevices().get(deviceId);
-                    if(device != null && device.isAnswer())
-                    {
+                    if(device != null && device.isAnswer()) {
                         device.setAnswer(false);
                         ping();
-
                     }
             },0,20, TimeUnit.SECONDS);
         }
 
-        private void ping()
-        {
-            System.out.println("PING to" + deviceId  + NetworkPackage.Cacher.getOrCreatePackage(TCP_PING,TCP_PING).getMessage());
+        private void ping() {
            printToOut(NetworkPackage.Cacher.getOrCreatePackage(TCP_PING,TCP_PING).getMessage());
         }
 
@@ -197,14 +201,15 @@ public class ConnectionThread implements Runnable {
         {
             try {
                 Device device = Device.getConnectedDevices().get(np.getId());
+                if(device == null)
+                    return;
                 if (!device.isPaired()) {
                     return;
                 }
                 Module module = device.getEnabledModules().get(np.getType());
                 if(module != null)
                 module.execute(np);
-            }catch (Exception e)
-            {
+            }catch (Exception e) {
                 Loggout.e("ConnectionThread","commandFromClient",e);
             }
         }
@@ -213,8 +218,7 @@ public class ConnectionThread implements Runnable {
     {
         lock.lock();
         try{
-            if(out == null)
-            {
+            if(out == null) {
                 return;
             }
             out.println(message);
@@ -239,7 +243,9 @@ public class ConnectionThread implements Runnable {
             if (timerFuture != null && !timerFuture.isDone()) {
                 timerFuture.cancel(true);
             }
-            Device.getConnectedDevices().get(deviceId).getEnabledModules().values().forEach(module ->  module.endWork()); // todo something here nullpointer exception!
+            Device device = Device.getConnectedDevices().get(deviceId);
+            if(device != null)
+            device.getEnabledModules().values().forEach(module ->  module.endWork()); // todo something here nullpointer exception!
             Device.getConnectedDevices().remove(deviceId);
             GuiCommunicator.deviceLost(deviceId);
             // calling after because can throw exception and remove from hashmap won't be done

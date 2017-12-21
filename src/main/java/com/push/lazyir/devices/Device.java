@@ -2,15 +2,11 @@ package com.push.lazyir.devices;
 
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.push.lazyir.managers.tcp.ConnectionThread;
+import com.push.lazyir.service.tcp.ConnectionThread;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.ModuleFactory;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class Device {
-    public final static ConcurrentHashMap<String,Device> connectedDevices = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String,Device> connectedDevices = new ConcurrentHashMap<>();
     private ConnectionThread thread;
     private String id;
     private String name;
@@ -47,10 +43,6 @@ public class Device {
         }
     }
 
-    public void printToOut(String message)
-    {
-        thread.printToOut(message);
-    }
 
     public boolean isConnected()
     {
@@ -143,5 +135,10 @@ public class Device {
 
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;
+    }
+
+    public void sendMessage(String msg) {
+        if(thread != null && thread.isConnected())
+            thread.printToOut(msg);
     }
 }

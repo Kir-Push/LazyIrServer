@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.MainClass.*;
+import static com.push.lazyir.service.MainClass.*;
 
 /**
  * Created by buhalo on 22.07.17.

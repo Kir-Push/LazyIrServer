@@ -1,4 +1,4 @@
-package com.push.lazyir.managers.settings;
+package com.push.lazyir.service.settings;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.pojo.Command;
