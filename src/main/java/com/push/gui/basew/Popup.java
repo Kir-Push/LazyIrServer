@@ -56,7 +56,6 @@ public class Popup {
             initialized = true;
         }
         CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController);
-
         boolean incoming = notification.getType().equalsIgnoreCase(callTypes.incoming.name());
         if(incoming || notification.getType().equalsIgnoreCase(callTypes.missedIn.name())){
             if(!callNotifs.containsKey(notification.getTitle()))
@@ -65,8 +64,9 @@ public class Popup {
         if(incoming){
             callManager.addNotification(build,Time.seconds(10));
         }
-        else
-        manager.addNotification(build, Time.seconds(20));
+        else {
+            manager.addNotification(build, Time.seconds(20));
+        }
 
     }
 

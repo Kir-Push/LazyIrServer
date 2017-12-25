@@ -99,8 +99,12 @@ public class GuiCommunicator {
     }
 
     public static void show_sms(String id, Sms sms) {
-        NotificationDevice notification = new NotificationDevice(sms.getText(),"sms",sms.getName(),SMS_TYPE,sms.getNumber(),sms.getNumber(),sms.getIcon(),sms.getPicture());
-        ApiController.getInstance().showNotification(id,notification);
+        try {
+            NotificationDevice notification = new NotificationDevice(sms.getText(), "sms", sms.getName(), SMS_TYPE, sms.getNumber(), sms.getNumber(), sms.getIcon(), sms.getPicture());
+            ApiController.getInstance().showNotification(id, notification);
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
     }
 
 
