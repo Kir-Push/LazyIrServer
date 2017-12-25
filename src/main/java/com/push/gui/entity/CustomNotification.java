@@ -18,6 +18,7 @@ import com.theme.WindowTheme;
 import com.utils.Time;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 
 import javax.swing.*;
 import javax.swing.plaf.BorderUIResource;
@@ -132,10 +133,8 @@ public class CustomNotification extends BorderLayoutNotification {
         public CustomNotification buildNotification(ThemePackage pack, Object[] args) {
             CustomNotification notification = new CustomNotification();
 
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            double width = screenSize.getWidth();
-            double height = screenSize.getHeight();
-
+            double width = Screen.getPrimary().getBounds().getWidth();
+            double height = Screen.getPrimary().getBounds().getHeight();
             NotificationDevice notificationDevice = (NotificationDevice) args[0];
             String id = (String) args[1];
             MainController controller = (MainController) args[2];

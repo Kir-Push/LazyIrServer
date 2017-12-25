@@ -26,6 +26,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -37,21 +38,38 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 import static com.push.gui.utils.GuiUtils.createDummyStage;
+import static java.awt.GraphicsDevice.TYPE_RASTER_SCREEN;
 
 
 public class Popup {
 
+    //todo handle multi monitor in Jcommunique , use screen from javafx
     private volatile static boolean initialized;
-     private static NotificationFactory factory = new NotificationFactory(ThemePackagePresets.cleanLight());
-     private static QueueManager manager = new QueueManager(NotificationFactory.Location.SOUTHEAST);
-     private static SimpleManager callManager = new SimpleManager(NotificationFactory.Location.SOUTHEAST);
-
+     private static NotificationFactory factory;
+     private static QueueManager manager;
+     private static SimpleManager callManager;
      private static HashMap<String,CustomNotification> callNotifs = new HashMap<>();
+     private static int countScreens;
+
 
     public static void show(String id, NotificationDevice notification, MainController mainController) {
+
+
+        int numberOfMonitors = Screen.getScreens().size();
+
+        if(numberOfMonitors != countScreens){
+            countScreens = numberOfMonitors;
+            initialized = false;
+        }
+
         if(!initialized){
             // register the custom builder with the factory
+            factory = new NotificationFactory(ThemePackagePresets.cleanLight());
             factory.addBuilder(CustomNotification.class, new CustomNotification.CustomBuilder());
+            if(manager != null)
+                manager.stop();
+            manager = new QueueManager(NotificationFactory.Location.SOUTHEAST);
+            callManager = new SimpleManager(NotificationFactory.Location.SOUTHEAST);
             // add the Notification
             manager.setScrollDirection(QueueManager.ScrollDirection.NORTH);
             initialized = true;
@@ -69,6 +87,7 @@ public class Popup {
             manager.addNotification(build, Time.seconds(20));
         }
 
+        GraphicsDevice defaultScreenDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     }
 
     public static void callEnd(String id, String callerNumber) {

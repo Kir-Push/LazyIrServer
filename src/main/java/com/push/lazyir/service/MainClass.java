@@ -1,5 +1,8 @@
 package com.push.lazyir.service;
 
+import javafx.application.Platform;
+import javafx.stage.Screen;
+
 import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
 
