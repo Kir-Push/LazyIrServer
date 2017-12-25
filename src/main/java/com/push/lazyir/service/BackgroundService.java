@@ -1,6 +1,7 @@
 package com.push.lazyir.service;
 
 import com.push.lazyir.devices.Device;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.service.settings.SettingManager;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
@@ -16,10 +17,6 @@ public class BackgroundService {
     private ReadWriteLock lock = new ReentrantReadWriteLock();
 
     final ExecutorService executorService = Executors.newCachedThreadPool();
-
-    public static ScheduledThreadPoolExecutor getTimerService() {
-        return getInstance().timerService;
-    }
 
     final ScheduledThreadPoolExecutor timerService = new ExtScheduledThreadPoolExecutor(5);
 
@@ -52,15 +49,20 @@ public class BackgroundService {
     }
 
     // start main tasks
-    public void startTasks(){
+    static void startTasks(){
         getInstance().startUdpListening();
         getInstance().startTcpListening();
         getInstance().connectCached();
     }
 
-    public void destroy(){
+    public static void destroy(){
         getInstance().stopUdpListening();
         getInstance().eraseTcpConnections();
+    }
+
+    static void crushed(String message){
+        GuiCommunicator.iamCrushed(message);
+        System.exit(-1);
     }
 
     private void startUdpListening() {
@@ -81,8 +83,8 @@ public class BackgroundService {
             tcp.startListening();
     }
 
-    public static void submitNewTask(Runnable runnable){
-            getInstance().executorService.submit(runnable);
+    public static Future<?> submitNewTask(Runnable runnable){
+            return getInstance().executorService.submit(runnable);
     }
 
     private void eraseTcpConnections() {
@@ -131,5 +133,25 @@ public class BackgroundService {
 
     public static boolean isServerOn(){
         return getInstance().tcp.isServerOn();
+    }
+
+    public static ScheduledThreadPoolExecutor getTimerService() {
+        return getInstance().timerService;
+    }
+
+    public static void reconnect(String id) {
+        //todo
+    }
+
+    public static void sendPing(String id) {
+        //todo
+    }
+
+    public static void unMount(String id) {
+        //todo
+    }
+
+    public static void mount(String id) {
+        //todo
     }
 }

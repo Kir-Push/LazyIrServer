@@ -2,6 +2,7 @@ package com.push.lazyir.gui;
 
 import com.push.gui.basew.Dialogs;
 import com.push.gui.controllers.ApiController;
+import com.push.gui.controllers.MainController;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.gui.utils.GuiUtils;
@@ -32,31 +33,33 @@ import java.util.List;
 import static com.push.lazyir.modules.notifications.ShowNotification.ALL_NOTIFS;
 import static com.push.lazyir.modules.notifications.ShowNotification.SHOW_NOTIFICATION;
 import static com.push.lazyir.modules.notifications.SmsModule.SMS_TYPE;
+import static com.push.lazyir.service.TcpConnectionManager.OK;
+import static com.push.lazyir.service.TcpConnectionManager.REFUSE;
 
 // Class used to communicate between gui and backend
 public class GuiCommunicator {
     public static void unPair(String id) {
-        //todo
+        BackgroundService.sendRequestUnPair(id);
     }
 
     public static void pair(String id) {
-        //todo
+        BackgroundService.sendRequestPair(id);
     }
 
     public static void reconnect(String id) {
-        //todo
+        BackgroundService.reconnect(id);
     }
 
     public static void unMount(String id) {
-        //todo
+        BackgroundService.unMount(id);
     }
 
     public static void mount(String id) {
-        //todo
+        BackgroundService.mount(id);
     }
 
     public static void ping(String id) {
-        //todo
+        BackgroundService.sendPing(id);
     }
 
     public static void removeNotification(String ownerId, String notificationId) {
@@ -122,18 +125,18 @@ public class GuiCommunicator {
     }
 
     public static void sftpConnectResult(boolean running, String id) {
-
+        ApiController.getInstance().setDeviceMounted(id,running);
     }
 
     public static void iamCrushedUdpListen() {
     }
 
-    public static void iamCrushed() {
-
+    public static void iamCrushed(String message) {
+        //todo
     }
 
     public static void pairAnswer(String id,boolean answer){
-
+        BackgroundService.pairResultFromGui(id,answer ? OK : REFUSE);
     }
 
     public static void requestPair(NetworkPackage np) {
@@ -141,10 +144,36 @@ public class GuiCommunicator {
     }
 
     public static void call_Notif(NetworkPackage np) {
+        String callType = np.getValue("callType");
+           NotificationDevice notificationDevice = new NotificationDevice(np.getValue("text"),callType,np.getValue("number"),callType,callType,np.getId(),np.getValue("icon"),null);
+           ApiController.getInstance().showNotification(np.getId(),notificationDevice);
 
     }
 
+
+    public static void call_notif_end(NetworkPackage np) {
+        String callType = np.getValue("callType");
+        if(callType.equalsIgnoreCase(callTypes.incoming.name())){
+            ApiController.getInstance().removeNotificationCallEnd(np.getId(),np.getValue("number"));
+        }
+    }
+
     public static void tcpClosed() {
+
+    }
+
+    public static void answerCall(NotificationDevice notificationDevice, String id) {
+
+    }
+
+    public static void rejectCall(NotificationDevice notificationDevice, String id) {
+    }
+
+    public static void recall(NotificationDevice item, String id) {
+
+    }
+
+    public static void rejectOutgoingcall(NotificationDevice notificationDevice, String id) {
 
     }
 }

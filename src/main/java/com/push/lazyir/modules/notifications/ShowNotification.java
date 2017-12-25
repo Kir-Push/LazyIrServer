@@ -3,7 +3,6 @@ package com.push.lazyir.modules.notifications;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
@@ -26,8 +25,6 @@ public class ShowNotification extends Module {
     public static final String ALL_NOTIFS = "ALL NOTIFS";
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
     private static volatile boolean CALLING = false;
-
-    private Lock lock =new ReentrantLock();
 
     @Override
     public void execute(NetworkPackage np) {
@@ -68,6 +65,7 @@ public class ShowNotification extends Module {
                                 {
                                     mpris.playAll(np.getId());
                                 }
+                                GuiCommunicator.call_notif_end(np);
                             }
 
                     } catch(NullPointerException e){
@@ -84,14 +82,6 @@ public class ShowNotification extends Module {
     }
 
 
-//    public void sendNotifsToOut(Notifications allNotifications)
-//    {
-//        NetworkPackage toOut =  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION, "NOTIF TO ID");
-//        toOut.setObject(NetworkPackage.N_OBJECT, allNotifications);
-//        Communicator.getInstance().sendToOut(toOut.getMessage());
-//    }
-
-
     public static void requestNotificationsFromDevice(String id) {
       BackgroundService.submitNewTask(()->{  BackgroundService.sendToDevice(id,  NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION,ALL_NOTIFS).getMessage());});
     }
@@ -99,6 +89,6 @@ public class ShowNotification extends Module {
     public static void sendRemoveNotification(String ownerId, String notificationId) {
         NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION, REMOVE_NOTIFICATION);
         np.setValue(NOTIFICATION_ID,notificationId);
-      BackgroundService.submitNewTask(()->{BackgroundService.sendToDevice(ownerId,np.getMessage())});
+      BackgroundService.submitNewTask(()->{BackgroundService.sendToDevice(ownerId,np.getMessage());});
     }
 }

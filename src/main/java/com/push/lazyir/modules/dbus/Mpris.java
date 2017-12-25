@@ -41,14 +41,12 @@ public class Mpris extends Module {
         super();
         lock.lock();
         try {
-            if (browserServer == null) {
-                browserServer = new BrowserServer();
-                        try {
-                            browserServer.start();
-                        } catch (Exception e) {
-                            Loggout.e("Mpris", "Constructor-BrowserServer Start",e);
-                        }
-                    }
+            browserServer = BrowserServer.getINSTANCE();
+            try {
+                browserServer.start();
+            } catch (Exception e) {
+                Loggout.e("Mpris", "Constructor-BrowserServer Start",e);
+            }
             if (strategy == null && isUnix()) {
                 strategy = new Nix();
             } else if ( strategy == null && isWindows()) {
@@ -137,7 +135,7 @@ public class Mpris extends Module {
 
 
     private void getAllPlayers() {
-        executorService.submit(()->{
+        BackgroundService.submitNewTask(()->{
             NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(Mpris.class.getSimpleName(), ALL_PLAYERS);
             List<Player> playerList = new ArrayList<>();
             playerList.addAll(strategy.getAllPlayers());
@@ -156,9 +154,8 @@ public class Mpris extends Module {
         return player.startsWith("js9876528:");
     }
 
-    private void sendAnswer(String message)
-    {
-        BackgroundService.getTcp().sendCommandToServer(device.getId(),message);
+    private void sendAnswer(String message) {
+        BackgroundService.sendToDevice(device.getId(),message);
     }
 
     public void pauseAll(String id) {

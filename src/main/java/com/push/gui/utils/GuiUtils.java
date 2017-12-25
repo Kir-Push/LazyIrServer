@@ -1,6 +1,8 @@
 package com.push.gui.utils;
 
+import com.push.gui.basew.MainWin;
 import com.push.gui.controllers.MainController;
+import com.push.gui.systray.JavaFXTrayIconSample;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -41,9 +43,9 @@ public class GuiUtils {
 
     public static Image getImage(String name,double requestedWidth,double requestedHeigh){
         try {
-            File file = new File(GuiUtils.class.getClassLoader().getResource("icons/" + name + ".png").toURI());
-            return new Image(file.toURI().toString(),requestedWidth,requestedHeigh,true,false);
-        } catch (URISyntaxException e) {
+         // todo change to resourceasstream anywhere (from simple getresouce)
+            return new Image(MainWin.class.getResourceAsStream("/icons/"+name+".png"),requestedWidth,requestedHeigh,true,false);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -92,8 +94,7 @@ public class GuiUtils {
 
     public static Image pictureFromBase64(String base64,double width,double height){
         byte[] dencodedImg = Base64.getMimeDecoder().decode(base64);
-        Image image = new Image(new ByteArrayInputStream(dencodedImg),width,height,true,true);
-        return image;
+        return new Image(new ByteArrayInputStream(dencodedImg),width,height,true,true);
 
     }
 
@@ -201,5 +202,9 @@ public class GuiUtils {
         owner.show();
         return owner;
 
+    }
+
+    public static String getDefaultIconMessage(){
+        return "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";
     }
 }

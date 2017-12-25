@@ -6,6 +6,8 @@ import com.push.lazyir.modules.Module;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by buhalo on 21.08.17.
@@ -21,10 +23,12 @@ public class TouchControl extends Module {
     private static final String MOUSECLICK = "mclick";
     private static final String LONGCLICK = "lclick";
     private static final String LONGRELEASE = "lrelease";
-    Robot r;
+    private static Lock staticLock = new ReentrantLock();
+    private static Robot r;
 
     public TouchControl() throws Exception {
         try {
+            if(r == null)
             r = new Robot();
         } catch (AWTException e) {
             Loggout.e("TouchControl","robotCreate",e);
@@ -35,36 +39,40 @@ public class TouchControl extends Module {
     @Override
     public void execute(NetworkPackage np) {
         String data = np.getData();
-        switch (data)
-        {
-            case MOVE:
-                moveMouse(Integer.parseInt(np.getValue("x")),Integer.parseInt(np.getValue("y")));
-                break;
-            case CLICK:
-                mouseClick();
-                break;
-            case DCLICK:
-                dmouseClick();
-                break;
-            case RCLICK:
-                rmouseClick();
-                break;
-            case MOUSEUP:
-            case MOUSEDOWN:
-                wheelMove(Integer.parseInt(np.getValue("wheelY")));
-                break;
-            case MOUSECLICK:
-                 wheelClick();
-                 break;
-            case LONGCLICK:
-                longClick();
-                break;
-            case LONGRELEASE:
-                longRelease();
-                break;
-            default:
-                break;
+        staticLock.lock();
+        try {
+            switch (data) {
+                case MOVE:
+                    moveMouse(Integer.parseInt(np.getValue("x")), Integer.parseInt(np.getValue("y")));
+                    break;
+                case CLICK:
+                    mouseClick();
+                    break;
+                case DCLICK:
+                    dmouseClick();
+                    break;
+                case RCLICK:
+                    rmouseClick();
+                    break;
+                case MOUSEUP:
+                case MOUSEDOWN:
+                    wheelMove(Integer.parseInt(np.getValue("wheelY")));
+                    break;
+                case MOUSECLICK:
+                    wheelClick();
+                    break;
+                case LONGCLICK:
+                    longClick();
+                    break;
+                case LONGRELEASE:
+                    longRelease();
+                    break;
+                default:
+                    break;
 
+            }
+        }finally {
+            staticLock.unlock();
         }
     }
 

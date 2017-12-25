@@ -15,6 +15,8 @@ import static com.push.lazyir.modules.dbus.Mpris.*;
 /**
  * Created by buhalo on 16.08.17.
  */
+// stategy for htmlVideo in browser
+    // work though websocket
 public class HtmlVid implements OsStrategy {
     private ConcurrentHashMap<String,String> pausedPlayersBrowser = new ConcurrentHashMap<>();
 
@@ -55,6 +57,7 @@ public class HtmlVid implements OsStrategy {
     public void openUri(NetworkPackage np) {
         String playerValue = np.getValue(player);
         String uri = np.getValue(openUri);
+        //todo
     }
 
     @Override
@@ -74,7 +77,6 @@ public class HtmlVid implements OsStrategy {
 
     @Override
     public List<Player> getAllPlayers() {
-        List<Player> playerList = new ArrayList<>();
         SettableFuture<List<Player>> browsr = null;
         try {
             browsr = PopupEndpoint.getAll();

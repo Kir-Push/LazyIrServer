@@ -96,7 +96,6 @@ public class ApiController {
 
     private void refreshSelection(String id){
         int selectedIndex = mainController.getPersonList().getSelectionModel().getSelectedIndex();
-        System.out.println("refresh");
         mainController.getPersonList().getSelectionModel().select(-1);
         mainController.getPersonList().getSelectionModel().select(selectedIndex);
     }
@@ -108,6 +107,10 @@ public class ApiController {
 
     public void showNotification(String id, NotificationDevice notification) {
         Popup.show(id,notification,mainController);
+    }
+
+    public void removeNotificationCallEnd(String id, String callerNumber){
+        Popup.callEnd(id,callerNumber);
     }
 
 }

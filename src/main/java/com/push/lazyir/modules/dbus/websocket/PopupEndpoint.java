@@ -1,5 +1,6 @@
 package com.push.lazyir.modules.dbus.websocket;
 
+import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.dbus.Player;
 import com.push.lazyir.modules.dbus.Players;
@@ -21,6 +22,7 @@ import java.util.concurrent.locks.StampedLock;
 /**
  * Created by buhalo on 29.06.17.
  */
+// Че я тут понаписал, мать моя женщина
 @ServerEndpoint("/v1")
 public class PopupEndpoint {
 
@@ -29,11 +31,8 @@ public class PopupEndpoint {
     private static StampedLock lock = new StampedLock();
     private static int expectedCount;
 
-    public final static ConcurrentHashMap<String,Session> connectedSessions = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String,Session> connectedSessions = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String,Player> players = new ConcurrentHashMap<>();
-   // здесь создай список listenerov (класс создай тоже) которых будут регистрировать модули программы желающие слушать сообщения с браузера
-    // при получении сообщения вызывается метод листенера (например receive) и он уже делает что от него хочет регистратор
-    // или создай массив типа waitanswer from server c id которые ожидают и при получении овтета от них удаляй и отправляй на телефон например
 
     @OnOpen
     public void onOpen(Session session)
@@ -70,10 +69,11 @@ public class PopupEndpoint {
                    Player player = new Player(title, np.getValue("status"), title, (int)np.getDouble("duration"),
                            (int)(np.getDouble("volume")*100), (int)np.getDouble("time"), readyTime, "browser", session.getId());
 
+                   //todo add many player's per session !!
                    long stamp = lock.writeLock();
                    try {
                        players.put(session.getId(), player);
-                       if (expectedCount == players.size()) {
+                       if (expectedCount <= players.size()) {
                            getAllFuture.complete(new ArrayList<>(players.values()));
                        }
                    }finally {
@@ -81,7 +81,7 @@ public class PopupEndpoint {
                    }
                }catch (Exception e)
                {
-                   e.printStackTrace();
+                   Loggout.e("Websocket","Onmessage Error",e);
                }
            }
     }
@@ -92,7 +92,9 @@ public class PopupEndpoint {
         try {
             Session session = connectedSessions.get(id);
             if(session != null) {
-                session.getBasicRemote().sendText(msg);
+                RemoteEndpoint.Basic basicRemote = session.getBasicRemote();
+                if(basicRemote != null)
+                basicRemote.sendText(msg);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,23 +127,12 @@ public class PopupEndpoint {
 
     public static void sendGetInfo()
     {
-        System.out.println("sending ingfo");
         NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage("Web","JS");
         np.setValue("command","getInfo");
         expectedCount = connectedSessions.size();
         for (Session session : connectedSessions.values()) {
             sendMessage(np.getMessage(),session.getId());
         }
-    }
-
-    public static void pauseAll()
-    {
-
-    }
-
-    public static void playAll()
-    {
-
     }
 
     public static SettableFuture<List<Player>> getAll() throws InterruptedException

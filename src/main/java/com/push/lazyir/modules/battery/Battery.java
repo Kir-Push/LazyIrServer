@@ -2,7 +2,6 @@ package com.push.lazyir.modules.battery;
 
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 

@@ -25,8 +25,7 @@ public class SendCommand extends Module {
     @Override
     public void execute(NetworkPackage np) {
 
-        if(np.getData().equals(EXECUTE))
-        {
+        if(np.getData().equals(EXECUTE)) {
            executeCommand(np.getObject(NetworkPackage.N_OBJECT, CommandsList.class).getCommands());
         }
 
@@ -38,12 +37,15 @@ public class SendCommand extends Module {
     }
 
     private void executeCommand(List<Command> commands) {
+        if(commands != null)
         for(Command command : commands)
         {
             try {
-                Runtime.getRuntime().exec(command.getCommand());
+                String command1 = command.getCommand();
+                if(command1 != null)
+                Runtime.getRuntime().exec(command1);
             } catch (Exception e) {
-                Loggout.e("SendCommand",e.toString());
+                Loggout.e("SendCommand","error in executeCommand",e);
             }
         }
     }

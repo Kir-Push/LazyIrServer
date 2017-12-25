@@ -47,6 +47,8 @@ public class MainController {
     // Ссылка на главное приложение.
     private MainWin mainApp;
 
+    private Dialogs dialogs = new Dialogs();
+
     /**
      * Конструктор.
      * Конструктор вызывается раньше метода initialize().
@@ -103,14 +105,6 @@ public class MainController {
             GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
         });
 
-//        personList.getSelectionModel().selectedItemProperty().
-        // при выборе устройства из списка присваиваем иконки и дейтсвия кнопкам в зависимости от состояния устройсва.
-//        personList.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) ->{
-//            System.out.println("clicked");
-//            if(newSelection != null && oldSelection != null && !newSelection.getId().equals(oldSelection.getId())){
-//              GuiCommunicator.sendToGetAllNotif(newSelection.getId());
-//            }
-//        });
 
         notifTList.setCellFactory(notifTList -> new ListCell<>(){
 
@@ -165,8 +159,7 @@ public class MainController {
                         answer.setText("Answer");
                         PhoneDevice selectedDevice = personList.getSelectionModel().getSelectedItem();
                         if(item.getType().equals("sms")){
-//                            answer.setOnAction(event -> openSmsDialog(item,selectedDevice.getId()));
-                            //todo
+                           answer.setOnAction(event -> openSmsDialog(item,selectedDevice.getId()));
                             }
                         else if(item.getType().equals("messenger"))
                             answer.setOnAction(event -> openMessengerDialog(item,selectedDevice.getId()));
@@ -187,7 +180,6 @@ public class MainController {
     }
 
     private void onSelectDevice(PhoneDevice newSelection){
-        System.out.println("onSelectDevice " + newSelection.getId());
         VBox rootLayout = mainApp.getRootLayout();
 
         ImageView batteryImg = (ImageView) rootLayout.lookup("#batteryImg");
@@ -229,21 +221,15 @@ public class MainController {
     }
 
     private void recall(NotificationDevice item, String id) {
-
+        GuiCommunicator.recall(item,id);
     }
 
     public void openMessengerDialog(NotificationDevice item, String deviceId) {
-
-        System.out.println("openMessengerDialog");
+        dialogs.showAnswerMessenger(deviceId,item,this);
     }
 
     public void openSmsDialog(NotificationDevice item, String deviceId) {
-        new Dialogs().showAnswerMessenger(deviceId,item,this);
-//        try {
-//            GuiCommunicator.show_notification("id",new Notification("У вас пять неотвеченных сообщений: \n Бля ну где ты есть ёмаё","messenger","Новое сообщение(5)","java","huj","mabva",new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/jaja"))),new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/kote")))));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        dialogs.showAnswerMessenger(deviceId,item,this);
     }
 
     @FXML

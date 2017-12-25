@@ -26,7 +26,7 @@ public class Device {
     private volatile boolean listening;
     private volatile boolean pinging;
     private volatile boolean answer;
-    private HashMap<String, Module> enabledMdules = new HashMap<>();
+    private ConcurrentHashMap<String, Module> enabledMdules = new ConcurrentHashMap<>();
 
     public Device(String id, String name, InetAddress ip, ConnectionThread runnableThread) {
         this.id = id;
@@ -121,10 +121,12 @@ public class Device {
 
     public void enableModule(String name)
     {
-       enabledMdules.put(name,ModuleFactory.instantiateModuleByName(this,name));
+        Module module = ModuleFactory.instantiateModuleByName(this, name);
+        if(module != null)
+        enabledMdules.put(name, module);
     }
 
-    public HashMap<String,Module> getEnabledModules()
+    public ConcurrentHashMap<String,Module> getEnabledModules()
     {
         return enabledMdules;
     }
@@ -140,5 +142,11 @@ public class Device {
     public void sendMessage(String msg) {
         if(thread != null && thread.isConnected())
             thread.printToOut(msg);
+    }
+
+    public void unpair(){
+        if(thread != null ){
+            thread.unpair();
+        }
     }
 }

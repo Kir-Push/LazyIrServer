@@ -6,12 +6,13 @@ import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.MainClass;
 
+import java.io.File;
+import java.net.InetAddress;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static com.push.lazyir.service.MainClass.executorService;
 
 
 /**
@@ -28,23 +29,24 @@ public class ShareModule extends Module {
     private int port = 9000;
     private String userName;
     private String pass;
+    private String mountPoint;
+    private PathWrapper externalMountPoint;
     private Future futuresftp;
+    private  String currentUsersHomeDir = System.getProperty("user.home") +  File.separator + ".Jasech" + File.separator + "ConnectedDevices";
     private SftpServerProcess sftpServerProcess;
-    private Lock lock = new ReentrantLock();
-
+    private static Lock staticLock = new ReentrantLock();
 
     @Override
     public void execute(NetworkPackage np) {
-        if(np.getData().equals(CONNECT_TO_ME_AND_RECEIVE_FILES))
-        {
-            connectToSftpServer(np);
-        }
-        else if(np.getData().equalsIgnoreCase(RECCONECT))
-        {
-             userName = np.getValue("userName");
-             pass = np.getValue("pass");
-             if(userName != null && pass != null)
-             recconectToSftp(np.getId());
+        staticLock.lock();
+        try {
+            if (np.getData().equals(CONNECT_TO_ME_AND_RECEIVE_FILES)) {
+                connectToSftpServer(np);
+            } else if (np.getData().equalsIgnoreCase(RECCONECT)) {
+                recconectToSftp(np);
+            }
+        }finally {
+            staticLock.unlock();
         }
     }
 
@@ -52,41 +54,52 @@ public class ShareModule extends Module {
     @Override
     public void endWork() {
         stopSftpServer();
+        clearFolders();
+    }
+
+
+    // when last device disconnected or close sftp connection, erase all folders in connectedDevicePath
+    private void clearFolders() {
+        staticLock.lock();
+        try{
+            int size = Device.getConnectedDevices().size();
+            if(size == 0 || (Device.getConnectedDevices().containsKey(device.getId()) && size == 1)) {
+                File file = new File(currentUsersHomeDir);
+                if(file.exists()){
+                   file.delete();
+                }
+            }
+        }finally {
+            staticLock.unlock();
+        }
     }
 
     private void connectToSftpServer(NetworkPackage np) {
         lock.lock();
         try {
             String value = np.getValue(PORT);
-            //   if(connectedToserver)
             stopSftpServer();
             port = Integer.parseInt(value);
             userName = np.getValue("userName");
             pass = np.getValue("pass");
-            sftpServerProcess = new SftpServerProcess(port, Device.getConnectedDevices().get(np.getId()).getIp(), userName, pass,device.getId());
-            futuresftp = executorService.submit(sftpServerProcess);
+            mountPoint = np.getValue("mainDir");
+            System.out.println(np.getMessage());
+            externalMountPoint = np.getObject("externalPath",PathWrapper.class);
+            if(userName == null || pass == null) {
+                NetworkPackage tryMore =  NetworkPackage.Cacher.getOrCreatePackage(SHARE_T,RECCONECT);
+                BackgroundService.sendToDevice(device.getId(),tryMore.getMessage());
+                return;
+            }
+            sftpServerProcess = instantiateSftpServerProcess(port, device.getIp(),mountPoint,externalMountPoint, userName, pass,device.getId());
+            futuresftp = BackgroundService.submitNewTask(sftpServerProcess);
         }finally {
           lock.unlock();
         }
     }
 
-    public void recconectToSftp(String id) //todo in android
+    public void recconectToSftp(NetworkPackage np) //todo in android
     {
-        lock.lock();
-        try {
-       stopSftpServer();
-       if(userName == null || pass == null)
-       {
-           NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SHARE_T,RECCONECT);
-           BackgroundService.getTcp().sendCommandToServer(id,np.getMessage());
-       }
-       else
-       {
-          sftpServerProcess =(sftpServerProcess == null ?  new SftpServerProcess(port, Device.getConnectedDevices().get(id).getIp(),userName,pass,device.getId()) : sftpServerProcess);
-           futuresftp = executorService.submit(sftpServerProcess);
-       }}finally {
-            lock.unlock();
-        }
+          connectToSftpServer(np);
     }
 
     private void stopSftpServer() {
@@ -103,24 +116,26 @@ public class ShareModule extends Module {
 
     }
 
+    private SftpServerProcess instantiateSftpServerProcess(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id){
+        if(MainClass.isUnix())
+            return new SftpServerProcessNix(port, ip,mountPoint,externalMountPoint, userName, pass,id,currentUsersHomeDir);
+        else if(MainClass.isWindows())
+            return new SftpServerProcessWin(port, ip,mountPoint,externalMountPoint, userName, pass,id,currentUsersHomeDir);
+        return null;
+    }
+
     public static void sendSetupServerCommand(String dvID)
     {
         NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SHARE_T,SETUP_SERVER_AND_SEND_ME_PORT);
-        String os  = System.getProperty("os.name").toLowerCase();
-        if(os.indexOf("win") >= 0)
-        {
+        String os;
+        if(MainClass.isWindows())
             os = "win";
-        }
-        else if(os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0 || os.indexOf("aix") > 0 )
-        {
+        else if(MainClass.isUnix())
             os = "nix";
-        }
         else
-        {
             os = "hz";
-        }
         np.setValue("os",os);
-        BackgroundService.getTcp().sendCommandToServer(dvID,np.getMessage());
+        BackgroundService.sendToDevice(dvID,np.getMessage());
     }
 
 }

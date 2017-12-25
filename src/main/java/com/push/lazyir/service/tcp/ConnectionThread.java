@@ -71,8 +71,7 @@ public class ConnectionThread implements Runnable {
 
     private void configureSSLSocket() throws IOException
     {
-        if(connection != null && connection instanceof SSLSocket)
-        {
+        if(connection != null && connection instanceof SSLSocket) {
             ((SSLSocket)connection).setEnabledCipherSuites(((SSLSocket)connection).getSupportedCipherSuites());
             ((SSLSocket)connection).startHandshake();
         }
@@ -81,19 +80,23 @@ public class ConnectionThread implements Runnable {
 
     public void receivePairResult(NetworkPackage np)
     {
-        String id = np.getId();
-        Device device = Device.getConnectedDevices().get(id);
-        if(np.getValue("answer").equals("paired")) {
-            BackgroundService.getSettingManager().saveValue(id,np.getData());
-            if(device != null)
-            device.setPaired(true);
-            GuiCommunicator.devicePaired(id,true);
-        }
-        else {
-            if(device != null)
-            device.setPaired(false);
-            BackgroundService.getSettingManager().delete(id);
-            GuiCommunicator.devicePaired(id,false);
+        lock.lock();
+        try {
+            String id = np.getId();
+            Device device = Device.getConnectedDevices().get(id);
+            if (np.getValue("answer").equals("paired")) {
+                BackgroundService.getSettingManager().saveValue(id, np.getData());
+                if (device != null)
+                    device.setPaired(true);
+                GuiCommunicator.devicePaired(id, true);
+            } else {
+                if (device != null)
+                    device.setPaired(false);
+                BackgroundService.getSettingManager().delete(id);
+                GuiCommunicator.devicePaired(id, false);
+            }
+        }finally {
+            lock.unlock();
         }
     }
 
@@ -110,7 +113,7 @@ public class ConnectionThread implements Runnable {
                         newConnectedDevice(np);
                         break;
                     case TCP_PING:
-                        Device.getConnectedDevices().get(deviceId).setAnswer(true);
+                        setDevicePing(deviceId,true);
                         break;
                     case TCP_PAIR:
                         pair(np);
@@ -122,7 +125,7 @@ public class ConnectionThread implements Runnable {
                         receivePairResult(np);
                         break;
                     default:
-                        Device.getConnectedDevices().get(deviceId).setAnswer(true);
+                        setDevicePing(deviceId,true);
                         commandFromClient(np);
                         break;
                 }
@@ -130,9 +133,20 @@ public class ConnectionThread implements Runnable {
             }catch (Exception e)
             {
                 e.printStackTrace();
-                Loggout.e("ConnectionThread","Error in DetermineWhatToDo",e);
+                Loggout.e("ConnectionThread","Error in DetermineWhatToDo ",e);
             }
         }
+
+    private void setDevicePing(String deviceId,boolean answer){
+            lock.lock();
+            try {
+                Device device = Device.getConnectedDevices().get(deviceId);
+                if (device != null)
+                    device.setAnswer(answer);
+            }finally {
+                lock.unlock();
+            }
+    }
 
     private void sendIntroduce() {
         try {
@@ -146,32 +160,44 @@ public class ConnectionThread implements Runnable {
 
         private void newConnectedDevice(NetworkPackage np)
         {
-            if(deviceId != null)
-                return;
+            lock.lock();
+            try {
+                if (deviceId != null)
+                    return;
 
                 deviceId = np.getId();
-                if(Device.getConnectedDevices().containsKey(deviceId))
+                if (Device.getConnectedDevices().containsKey(deviceId))
                     closeConnection();
-                Device  device = new Device(deviceId, np.getName(), connection.getInetAddress(), this);
+                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this);
                 Device.getConnectedDevices().put(deviceId, device);
-            String data = np.getData();
-            if(data != null && !data.equalsIgnoreCase("null") && data.equals( BackgroundService.getSettingManager().get(deviceId))) {
+                String data = np.getData();
+                if (data != null && !data.equalsIgnoreCase("null") && data.equals(BackgroundService.getSettingManager().get(deviceId))) {
                     device.setPaired(true);
-                    BackgroundService.pairResultFromGui(deviceId,OK);
+                    BackgroundService.pairResultFromGui(deviceId, OK);
                 }
                 ping();
                 pingCheck();
                 GuiCommunicator.newDeviceConnected(device);
-                if(device.isPaired()) {
-                    GuiCommunicator.devicePaired(deviceId,true);
+                if (device.isPaired()) {
+                    GuiCommunicator.devicePaired(deviceId, true);
                 }
+            }finally {
+                lock.unlock();
+            }
         }
 
 
-        private void unpair() {
-            Device.getConnectedDevices().get(deviceId).setPaired(false);
+        public  void unpair() {
+        lock.lock();
+        try {
+            Device device = Device.getConnectedDevices().get(deviceId);
+            if(device != null)
+            device.setPaired(false);
             BackgroundService.getSettingManager().delete(deviceId);
-            GuiCommunicator.devicePaired(deviceId,false);
+            GuiCommunicator.devicePaired(deviceId, false);
+        }finally {
+            lock.unlock();
+        }
         }
 
         private void pair(NetworkPackage np) {
@@ -199,6 +225,7 @@ public class ConnectionThread implements Runnable {
 
         public void commandFromClient(NetworkPackage np)
         {
+            lock.lock();
             try {
                 Device device = Device.getConnectedDevices().get(np.getId());
                 if(device == null)
@@ -211,6 +238,8 @@ public class ConnectionThread implements Runnable {
                 module.execute(np);
             }catch (Exception e) {
                 Loggout.e("ConnectionThread","commandFromClient",e);
+            }finally {
+                lock.unlock();
             }
         }
 

@@ -33,18 +33,19 @@ public class ModuleFactory {
         try {
             if (registeredModules == null) {
                 registerModulesInit();
-            }}finally {
+            }
+            Module module = null;
+            try {
+                module = (Module) registeredModule.newInstance();
+                module.setDevice(dv);
+            } catch (IllegalAccessException | InstantiationException e) {
+                Loggout.e("ModuleFactory", e.toString());
+
+            }
+            return module;
+        }finally {
             lock.unlock();
         }
-        Module module = null;
-        try {
-            module = (Module)registeredModule.newInstance();
-            module.setDevice(dv);
-        } catch (IllegalAccessException | InstantiationException e) {
-            Loggout.e("ModuleFactory",e.toString());
-
-        }
-        return module;
     }
 
     private static void registerModulesInit() {
@@ -55,7 +56,7 @@ public class ModuleFactory {
         registeredModules.add(SmsModule.class);
         registeredModules.add(Battery.class);
         registeredModules.add(Mpris.class);
-       // registeredModules.add(ClipBoard.class);
+        registeredModules.add(ClipBoard.class);
         registeredModules.add(Messengers.class);
         registeredModules.add(TouchControl.class);
     }

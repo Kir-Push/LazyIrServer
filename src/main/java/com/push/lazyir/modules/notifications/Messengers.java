@@ -1,7 +1,6 @@
 package com.push.lazyir.modules.notifications;
 
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
@@ -10,11 +9,10 @@ import com.push.lazyir.service.BackgroundService;
  * Created by buhalo on 19.04.17.
  */
 public class Messengers extends Module {
-    public static final String ANSWER = "answer";
+    private static final String ANSWER = "answer";
     @Override
     public void execute(NetworkPackage np) {
-        if(np.getData().equals(ANSWER))
-        {
+        if(np.getData().equals(ANSWER)) {
             Notification message = np.getObject(NetworkPackage.N_OBJECT, Notification.class);
             GuiCommunicator.show_notification(device.getId(),message);
         }
@@ -30,6 +28,6 @@ public class Messengers extends Module {
         NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(Messengers.class.getSimpleName(),ANSWER);
         np.setValue("typeName",typeName);
         np.setValue("text",text);
-        BackgroundService.getTcp().sendCommandToServer(id,np.getMessage());
+        BackgroundService.sendToDevice(id,np.getMessage());
     }
 }

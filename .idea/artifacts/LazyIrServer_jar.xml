@@ -27,6 +27,7 @@
       <element id="library" level="project" name="Maven: org.mockito:mockito-core:2.8.47" />
       <element id="library" level="project" name="Maven: org.objenesis:objenesis:2.5" />
       <element id="library" level="project" name="Maven: org.controlsfx:controlsfx:9.0.0" />
+      <element id="library" level="project" name="JCommunique-2.0.0" />
     </root>
   </artifact>
 </component>

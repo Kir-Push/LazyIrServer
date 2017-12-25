@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.service.MainClass.executorService;
+
 
 /**
  * Created by buhalo on 19.02.17.
@@ -65,7 +65,7 @@ public class UdpBroadcastManager  {
                 return;
             }
             listening = true;
-            executorService.submit(() -> {
+            BackgroundService.submitNewTask(() -> {
                 Loggout.d("Udp", "start listening");
                 final int bufferSize = 1024 * 5;
                 byte[] data = new byte[bufferSize];

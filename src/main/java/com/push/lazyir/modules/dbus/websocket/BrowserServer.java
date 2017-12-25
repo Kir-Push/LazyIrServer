@@ -2,6 +2,7 @@ package com.push.lazyir.modules.dbus.websocket;
 
 //import org.glassfish.tyrus.server.Server;
 
+import com.push.lazyir.Loggout;
 import org.glassfish.tyrus.server.Server;
 
 
@@ -18,7 +19,25 @@ public class BrowserServer {
     private volatile boolean running;
     private volatile int port = 11520;
     private String contextPath = "/lazyir";
-    private ReentrantLock lock = new ReentrantLock();
+    private static ReentrantLock lock = new ReentrantLock();
+
+    private static BrowserServer INSTANCE;
+
+    private BrowserServer() {
+    }
+
+    public static BrowserServer getINSTANCE(){
+
+        lock.lock();
+        try {
+            if (INSTANCE == null) {
+                INSTANCE = new BrowserServer();
+            }
+            return INSTANCE;
+        }finally {
+            lock.unlock();
+        }
+    }
 
     public void start() throws Exception
     {
@@ -31,9 +50,8 @@ public class BrowserServer {
             serverProperties.put(Server.STATIC_CONTENT_ROOT, "./src/main/webapp");
             server = new Server("127.0.0.1", port, contextPath, serverProperties, PopupEndpoint.class);
             server.start();
-        }catch (Exception e)
-        {
-            e.printStackTrace();
+        }catch (Exception e) {
+            Loggout.e("BrowserServer","Error in start",e);
             stop();
         }finally {
             lock.unlock();

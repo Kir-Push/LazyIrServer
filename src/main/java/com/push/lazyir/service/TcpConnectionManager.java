@@ -68,7 +68,7 @@ public class TcpConnectionManager {
     }
 
 
-    public void startServer()
+    void startServer()
     {
         boolean trying = true;
         int firstTryPort = port;
@@ -79,6 +79,8 @@ public class TcpConnectionManager {
                 if(tls)
                 {
                     SSLServerSocketFactory sslServerSocketFactory = createSSLContext().getServerSocketFactory();
+                    if(sslServerSocketFactory == null)
+                        BackgroundService.crushed("startServer");
                     myServerSocket = sslServerSocketFactory.createServerSocket(firstTryPort);
                 }
                 else
@@ -90,8 +92,7 @@ public class TcpConnectionManager {
                 firstTryPort++;
                 if(firstTryPort >= 5777)
                 {
-                    GuiCommunicator.iamCrushed();
-                    System.exit(-1);
+                    BackgroundService.crushed("startServer");
                 }
                 trying = false; // for testing purposes /todo
             }
@@ -106,7 +107,7 @@ public class TcpConnectionManager {
         dv.closeConnection();
     }
 
-    public void startListening() {
+    void startListening() {
       BackgroundService.submitNewTask(() -> {
             if(isServerOn()) {
                 Loggout.d("Tcp","Server already working");
@@ -157,9 +158,7 @@ public class TcpConnectionManager {
         BackgroundService.sendToDevice(id, NetworkPackage.Cacher.getOrCreatePackage(TCP_UNPAIR,TCP_UNPAIR).getMessage());
         Device device = Device.getConnectedDevices().get(id);
         if(device != null)
-        device.setPaired(false);
-        BackgroundService.getSettingManager().delete(id);
-        GuiCommunicator.devicePaired(id,false);
+        device.unpair();
     }
 
 }

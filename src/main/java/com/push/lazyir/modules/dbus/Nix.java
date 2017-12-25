@@ -18,6 +18,7 @@ import static com.push.lazyir.modules.dbus.Mpris.*;
 /**
  * Created by buhalo on 15.08.17.
  */
+// strategy for nix which have dbus
 public class Nix implements OsStrategy {
 
     private ConcurrentHashMap<String,String> pausedPlayers = new ConcurrentHashMap<>();
@@ -159,7 +160,7 @@ public class Nix implements OsStrategy {
 
     @Override
     public void loop(NetworkPackage np) {
-
+        //todo
     }
 
     private String getTime(String org) {

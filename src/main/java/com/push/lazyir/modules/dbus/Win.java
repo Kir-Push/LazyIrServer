@@ -78,7 +78,7 @@ public class Win implements OsStrategy {
 
     @Override
     public void loop(NetworkPackage np) {
-
+        //todo
     }
 
     @Override

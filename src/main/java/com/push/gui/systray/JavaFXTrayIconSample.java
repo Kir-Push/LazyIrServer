@@ -26,8 +26,6 @@ public class JavaFXTrayIconSample extends Application {
 
     private  MainWin mainWin;
 
-    // a timer allowing the tray icon to provide a periodic notification event.
-    private Timer notificationTimer = new Timer();
 
     // format used to display the current time in a tray icon notification.
     private DateFormat timeFormat = SimpleDateFormat.getTimeInstance();
@@ -109,7 +107,6 @@ public class JavaFXTrayIconSample extends Application {
             // tray icon (removing the tray icon will also shut down AWT).
             java.awt.MenuItem exitItem = new java.awt.MenuItem("Exit");
             exitItem.addActionListener(event -> {
-                notificationTimer.cancel();
                 Platform.exit();
                 System.exit(0);
                 tray.remove(trayIcon);

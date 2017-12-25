@@ -2,7 +2,6 @@ package com.push.lazyir.modules.notifications;
 
 
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.gui.Communicator;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
@@ -37,7 +36,7 @@ public class SmsModule extends Module {
         NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SMS_TYPE,SEND);
         Sms message = new Sms(name,text,null,null); // todo image
         np.setObject(NetworkPackage.N_OBJECT,message);
-        BackgroundService.getTcp().sendCommandToServer(dvId,np.getMessage());
+        BackgroundService.sendToDevice(dvId,np.getMessage());
     }
 
 

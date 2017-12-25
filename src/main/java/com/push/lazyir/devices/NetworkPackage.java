@@ -153,12 +153,10 @@ public class NetworkPackage {
     {
         String typeName = idNode.get(TYPE).textValue();
         JsonNode object = idNode.get(key);
-
-
         try {
             return new ObjectMapper().readValue(object.toString(),tClass);
         } catch (Exception e) {
-            Loggout.e("NetworkPackage","Error in getObject",e);
+            Loggout.e("NetworkPackage","Error in getObject ",e);
         }
         return null;
     }

@@ -1,9 +1,16 @@
 package com.push.gui.basew;
 
+import com.notification.NotificationFactory;
+import com.notification.manager.QueueManager;
+import com.notification.manager.SlideManager;
 import com.push.gui.controllers.MainController;
+import com.push.gui.entity.CustomNotification;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.modules.notifications.Notification;
+import com.push.lazyir.modules.notifications.callTypes;
+import com.theme.ThemePackagePresets;
+import com.utils.Time;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,83 +31,49 @@ import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.control.action.Action;
 
+import java.awt.*;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 import static com.push.gui.utils.GuiUtils.createDummyStage;
 
 
-public interface Popup {
+public class Popup {
 
+    private volatile static boolean initialized;
+     private static NotificationFactory factory = new NotificationFactory(ThemePackagePresets.cleanLight());
+     private static QueueManager manager = new QueueManager(NotificationFactory.Location.SOUTHEAST);
+     private static SlideManager callManager = new SlideManager(NotificationFactory.Location.SOUTHEAST);
 
-    static void show(String id, NotificationDevice notification, MainController mainController) {
+     private static HashMap<String,CustomNotification> callNotifs = new HashMap<>();
 
+    public static void show(String id, NotificationDevice notification, MainController mainController) {
+        if(!initialized){
+            // register the custom builder with the factory
+            factory.addBuilder(CustomNotification.class, new CustomNotification.CustomBuilder());
+            // add the Notification
+            manager.setScrollDirection(QueueManager.ScrollDirection.NORTH);
+            initialized = true;
+        }
+        CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController);
 
+        boolean incoming = notification.getType().equalsIgnoreCase(callTypes.incoming.name());
+        if(incoming || notification.getType().equalsIgnoreCase(callTypes.missedIn.name())){
+            if(!callNotifs.containsKey(notification.getTitle()))
+            callNotifs.put(notification.getTitle(),build);
+        }
+        if(incoming){
+            callManager.addNotification(build,Time.seconds(10));
+        }
+        else
+        manager.addNotification(build, Time.seconds(20));
 
-        GridPane listCellContents = new GridPane();
-        listCellContents.setHgap(10);
-        if (notification.getIcon() != null && notification.getIcon().length() > 1)
-            listCellContents.add(GuiUtils.getPictureFromBase64(notification.getIcon(), 40, 40), 0, 0);
+    }
 
-        VBox vBox = new VBox();
-        Text title = new Text();
-        title.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
-        title.setText(notification.getTitle() + "\n");
-        Text text = new Text();
-        text.setText(notification.getText());
-        vBox.getChildren().addAll(title, text);
-        vBox.setAlignment(Pos.TOP_LEFT);
-        listCellContents.add(vBox, 1, 0);
-
-        ColumnConstraints leftCol = new ColumnConstraints();
-        ColumnConstraints centerCol = new ColumnConstraints();
-        ColumnConstraints rightCol = new ColumnConstraints();
-
-        if (notification.getPicture() != null && notification.getPicture().length() > 1)
-            listCellContents.add(GuiUtils.getPictureFromBase64(notification.getPicture(), 120, 120), 2, 0);
-        rightCol.setHalignment(HPos.RIGHT);
-        rightCol.setHgrow(Priority.ALWAYS);
-        centerCol.setHalignment(HPos.CENTER);
-        centerCol.setHgrow(Priority.ALWAYS);
-        listCellContents.getColumnConstraints().addAll(leftCol, centerCol, rightCol);
-        listCellContents.setMinHeight(100);
-        listCellContents.setAlignment(Pos.CENTER);
-
-//        Platform.runLater(()->{
-//            Stage dummyStage = GuiUtils.createDummyStage();
-//            dummyStage.show();
-//        });
-//        try {
-//            Thread.sleep(500);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-
-        Platform.runLater(()->{
-                            System.out.println("hereBABA");
-
-
-
-            Notifications notif = Notifications.create();
-            Pos bottomRight = Pos.BOTTOM_RIGHT;
-
-            String type = notification.getType();
-            if (type.equals("messenger") || type.equals("sms")) {
-                Action reply = new Action(consumer->{
-                    GuiUtils.hideNotif(notif,bottomRight);
-                    new Dialogs().showAnswerMessenger(id,notification,mainController);
-                });
-                reply.setText("Reply");
-                notif.action(reply);
-            }
-            Notifications position = notif.text("").title("")
-                    .graphic(listCellContents)
-                    .position(bottomRight).hideAfter(Duration.seconds(20));
-
-            System.out.println("da ja zdesj");
-            position.show();
-                         //   dummyStage.hide();
-                        });
-
+    public static void callEnd(String id, String callerNumber) {
+        if(callNotifs.containsKey(callerNumber)){
+            callNotifs.get(callerNumber).hide();
+            callNotifs.remove(callerNumber);
+        }
     }
 }
