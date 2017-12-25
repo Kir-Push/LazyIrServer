@@ -202,6 +202,16 @@ public class CustomNotification extends BorderLayoutNotification {
                     });
                 });
             }
+
+            TextTheme theme1 = pack.getTheme(TextTheme.class);
+            theme1.titleColor = Color.gray;
+            if(notificationDevice.getType().equalsIgnoreCase(callTypes.incoming.name())){
+                notification.setTextThemeCall(theme1);
+            }else if(notificationDevice.getType().equalsIgnoreCase(callTypes.missedIn.name())){
+                notification.setTextThemecallMissed(theme1);
+            }else
+                notification.setTextTeme(theme1);
+            //todo call notif handle,!!!
             notification.setCloseOnClick(true);
             // handled by WindowNotification
             WindowTheme theme = pack.getTheme(WindowTheme.class);
@@ -238,14 +248,6 @@ public class CustomNotification extends BorderLayoutNotification {
             theme.width = calculatedWidth;
             theme.height = calculatedHeight;
             notification.setWindowTheme(theme);
-            TextTheme theme1 = pack.getTheme(TextTheme.class);
-            theme1.titleColor = Color.gray;
-            if(notificationDevice.getType().equalsIgnoreCase(callTypes.incoming.name())){
-                notification.setTextThemeCall(theme1);
-            }else if(notificationDevice.getType().equalsIgnoreCase(callTypes.missedIn.name())){
-                notification.setTextThemecallMissed(theme1);
-            }else
-            notification.setTextTeme(theme1);
             return notification;
         }
     }

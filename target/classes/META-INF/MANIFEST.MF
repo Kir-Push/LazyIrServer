@@ -16,5 +16,6 @@ Class-Path:  libs/tyrus-spi-1.13.1.jar
                      libs/grizzly-http-server-2.3.25.jar
                      libs/grizzly-http-2.3.25.jar
                      libs/grizzly-framework-2.3.25.jar
+                     libs/JCommunique-2.0.0.jar
 Main-Class: com.push.gui.systray.JavaFXTrayIconSample
 

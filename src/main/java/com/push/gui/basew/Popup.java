@@ -2,6 +2,7 @@ package com.push.gui.basew;
 
 import com.notification.NotificationFactory;
 import com.notification.manager.QueueManager;
+import com.notification.manager.SimpleManager;
 import com.notification.manager.SlideManager;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.CustomNotification;
@@ -43,7 +44,7 @@ public class Popup {
     private volatile static boolean initialized;
      private static NotificationFactory factory = new NotificationFactory(ThemePackagePresets.cleanLight());
      private static QueueManager manager = new QueueManager(NotificationFactory.Location.SOUTHEAST);
-     private static SlideManager callManager = new SlideManager(NotificationFactory.Location.SOUTHEAST);
+     private static SimpleManager callManager = new SimpleManager(NotificationFactory.Location.SOUTHEAST);
 
      private static HashMap<String,CustomNotification> callNotifs = new HashMap<>();
 
