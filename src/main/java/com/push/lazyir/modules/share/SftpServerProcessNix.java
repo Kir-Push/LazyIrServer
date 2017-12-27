@@ -38,8 +38,6 @@ public class SftpServerProcessNix implements SftpServerProcess {
     private  int i = 1;
     private Lock lock = new ReentrantLock();
 
-    //todo in android send info about all path, uncluding emolated/1 /2 and sd card path
-    // todo and here create folders with these path!
     public SftpServerProcessNix(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id,String currentUsersHomeDir) {
         this.port = port;
         this.ip = ip;
@@ -132,7 +130,6 @@ public class SftpServerProcessNix implements SftpServerProcess {
 
     }
 
-    //todo refactor
     @Override
     public void run() {
         if (running) {
@@ -193,8 +190,7 @@ public class SftpServerProcessNix implements SftpServerProcess {
             lock.unlock();
         }
     }
-
-    //todo handle error mountpoint not empty
+    
 
     @Override
     public void stopProcess()

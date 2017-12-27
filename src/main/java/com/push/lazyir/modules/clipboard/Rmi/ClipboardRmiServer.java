@@ -50,7 +50,6 @@ public class ClipboardRmiServer implements ClientRegister {
         }catch (AlreadyBoundException e){
 
         }catch (RemoteException e){
-            //todo when no connection, close server
         }
     }
 
@@ -79,7 +78,6 @@ public class ClipboardRmiServer implements ClientRegister {
             try {
                 changer.setClipboard(text);
             } catch (RemoteException e) {
-                //todo when no connection, close server
             }
         }
     }

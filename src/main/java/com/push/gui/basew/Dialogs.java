@@ -23,7 +23,7 @@ import java.util.List;
 
 public class Dialogs {
 
-    private List<File> draggedFiles; // todo
+    private List<File> draggedFiles;
 
     public void showAnswerMessenger(String id, NotificationDevice notification, MainController mainController){
         try {

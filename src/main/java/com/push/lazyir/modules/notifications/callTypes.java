@@ -7,5 +7,6 @@ package com.push.lazyir.modules.notifications;
 public enum callTypes {
     incoming,
     outgoing,
-    missedIn
+    missedIn,
+    answer
 }

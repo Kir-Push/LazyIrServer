@@ -35,8 +35,6 @@ public class SftpServerProcessWin implements SftpServerProcess {
         this.pass = pass;
         this.userName = userName;
         this.externalMountPoint = externalMountPoint;
-        //todo in android send info about all path, uncluding emolated/1 /2 and sd card path
-        // todo and here create folders with these path!
         this.mountPoint = mountPoint;
         this.id = id;
         this.currentUsersHomeDir = currentUsersHomeDir;
@@ -58,15 +56,14 @@ public class SftpServerProcessWin implements SftpServerProcess {
     @Override
     public void run() {
 
-            try {
-                ProcessBuilder pb = new ProcessBuilder(args);
-                start = pb.start();
-                // todo destroy pcocesses when jvm exit
-                running = true;
-            } catch (IOException e) {
-                Loggout.e("Sftp", e.toString());
-                running = false; //todo some stop
-            }
+//            try {
+//                ProcessBuilder pb = new ProcessBuilder(args);
+//                start = pb.start();
+//                running = true;
+//            } catch (IOException e) {
+//                Loggout.e("Sftp", e.toString());
+//                running = false;
+//            }
 
     }
 

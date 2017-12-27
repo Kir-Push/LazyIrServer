@@ -40,7 +40,6 @@ public class NetworkPackage {
     private final static NetworkPackage mprisPackage = new NetworkPackage(Mpris.class.getSimpleName(), ALL_PLAYERS);
 
 
-    //todo in Android version
     //This variable depends on app version(pc or android)
     private final static String DEVICE = "pc";
 

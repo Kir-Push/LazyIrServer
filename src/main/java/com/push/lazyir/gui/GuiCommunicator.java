@@ -109,6 +109,7 @@ public class GuiCommunicator {
 
 
 
+    //todo files add
     public static void sendMessengerAnswer(String id,String typeName, String text, List<File> dragImageurl) {
         Messengers.sendAnswer(typeName,text,id);
     }
@@ -136,7 +137,6 @@ public class GuiCommunicator {
     }
 
     public static void iamCrushed(String message) {
-        //todo
     }
 
     public static void pairAnswer(String id,boolean answer){
@@ -156,10 +156,7 @@ public class GuiCommunicator {
 
 
     public static void call_notif_end(NetworkPackage np) {
-        String callType = np.getValue("callType");
-        if(callType.equalsIgnoreCase(callTypes.incoming.name())){
-            ApiController.getInstance().removeNotificationCallEnd(np.getId(),np.getValue("number"));
-        }
+        ApiController.getInstance().removeNotificationCallEnd(np.getId(),np.getValue("number"));
     }
 
     public static void tcpClosed() {

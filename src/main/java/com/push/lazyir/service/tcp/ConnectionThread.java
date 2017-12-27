@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -273,8 +274,11 @@ public class ConnectionThread implements Runnable {
                 timerFuture.cancel(true);
             }
             Device device = Device.getConnectedDevices().get(deviceId);
-            if(device != null)
-            device.getEnabledModules().values().forEach(module ->  module.endWork()); // todo something here nullpointer exception!
+            if(device != null) {
+                ConcurrentHashMap<String, Module> enabledModules = device.getEnabledModules();
+                if(enabledModules != null)
+                enabledModules.values().forEach(Module::endWork);
+            }
             Device.getConnectedDevices().remove(deviceId);
             GuiCommunicator.deviceLost(deviceId);
             // calling after because can throw exception and remove from hashmap won't be done

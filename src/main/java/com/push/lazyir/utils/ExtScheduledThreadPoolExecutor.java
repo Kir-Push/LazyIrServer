@@ -1,5 +1,7 @@
 package com.push.lazyir.utils;
 
+import com.push.lazyir.Loggout;
+
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -20,7 +22,9 @@ public class ExtScheduledThreadPoolExecutor extends ScheduledThreadPoolExecutor 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
         super.afterExecute(r, t);
-        //todo handle exceptions!!
+       if(t != null && t instanceof Exception){
+           Loggout.e("ExtScheduledThreadPoolExecutor","In some thread error: ", (Exception) t);
+       }
     }
 
     @Override

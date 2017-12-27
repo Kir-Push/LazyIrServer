@@ -22,6 +22,7 @@ public class ShowNotification extends Module {
     public static final String REMOVE_NOTIFICATION = "removeNotification";
     public static final String CALL = "com.android.call";
     public static final String ENDCALL = "com.android.endCall";
+    public static final String ANSWER = "answer";
     public static final String ALL_NOTIFS = "ALL NOTIFS";
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
     private static volatile boolean CALLING = false;
@@ -66,6 +67,8 @@ public class ShowNotification extends Module {
                                     mpris.playAll(np.getId());
                                 }
                                 GuiCommunicator.call_notif_end(np);
+                            }else if(ANSWER.equals(data)){
+                                GuiCommunicator.call_notif_end(np);
                             }
 
                     } catch(NullPointerException e){
@@ -75,8 +78,7 @@ public class ShowNotification extends Module {
 
     @Override
     public void endWork() {
-        if( Device.getConnectedDevices().size() == 0)
-        {
+        if( Device.getConnectedDevices().size() == 0) {
             CALLING = false;
         }
     }

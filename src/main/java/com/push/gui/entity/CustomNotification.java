@@ -17,6 +17,7 @@ import com.theme.ThemePackagePresets;
 import com.theme.WindowTheme;
 import com.utils.Time;
 import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 
@@ -56,35 +57,44 @@ public class CustomNotification extends BorderLayoutNotification {
         this.addComponent(right_panel,BorderLayout.EAST);
     }
 
-    public void setTextTeme(TextTheme theme) {
+    public void setTextTemeFont(TextTheme theme) {
         text_lbl.setFont(theme.subtitle);
-        text_lbl.setForeground(theme.titleColor);
-        text_lbl.setBackground(theme.subtitleColor);
         m_button.setFont(theme.subtitle);
-        m_button.setForeground(theme.subtitleColor);
         m_button2.setFont(theme.subtitle);
-        m_button2.setForeground(theme.subtitleColor);
-
         m_theme = theme;
     }
 
-    public void setTextThemeCall(TextTheme theme){
+    public void setTextThemeColor(TextTheme theme){
+        text_lbl.setForeground(theme.titleColor);
+        text_lbl.setBackground(theme.subtitleColor);
+        m_button.setForeground(theme.subtitleColor);
+        m_button2.setForeground(theme.subtitleColor);
+    }
+
+    public void setTextThemeCallFont(TextTheme theme){
         text_lbl.setFont(theme.subtitle);
         text_lbl.setForeground(theme.titleColor);
         text_lbl.setBackground(theme.subtitleColor);
         m_button.setFont(theme.title);
         m_button2.setFont(theme.title);
-        m_button.setForeground(Color.GREEN);
-        m_button2.setForeground(Color.RED);
     }
 
-    private void setTextThemecallMissed(TextTheme theme) {
+    public void setTextThemeCallColor(){
+        m_button.setForeground(Color.GREEN);
+        m_button2.setForeground(   Color.RED );
+    }
+
+    public void setTextThemecallMissedFont(TextTheme theme) {
         text_lbl.setFont(theme.subtitle);
         text_lbl.setForeground(theme.titleColor);
         text_lbl.setBackground(theme.subtitleColor);
         m_button.setFont(theme.title);
+    }
+
+    public void setTextThemeCallMiseedColor(){
         m_button.setForeground(Color.GREEN);
     }
+
 
     public void setImage(String base64,int width,int heigh){
         img_lbl.setIcon(GuiUtils.pictureFromBase64Swing(base64,width,heigh));
@@ -124,7 +134,7 @@ public class CustomNotification extends BorderLayoutNotification {
             // the WindowNotification is going to automatically give all our labels with the set foreground color, but
             // we want to change this to the title color of the font
             icon_lbl.setForeground(m_theme.titleColor);
-            m_button.setForeground(m_theme.subtitleColor);
+          //  m_button.setForeground(m_theme.subtitleColor);
         }
     }
 
@@ -133,8 +143,9 @@ public class CustomNotification extends BorderLayoutNotification {
         public CustomNotification buildNotification(ThemePackage pack, Object[] args) {
             CustomNotification notification = new CustomNotification();
 
-            double width = Screen.getPrimary().getBounds().getWidth();
-            double height = Screen.getPrimary().getBounds().getHeight();
+            Rectangle2D bounds = Screen.getPrimary().getBounds();
+            double width = bounds.getWidth();
+            double height = bounds.getHeight();
             NotificationDevice notificationDevice = (NotificationDevice) args[0];
             String id = (String) args[1];
             MainController controller = (MainController) args[2];
@@ -150,12 +161,20 @@ public class CustomNotification extends BorderLayoutNotification {
             String icon = notificationDevice.getIcon();
             String picture = notificationDevice.getPicture();
 
+            boolean missed = notificationDevice.getType().equalsIgnoreCase(callTypes.missedIn.name());
+            boolean incoming = notificationDevice.getType().equalsIgnoreCase(callTypes.incoming.name());
+
             if(icon != null && icon.length() > 0)
             notification.setIcon(icon, 100, 100);
             else if(icon == null && notificationDevice.getType().equals("sms"))
                 notification.setIcon(GuiUtils.getDefaultIconMessage(),100,100);
+            else if(icon == null && incoming){
+                notification.setIcon(GuiUtils.getDefaultCallMessage(),100,100);
+            }
             if(picture != null && picture.length() > 0)
             notification.setImage(picture,150,150);
+
+
 
             if(notificationDevice.getType().equals("sms")) {
                 notification.setFirstButton("Reply", action -> {
@@ -172,7 +191,7 @@ public class CustomNotification extends BorderLayoutNotification {
                         controller.openMessengerDialog(notificationDevice,id);
                     });
                 });
-            }else if(notificationDevice.getType().equalsIgnoreCase(callTypes.incoming.name())){
+            }else if(incoming){
                 notification.setFirstButton("Answer",action->{
                     notification.hide();
                     Platform.runLater(()->{
@@ -193,7 +212,7 @@ public class CustomNotification extends BorderLayoutNotification {
                     });
                 });
             }
-            else if(notificationDevice.getType().equalsIgnoreCase(callTypes.missedIn.name())){
+            else if(missed){
                 notification.setFirstButton("Recall",action->{
                     notification.hide();
                     Platform.runLater(()->{
@@ -204,13 +223,13 @@ public class CustomNotification extends BorderLayoutNotification {
 
             TextTheme theme1 = pack.getTheme(TextTheme.class);
             theme1.titleColor = Color.gray;
-            if(notificationDevice.getType().equalsIgnoreCase(callTypes.incoming.name())){
-                notification.setTextThemeCall(theme1);
-            }else if(notificationDevice.getType().equalsIgnoreCase(callTypes.missedIn.name())){
-                notification.setTextThemecallMissed(theme1);
-            }else
-                notification.setTextTeme(theme1);
-            //todo call notif handle,!!!
+            if(incoming){
+               notification.setTextThemeCallFont(theme1);
+            }else if(missed){
+                notification.setTextThemecallMissedFont(theme1);
+            }else {
+                notification.setTextTemeFont(theme1);
+            }
             notification.setCloseOnClick(true);
             // handled by WindowNotification
             WindowTheme theme = pack.getTheme(WindowTheme.class);
@@ -247,6 +266,13 @@ public class CustomNotification extends BorderLayoutNotification {
             theme.width = calculatedWidth;
             theme.height = calculatedHeight;
             notification.setWindowTheme(theme);
+            if(incoming){
+                notification.setTextThemeCallColor();
+            }else if(missed){
+                notification.setTextThemeCallMiseedColor();
+            }else{
+                notification.setTextThemeColor(theme1);
+            }
             return notification;
         }
     }

@@ -16,7 +16,7 @@
 ///**
 // * Created by buhalo on 12.03.17.
 // */
-//// todo rewrite to socket
+////
 ////i think communication will be like rest (not exactly same)
 //public enum Communicator implements Runnable{
 //
@@ -97,7 +97,7 @@
 //        System.out.flush();
 //    }
 //
-//    public static void tryToEraseAllResource() { //todo attention runtime.addhook in mainclass  mainmethod
+//    public static void tryToEraseAllResource() {
 //        Device.getConnectedDevices().values().forEach(device -> device.closeConnection());
 //    }
 //
@@ -172,7 +172,7 @@
 //
 //    public synchronized void iamCrushed()
 //    {
-//        sendToOut("ERROR CRUSH TCP"); //todo implement in gui
+//        sendToOut("ERROR CRUSH TCP");
 //    }
 //
 //    public synchronized void iamCrushedUdpListen()

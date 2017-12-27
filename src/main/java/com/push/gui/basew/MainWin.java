@@ -4,6 +4,7 @@ import com.push.gui.controllers.ApiController;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
+import com.push.lazyir.Loggout;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -40,9 +41,6 @@ public class MainWin  {
         this.primaryStage = stage;
         this.primaryStage.setTitle("LazyIr");
         initRootLayout();
-        //todo
-        // start backend on separate thread
-        // commented for gui develop separating
     }
 
     private Stage initRootLayout() {
@@ -62,14 +60,8 @@ public class MainWin  {
             controller.setMainApp(this);
             ApiController.setMainController(controller);
             // Тут не вызывает show stage потомучто мы будем вызывать из systray класса.
-//            PhoneDevice phone = new PhoneDevice("lg-d855", "lg-d855", "phone", 5, false, true, false);
-//            phone.setNotifications(FXCollections.observableArrayList(new NotificationDevice("dadadadadadadadadadadadadaAgasj","sms","aga","java","huj","mabva",new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/jaja"))),new String(Files.readAllBytes(Paths.get("/home/buhalo/Загрузки/icons/kote")))),new NotificationDevice("samka","notification","da","java","huj","mabva",null,null)));
-//            connectedDevices.add(phone);
-//            connectedDevices.add(new PhoneDevice("lg-d8552","lg-d8552","phone",75,false,false,false));
-//            connectedDevices.add(new PhoneDevice("lg-d85522","lg-d8552","phone",25,true,false,false));
-//            System.out.println(connectedDevices.size());
         } catch (IOException e) {
-            e.printStackTrace(); // todo
+            Loggout.e("MainWin","initRootLayout",e);
         }
         return primaryStage;
     }
