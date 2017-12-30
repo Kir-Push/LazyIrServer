@@ -140,11 +140,14 @@ public class TcpConnectionManager {
         BackgroundService.sendToDevice(id,np.getMessage());
     }
 
-    void sendPairResult(String id,String result) {
+    void sendPairResult(String id, String result, String data) {
         try {
             NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(TCP_PAIR_RESULT,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
             np.setValue(RESULT,result);
             BackgroundService.sendToDevice(id,np.getMessage());
+            Device device = Device.getConnectedDevices().get(id);
+            if(device != null)
+                device.savePairedState(result,data);
             if(result.equals(OK))
             ShareModule.sendSetupServerCommand(id);
         } catch (UnknownHostException e) {

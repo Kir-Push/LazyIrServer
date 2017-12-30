@@ -1,37 +1,18 @@
 package com.push.lazyir.gui;
 
-import com.push.gui.basew.Dialogs;
 import com.push.gui.controllers.ApiController;
-import com.push.gui.controllers.MainController;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
-import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.notifications.*;
 import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.service.BackgroundServiceCmds;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-import org.controlsfx.control.action.Action;
 
 import java.io.File;
 import java.util.List;
 
-import static com.push.lazyir.modules.notifications.ShowNotification.ALL_NOTIFS;
-import static com.push.lazyir.modules.notifications.ShowNotification.SHOW_NOTIFICATION;
 import static com.push.lazyir.modules.notifications.SmsModule.SMS_TYPE;
 import static com.push.lazyir.service.TcpConnectionManager.OK;
 import static com.push.lazyir.service.TcpConnectionManager.REFUSE;
@@ -139,12 +120,13 @@ public class GuiCommunicator {
     public static void iamCrushed(String message) {
     }
 
-    public static void pairAnswer(String id,boolean answer){
-        BackgroundService.pairResultFromGui(id,answer ? OK : REFUSE);
+    public static void pairAnswer(String id, boolean answer, String data){
+        BackgroundService.pairResultFromGui(id,answer ? OK : REFUSE,data);
     }
 
     public static void requestPair(NetworkPackage np) {
-
+        NotificationDevice notificationDevice = new NotificationDevice("Request Pair" ,"pair", np.getName(),np.getType(),np.getData(),np.getId(),np.getValue("icon"),null);
+        ApiController.getInstance().requestPair(np.getId(),notificationDevice);
     }
 
     public static void call_Notif(NetworkPackage np) {

@@ -83,7 +83,6 @@ public class ShareModule extends Module {
             userName = np.getValue("userName");
             pass = np.getValue("pass");
             mountPoint = np.getValue("mainDir");
-            System.out.println(np.getMessage());
             externalMountPoint = np.getObject("externalPath",PathWrapper.class);
             if(userName == null || pass == null) {
                 NetworkPackage tryMore =  NetworkPackage.Cacher.getOrCreatePackage(SHARE_T,RECCONECT);

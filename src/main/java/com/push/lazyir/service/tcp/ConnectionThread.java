@@ -81,12 +81,15 @@ public class ConnectionThread implements Runnable {
 
     public void receivePairResult(NetworkPackage np)
     {
+        receivePairResult( np.getId(),np.getValue("answer").equals("paired") ? OK : REFUSE,np.getData());
+    }
+
+    public void receivePairResult(String id,String result,String data){
         lock.lock();
         try {
-            String id = np.getId();
             Device device = Device.getConnectedDevices().get(id);
-            if (np.getValue("answer").equals("paired")) {
-                BackgroundService.getSettingManager().saveValue(id, np.getData());
+            if (result.equals(OK)) {
+                BackgroundService.getSettingManager().saveValue(id, data);
                 if (device != null)
                     device.setPaired(true);
                 GuiCommunicator.devicePaired(id, true);
@@ -103,39 +106,38 @@ public class ConnectionThread implements Runnable {
 
         private void determineWhatTodo(NetworkPackage np)
         {
+                String type = np.getType();
+                if (deviceId == null && !type.equals(TCP_INTRODUCE)) {
+                    return;
+                }
+                try {
+                    switch (type) {
+                        case TCP_INTRODUCE:
+                            newConnectedDevice(np);
+                            break;
+                        case TCP_PING:
+                            setDevicePing(deviceId, true);
+                            break;
+                        case TCP_PAIR:
+                            pair(np);
+                            break;
+                        case TCP_UNPAIR:
+                            unpair();
+                            break;
+                        case TCP_PAIR_RESULT:
+                            receivePairResult(np);
+                            break;
+                        default:
+                            setDevicePing(deviceId, true);
+                            commandFromClient(np);
+                            break;
+                    }
 
-            String type = np.getType();
-            if( deviceId == null && !type.equals(TCP_INTRODUCE)) {
-                return;
-            }
-            try {
-                switch (type) {
-                    case TCP_INTRODUCE:
-                        newConnectedDevice(np);
-                        break;
-                    case TCP_PING:
-                        setDevicePing(deviceId,true);
-                        break;
-                    case TCP_PAIR:
-                        pair(np);
-                        break;
-                    case TCP_UNPAIR:
-                        unpair();
-                        break;
-                    case TCP_PAIR_RESULT:
-                        receivePairResult(np);
-                        break;
-                    default:
-                        setDevicePing(deviceId,true);
-                        commandFromClient(np);
-                        break;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Loggout.e("ConnectionThread", "Error in DetermineWhatToDo ", e);
                 }
 
-            }catch (Exception e)
-            {
-                e.printStackTrace();
-                Loggout.e("ConnectionThread","Error in DetermineWhatToDo ",e);
-            }
         }
 
     private void setDevicePing(String deviceId,boolean answer){
@@ -167,14 +169,16 @@ public class ConnectionThread implements Runnable {
                     return;
 
                 deviceId = np.getId();
-                if (Device.getConnectedDevices().containsKey(deviceId))
-                    closeConnection();
+                if (Device.getConnectedDevices().containsKey(deviceId) && Device.getConnectedDevices().get(deviceId).isConnected()) {
+                  //  closeConnection();
+                    return;
+                }
                 Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this);
                 Device.getConnectedDevices().put(deviceId, device);
                 String data = np.getData();
                 if (data != null && !data.equalsIgnoreCase("null") && data.equals(BackgroundService.getSettingManager().get(deviceId))) {
                     device.setPaired(true);
-                    BackgroundService.pairResultFromGui(deviceId, OK);
+                    BackgroundService.pairResultFromGui(deviceId, OK, data);
                 }
                 ping();
                 pingCheck();

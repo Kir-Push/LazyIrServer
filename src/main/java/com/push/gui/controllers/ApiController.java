@@ -113,4 +113,7 @@ public class ApiController {
         Popup.callEnd(id,callerNumber);
     }
 
+    public void requestPair(String id,NotificationDevice notificationDevice) {
+       showNotification(id,notificationDevice);
+    }
 }

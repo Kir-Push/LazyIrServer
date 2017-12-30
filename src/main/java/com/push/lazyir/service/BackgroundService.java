@@ -123,8 +123,8 @@ public class BackgroundService {
         getInstance().tcp.sendUnpair(id);
     }
 
-    public static void pairResultFromGui(String id,String result){
-        getInstance().tcp.sendPairResult(id,result);
+    public static void pairResultFromGui(String id, String result, String data){
+        getInstance().tcp.sendPairResult(id,result,data);
     }
 
     public static int getPort() {

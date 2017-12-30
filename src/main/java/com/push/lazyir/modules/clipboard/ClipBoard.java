@@ -13,7 +13,7 @@ public class ClipBoard extends Module {
 
     public ClipBoard() {
         super();
-       server.startListening();
+     //  server.startListening(); //todo while test on windows, and don't have windwos dll
     }
 
     @Override
@@ -28,6 +28,6 @@ public class ClipBoard extends Module {
     }
 
     private void onReceive(NetworkPackage np) {
-        server.setClipboard(np.getValue("text"));
+       // server.setClipboard(np.getValue("text")); //todo while test on windows, and don't have windwos dll
     }
 }

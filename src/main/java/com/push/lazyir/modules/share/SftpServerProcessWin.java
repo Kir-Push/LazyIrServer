@@ -1,11 +1,21 @@
 package com.push.lazyir.modules.share;
 
+import com.profesorfalken.jpowershell.PowerShell;
+import com.profesorfalken.jpowershell.PowerShellNotAvailableException;
+import com.profesorfalken.jpowershell.PowerShellResponse;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.service.MainClass;
+import javafx.application.Platform;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,12 +33,15 @@ public class SftpServerProcessWin implements SftpServerProcess {
     private Process process;
     private  String currentUsersHomeDir;
     private Process start;
-    public String driveLetter;
+    private String driveLetter;
     private volatile boolean running;
     private  int i = 1;
+    private char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray();
+    // hash map, key device id, value network driver letter
+    private HashMap<String,String> connectedDrivesMap = new HashMap<>();
     private Lock lock = new ReentrantLock();
 
-    // todo !! todo todo !! todo
+
     public SftpServerProcessWin(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id,String currentUsersHomeDir) {
         this.port = port;
         this.ip = ip;
@@ -38,53 +51,139 @@ public class SftpServerProcessWin implements SftpServerProcess {
         this.mountPoint = mountPoint;
         this.id = id;
         this.currentUsersHomeDir = currentUsersHomeDir;
-         args = new ArrayList<>();
+        this.args = new ArrayList<>();
 
-        if(MainClass.isWindows())
-        {
-            driveLetter = "T:";
-            programm = "FTPUSE";
-            args.add(programm);
-            args.add(driveLetter);
-            args.add(ip.getHostAddress()+mountPoint);
-            args.add(pass);
-            args.add("/USER:"+userName);
-            args.add("/PORT:"+String.valueOf(port));
-        }
+        driveLetter = getFreeDrive();
+        programm = "net use";
+        fillArgs();
+    }
+
+    private void fillArgs(){
+        args.add("cmd");
+        args.add("/c");
+        args.add(programm);
+        args.add(driveLetter);
+        args.add("\\\\sshfs\\" + userName + "@" + ip.getHostAddress() + "!" + port + mountPoint);
+        args.add(pass);
     }
 
     @Override
     public void run() {
 
-//            try {
-//                ProcessBuilder pb = new ProcessBuilder(args);
-//                start = pb.start();
-//                running = true;
-//            } catch (IOException e) {
-//                Loggout.e("Sftp", e.toString());
-//                running = false;
-//            }
+        if (running) {
+            return;
+        }
+        try {
+            String result = connect();
+            //todo work wirth result, check if connection established, read result's utc
+            running = true;
+            connectedDrivesMap.put(id,driveLetter);
+            renameDrive(driveLetter,userName + " MainStorage");
+            if(externalMountPoint != null){
+                List<String> paths = externalMountPoint.getPaths();
+                for (String path : paths) {
+                    driveLetter = getFreeDrive();
+                    mountPoint = path;
+                    fillArgs();
+                    String externalResult = connect();
+                    connectedDrivesMap.put(id,driveLetter);
+                    renameDrive(driveLetter,id + " ExternalStorage");
+                    //todo work wirth result, check if connection established, read result's utc
+                }
+
+            }
+        }  catch (IOException | InterruptedException e) {
+          Loggout.e("SftpServerPRocessWin","error in connection ",e);
+          running = false;
+        }
 
     }
 
     @Override
     public String connect() throws IOException, InterruptedException {
-        return null;
+        ProcessBuilder pb = new ProcessBuilder(args);
+        Process start = pb.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(start.getErrorStream()));
+        return reader.readLine();
     }
 
     @Override
     public void stopProcess() {
         List<String> closeArgs = new ArrayList<>();
-        if (MainClass.isUnix()) {
-            if (MainClass.isWindows()) {
-                closeArgs.add(programm);
-                closeArgs.add(driveLetter);
-                closeArgs.add("/DELETE");
+        for (String s : connectedDrivesMap.values()) {
+            try {
+            closeArgs.add("cmd");
+            closeArgs.add("/c");
+            closeArgs.add(programm);
+            closeArgs.add(s);
+            closeArgs.add("/DELETE");
+            ProcessBuilder pb = new ProcessBuilder(args);
+            Process start = pb.start();
+            running = false;
+            } catch (IOException e) {
+               //
             }
         }
     }
+
+
+    //todo add to path new lib!
+   // https://github.com/profesorfalken/jPowerShell
+    private void renameDrive(String driveLetter,String newName){
+        String cmd = " $rename.NameSpace(\"" + driveLetter + "\").Self.Name = \"" + newName +"\"";
+        try {
+            PowerShell powerShell1 = PowerShell.openSession();
+            PowerShellResponse powerShellResponse = powerShell1.executeCommand("$rename = new-object -ComObject Shell.Application");
+             powerShellResponse = powerShell1.executeCommand(cmd);
+        } catch (PowerShellNotAvailableException e) {
+          Loggout.e("SftpProcessWin","renameDrive Error ",e);
+        }
+
+    }
     @Override
     public boolean isRunning() {
-        return false;
+        return running;
     }
+
+    // execute win command FSUTIL FSINFO DRIVES, get list of used drives
+    // iterate over alphabet list, and on each letter check if exist in list
+    // if no return it, it free letter, may iterate over thousand times, much but
+    // command executes only when device connect to sftp, not too often
+    private String getFreeDrive(){
+        Runtime rt = Runtime.getRuntime();
+        try {
+            List<String> closeArgs = new ArrayList<>();
+            closeArgs.add("cmd");
+            closeArgs.add("/c");
+            closeArgs.add("FSUTIL");
+            closeArgs.add("FSINFO");
+            closeArgs.add("DRIVES");
+            ProcessBuilder pb = new ProcessBuilder(closeArgs);
+            BufferedReader reader = new BufferedReader(new InputStreamReader((   pb.start().getInputStream())));
+            reader.readLine();
+            String s = reader.readLine();
+            if(s == null)
+                return "";
+            String[] split = s.split(" ");
+            if( split.length <= 1)
+                return "";
+
+            for (char c : alphabet) {
+                boolean has = false;
+                for(int i=1;i<split.length;i++){
+                    if(c == split[i].charAt(0)){
+                        has = true;
+                    }
+                }
+                if(!has){
+                    return String.valueOf(c)+":";
+                }
+            }
+
+        } catch (IOException e) {
+            Loggout.e("SftpServerProcessWIn","error in getFreeDrive ",e);
+        }
+        return "";
+    }
+
 }

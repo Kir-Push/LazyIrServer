@@ -90,6 +90,10 @@ public class Device {
         this.paired = paired;
     }
 
+    public void savePairedState( String result, String data){
+        this.thread.receivePairResult(id,result,data);
+    }
+
     public boolean isListening() {
         return listening;
     }

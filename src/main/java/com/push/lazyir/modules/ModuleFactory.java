@@ -74,11 +74,15 @@ public class ModuleFactory {
     }
 
     public static List<Class> getRegisteredModules() {
-        if(registeredModules == null)
-        {
-            registerModulesInit();
+        lock.lock();
+        try {
+            if (registeredModules == null) {
+                registerModulesInit();
+            }
+            return registeredModules;
+        }finally {
+            lock.unlock();
         }
-        return registeredModules;
     }
 
     public static void setRegisteredModules(List<Class> registeredModules) {

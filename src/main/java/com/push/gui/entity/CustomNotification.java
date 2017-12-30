@@ -219,6 +219,19 @@ public class CustomNotification extends BorderLayoutNotification {
                         GuiCommunicator.recall(notificationDevice,id);
                     });
                 });
+            }else if(notificationDevice.getType().equalsIgnoreCase("pair")){
+                notification.setFirstButton("Yes",action->{
+                    notification.hide();
+                    Platform.runLater(()->{
+                        GuiCommunicator.pairAnswer(id,true,notificationDevice.getTicker());
+                    });
+                });
+                notification.setSecondButton("No",action->{
+                    notification.hide();
+                    Platform.runLater(()->{
+                        GuiCommunicator.pairAnswer(id,false,notificationDevice.getTicker());
+                    });
+                });
             }
 
             TextTheme theme1 = pack.getTheme(TextTheme.class);
