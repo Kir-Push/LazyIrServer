@@ -244,6 +244,8 @@ public class CustomNotification extends BorderLayoutNotification {
 
             if(calculatedWidth < width/7)
                 calculatedWidth = (int) (width/6);
+            else if(calculatedWidth > width/3)
+                calculatedWidth = (int) width/3; // todo test witch big text notifications
 
             maxHeighCalculated += 20;
             calculatedHeight = maxHeighCalculated;
