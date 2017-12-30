@@ -14,6 +14,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static com.push.lazyir.service.settings.SettingManager.currentUsersHomeDir;
+
 
 /**
  * Created by buhalo on 05.03.17.
@@ -32,7 +34,6 @@ public class ShareModule extends Module {
     private String mountPoint;
     private PathWrapper externalMountPoint;
     private Future futuresftp;
-    private  String currentUsersHomeDir = System.getProperty("user.home") +  File.separator + ".Jasech" + File.separator + "ConnectedDevices";
     private SftpServerProcess sftpServerProcess;
     private static Lock staticLock = new ReentrantLock();
 

@@ -1,6 +1,7 @@
 package com.push.lazyir.service.settings;
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.pojo.Command;
 
 import java.io.*;
@@ -18,6 +19,7 @@ public class SettingManager implements Manager {
     private FileInputStream fileInputStream;
     private FileOutputStream fileOutputStream;
     private String baseProp = "baseProp";
+    public static  String currentUsersHomeDir = System.getProperty("user.home") +  File.separator + ".Jasech" + File.separator + "ConnectedDevices";
     private String mockId = null;
     private String keyPath;
 
@@ -46,6 +48,17 @@ public class SettingManager implements Manager {
                 Loggout.e("SettingManager",e.toString());
             }
         }
+        clearFolders();
+
+    }
+
+    private void clearFolders(){
+        File file = new File(currentUsersHomeDir);
+        File[] files = file.listFiles();
+        if (files != null)
+            for (File file1 : files) {
+                file1.delete();
+            }
 
     }
 
