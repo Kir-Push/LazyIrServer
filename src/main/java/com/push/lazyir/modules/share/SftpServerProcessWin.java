@@ -137,6 +137,7 @@ public class SftpServerProcessWin implements SftpServerProcess {
             PowerShell powerShell1 = PowerShell.openSession();
             PowerShellResponse powerShellResponse = powerShell1.executeCommand("$rename = new-object -ComObject Shell.Application");
              powerShellResponse = powerShell1.executeCommand(cmd);
+             powerShell1.close();
         } catch (PowerShellNotAvailableException e) {
           Loggout.e("SftpProcessWin","renameDrive Error ",e);
         }
