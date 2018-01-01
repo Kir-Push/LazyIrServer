@@ -48,11 +48,11 @@ public class SettingManager implements Manager {
                 Loggout.e("SettingManager",e.toString());
             }
         }
-        clearFolders();
 
     }
 
-    private void clearFolders(){
+    //clear device internal sftp temp folder's
+    public void clearFolders(){
         File file = new File(currentUsersHomeDir);
         File[] files = file.listFiles();
         if (files != null)

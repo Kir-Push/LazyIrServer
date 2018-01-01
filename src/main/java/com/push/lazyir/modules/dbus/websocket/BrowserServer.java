@@ -48,10 +48,10 @@ public class BrowserServer {
         running = true;
             final Map<String, Object> serverProperties = new HashMap<String, Object>();
             serverProperties.put(Server.STATIC_CONTENT_ROOT, "./src/main/webapp");
-            server = new Server("127.0.0.1", port, contextPath, serverProperties, PopupEndpoint.class);
+            server = new Server("127.0.0.1", port, contextPath, null, PopupEndpoint.class);
             server.start();
         }catch (Exception e) {
-            Loggout.e("BrowserServer","Error in start",e);
+            Loggout.e("BrowserServer","Error in start ",e);
             stop();
         }finally {
             lock.unlock();
@@ -61,6 +61,7 @@ public class BrowserServer {
 
     public void stop()
     {
+        System.out.println("SERVER STOPPED!");
         lock.lock();
         try{
         running = false;

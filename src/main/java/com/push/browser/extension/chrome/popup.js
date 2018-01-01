@@ -1,36 +1,69 @@
 
 var MyJasechvideo;
+var MultipleVideos;
+var isSingleVideo;
 var JAsechCount = 0;
 var jasechResponse = false;
-var jasechInterval = 10000; // 1000 is one second;
+var jasechInterval = 5000; // 1000 is one second;
+var workthroughbackhround = false;;
+var backgroundFailed;
 var jasechIntervalId;
+var pingId;
+var pingInterval = 500;
+var setted;
 
 function setCheckServerInterval() {
     if(jasechResponse === true)
         return;
+    clearInterval(jasechIntervalId);
     jasechIntervalId = setInterval(function() {
+        if(workthroughbackhround !== true)
         checkServer();
     }, jasechInterval);
 }
 
 var onopen = function() {
+
     jasechResponse = true;
-    // sendMessage("hello my dear friend")// test
+    workthroughbackhround = false;
 };
 
 var onclose = function(event) {
+
     if (event.wasClean) {
         //todo
     } else {
         // например, "убит" процесс сервера
     }
     jasechResponse = false;
+    jasechsocket.close();
     jasechsocket = undefined;
 };
 
 var onerror = function(error) {
-    //todo repsone false need or not?
-    //  alert("Ошибка " + error.message);
+    if(jasechsocket.readyState === 3 && backgroundFailed !== true){
+        jasechResponse = false;
+       // clearInterval(jasechIntervalId);
+       // clearInterval(pingId);
+        setted = false;
+    
+        chrome.runtime.onMessage.addListener(
+            function(request, sender, sendResponse) {
+                if(!sender.tab){
+                    if(request.resp === "connected"){
+                         workthroughbackhround = true;
+                    }else if(request.resp === "Not connected"){
+                        workthroughbackhround = false;
+                        backgroundFailed = true;
+                        jasechResponse = false;
+                     //   setCheckServerInterval();
+                      //  clearInterval(pingId);
+                    }else
+                    parseResponse(request.resp);
+                }
+            });
+         sendMessage("try connect");
+    }
 };
 
 var onmg = function(event) {
@@ -39,13 +72,21 @@ var onmg = function(event) {
 };
 
 var sendMessage = function (msg) {
-    jasechsocket.send(msg);
+    console.log(workthroughbackhround + "  " + jasechResponse + "    " + jasechsocket);
+    if(workthroughbackhround !== true && jasechResponse === true && jasechsocket !== undefined) {
+        jasechsocket.send(msg);
+    }
+    else{
+     chrome.runtime.sendMessage({message: msg},function (response) {
+     });
+    }
 };
 
 
 var jasechsocket;
 
 var connectingPeople = function () {
+
     if(!jasechResponse) {
         jasechsocket = new WebSocket('ws:127.0.0.1:11520/lazyir/v1');
         jasechsocket.onclose = onclose;
@@ -56,13 +97,33 @@ var connectingPeople = function () {
 };
 
 function checkServer() {
-    if(MyJasechvideo === undefined) {
-        MyJasechvideo = document.getElementsByTagName("video")[0];
-        if(MyJasechvideo === undefined)
-        {
-            MyJasechvideo = document.getElementsByTagName("audio")[0];
+    var tempMultipleVideos = document.getElementsByTagName("video");
+    var tempMultipleAudios = document.getElementsByTagName("audio");
+
+    if(tempMultipleVideos.length === 1){
+        isSingleVideo = true;
+    }
+    MultipleVideos = [];
+    var arrayLength = tempMultipleVideos.length;
+    for (var i = 0; i < arrayLength; i++) {
+       if(tempMultipleVideos[i].currentSrc !== "" &&  tempMultipleVideos[i].currentSrc !== "undefined" && tempMultipleVideos[i].currentSrc !== "null"){
+           MultipleVideos.push(tempMultipleVideos[i]);
+       }
+    }
+
+    arrayLength = tempMultipleAudios.length;
+    for (var i = 0; i < arrayLength; i++) {
+        if(tempMultipleAudios[i].currentSrc !== "" &&  tempMultipleAudios[i].currentSrc !== "undefined" && tempMultipleAudios[i].currentSrc !== "null"){
+            MultipleVideos.push(tempMultipleAudios[i]);
         }
     }
+    if(MultipleVideos.length === 0)
+        return;
+
+    if(MyJasechvideo === undefined) {
+        MyJasechvideo = MultipleVideos[0];
+    }
+
     if(MyJasechvideo !== undefined)
     {
         connectingPeople();
@@ -76,49 +137,58 @@ init();
 function init() {
     checkServer();
     setCheckServerInterval();
+    clearInterval(pingId);
+    pingId = setInterval(function() {
+        chrome.runtime.sendMessage({message: "ping"},function (response) {
+        });
+    },pingInterval);
 }
 
 function parseResponse(data)
-{
-    var json = JSON.parse(data);
-    if(json.command === "pause")
-    {
-        pause();
-    }
-    else if(json.command === "previous")
-    {
-        previous();
-    }
-    else if(json.command === "play")
-    {
-        play();
-    }
-    else if(json.command === "playPause")
-    {
-        playPause();
-        //todo
-    }
-    else if(json.command === "setTime")
-    {
-        setTime(json.time);
-    }
-    else if(json.command === "setVolume")
-    {
-        setVolume(json.volume);
-    }
-    else if(json.command === "getInfo")
-    {
-        sendInfo();
-    }
-    else if(json.command === "next")
-    {
-        sendNext();
-    }
-    else if(json.command === "loop")
-    { //todo
-        loop();
-    }
-}
+ {
+     console.log(data);
+     var json = JSON.parse(data);
+
+     if(json.multipleVids === "true"){
+         //todo get video src and some id and do command's for it.
+         // iterate all over array, because many video may have one source, do command for all of them!
+
+     }
+
+     if(json.command === "pause")
+     {
+         pause();
+     }
+     else if(json.command === "play")
+     {
+         play();
+     }
+     else if(json.command === "playPause")
+     {
+         playPause();
+         //todo
+     }
+     else if(json.command === "setTime")
+     {
+         setTime(json.time);
+     }
+     else if(json.command === "setVolume")
+     {
+         setVolume(json.volume);
+     }
+     else if(json.command === "getInfo")
+     {
+         sendInfo();
+     }
+     else if(json.command === "next")
+     {
+         sendNext();
+     }
+     else if(json.command === "loop")
+     {
+         loop();
+     }
+ }
 
 function loop() {
     if (typeof MyJasechvideo.loop == 'boolean') { // loop supported
@@ -132,30 +202,30 @@ function loop() {
 }
 
 
-function sendStatus() {
+ function sendStatus() {
 
-}
-
-
-function sendDuration() {
-
-}
+ }
 
 
-function sendTime() {
+ function sendDuration() {
 
-}
+ }
+
+
+ function sendTime() {
+
+ }
 
 function playPause() {
-    var status = getStatus();
-    if(status === "playing")
-    {
-        pause();
-    }
-    else
-    {
-        play();
-    }
+   var status = getStatus();
+   if(status === "playing")
+   {
+       pause();
+   }
+   else
+   {
+       play();
+   }
 }
 
 
@@ -164,39 +234,78 @@ function sendNext() {
 
 }
 
-function previous() {
-    MyJasechvideo.currentTime = -1;
-}
+ function sendInfo() {
 
+     var arrayLength = MultipleVideos.length;
+    if(arrayLength === 1) {
+        var obj = {
+            "type": "getInfo",
+            "title": getTitle(),
+            "status": getStatus(),
+            "time": getTime(),
+            "duration": getDuration(),
+            "volume": getVolume(),
+            "url": getPageUrl(),
+            "videoSrc": getVideoSrc()
+        };
+    }else{
+        var obj = {
+            "type": "getInfoMultiple",
+            "numberOfVideos":arrayLength
+        }
+        for (var i = 0; i < arrayLength; i++) {
+            MyJasechvideo = MultipleVideos[i];
+            obj["title"+i] = getTitle();
+            obj["status"+i] = getStatus();
+            obj["time"+i] = getTime();
+            obj["duration"+i] = getDuration();
+            obj["volume"+i] = getVolume();
+            obj["url"+i] = getPageUrl();
+            obj["videoSrc"+i] = getVideoSrc();
+        }
+        MyJasechvideo = MultipleVideos[0];
+    }
+     var myJSON = JSON.stringify(obj);
+     sendMessage(myJSON);
+ }
 
-function sendInfo() {
-    var obj = {"type":"getInfo","title":getTitle(),"status":getStatus(),"time":getTime(),"duration":getDuration(),"volume":getVolume()};
-    var myJSON = JSON.stringify(obj);
-    sendMessage(myJSON);
-}
+ function getVideoSrc() {
+     if(!MyJasechvideo.currentSrc.startsWith("blob:") && !MyJasechvideo.currentSrc.startsWith("\"blob:\"") && MyJasechvideo.currentSrc !== "" &&  MyJasechvideo.currentSrc !== "undefined" && MyJasechvideo.currentSrc !== "null"){
+         return MyJasechvideo.currentSrc;
+     }
+     else if(MyJasechvideo.src !== undefined && !MyJasechvideo.src.startsWith("blob:") && !MyJasechvideo.src.startsWith("\"blob:\"" && MyJasechvideo.src !== "" &&  MyJasechvideo.src !== "undefined" && MyJasechvideo.src !== null )){
+         return MyJasechvideo.src;
+     } else{
+         return getPageUrl();
+     }
+ }
+
+ function getPageUrl() {
+     return MyJasechvideo.baseURI;
+ }
 
 function sendTitle() {
-    //  document.title;
+  //  document.title;
 }
 
-function sendVolume() {
+ function sendVolume() {
 
-}
+ }
 
-function getTitle() {
-    return document.title;
-}
+ function getTitle() {
+     return document.title;
+ }
 
-function getStatus() {
+ function getStatus() {
     if(MyJasechvideo.paused)
         return "paused";
     else
         return "playing";
-}
+ }
 
-function getVolume() {
-    return MyJasechvideo.volume;
-}
+ function getVolume() {
+     return MyJasechvideo.volume;
+ }
 
 function getDuration()
 {
@@ -209,7 +318,7 @@ function setTime(sec)
 }
 
 function setVolume(vol) {
-    MyJasechvideo.volume = vol;
+  MyJasechvideo.volume = vol;
 }
 
 
@@ -224,6 +333,8 @@ function play() {
 function getTime() {
     return MyJasechvideo.currentTime;
 }
+
+
 
 
 function youtubePageChange()

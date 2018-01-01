@@ -87,8 +87,12 @@ public class TcpConnectionManager {
                     myServerSocket = new ServerSocket(firstTryPort);
                 this.port = firstTryPort;
                 trying = false;
+                // you need clear folder when server created, because you may start multiple instances of app
+                // and you clear folder of other instance
+                // after server created(using one port) you know that only one instance running.
+                BackgroundService.clearTempFolders();
             } catch (Exception e) {
-                Loggout.e("Tcp", "startServer with port " + firstTryPort + " failed",e);
+                Loggout.e("Tcp", "startServer with port " + firstTryPort + " failed ",e);
                 firstTryPort++;
                 if(firstTryPort >= 5777)
                 {

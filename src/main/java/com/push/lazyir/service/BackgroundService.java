@@ -154,4 +154,8 @@ public class BackgroundService {
     public static void mount(String id) {
         //todo
     }
+
+    public static void clearTempFolders(){
+        getInstance().settingManager.clearFolders();
+    }
 }

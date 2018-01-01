@@ -3,12 +3,15 @@ package com.push.lazyir.modules.dbus;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.dbus.websocket.PopupEndpoint;
+import com.push.lazyir.utils.CollectingFuture;
 import com.push.lazyir.utils.SettableFuture;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.push.lazyir.modules.dbus.Mpris.*;
 
@@ -77,12 +80,17 @@ public class HtmlVid implements OsStrategy {
 
     @Override
     public List<Player> getAllPlayers() {
-        SettableFuture<List<Player>> browsr = null;
+        CollectingFuture<Player,Collection<Player>> browsr = null;
         try {
             browsr = PopupEndpoint.getAll();
-            return browsr.get(200, TimeUnit.MILLISECONDS); // from browser
+            ArrayList<Player> players = new ArrayList<>(browsr.getByTimerWhatHave(200, TimeUnit.MILLISECONDS));
+            for (Player player1 : players) {
+                System.out.println(player1);
+            }
+            System.out.println("=================================");
+            return players; // from browser
         } catch (Exception e) {
-            Loggout.e("HtmlVid","getAllPlayers",e);
+            Loggout.e("HtmlVid","getAllPlayers ",e);
             if(browsr!=null)
             browsr.cancel(true);
         }
@@ -91,6 +99,7 @@ public class HtmlVid implements OsStrategy {
 
     @Override
     public void playAll(String id) {
+        // todo as pauseAll
         for (String s : pausedPlayersBrowser.keySet()) {
             PopupEndpoint.sendStatus(s,"play");
             pausedPlayersBrowser.clear();
@@ -100,7 +109,8 @@ public class HtmlVid implements OsStrategy {
     @Override
     public void pauseAll(String id) {
         try {
-            List<Player> playerList = PopupEndpoint.getAll().get(200, TimeUnit.MILLISECONDS);
+            // todo rewrite, just send to popupendpoint command to pause all, and there iterate all over session's send pauseall
+            List<Player> playerList = new ArrayList<>(PopupEndpoint.getAll().get(200, TimeUnit.MILLISECONDS));
             if (playerList != null) {
                 for (Player pl : playerList) {
                     if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) {

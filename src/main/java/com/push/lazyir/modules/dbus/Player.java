@@ -4,7 +4,7 @@ package com.push.lazyir.modules.dbus;
  * Created by buhalo on 15.04.17.
  */
 
-public class Player {
+public class Player implements Comparable<Player> {
     private String name;
     private String playbackStatus;
     private String title;
@@ -111,6 +111,28 @@ public class Player {
 
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Player player = (Player) o;
+
+        if (name != null ? !name.equals(player.name) : player.name != null) return false;
+        if (title != null ? !title.equals(player.title) : player.title != null) return false;
+        if (type != null ? !type.equals(player.type) : player.type != null) return false;
+        return id != null ? id.equals(player.id) : player.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Player{" +
                 "name='" + name + '\'' +
@@ -123,5 +145,14 @@ public class Player {
                 ", type='" + type + '\'' +
                 ", id='" + id + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Player o) {
+        if(getTitle().equals(o.getTitle())){
+            return o.getId().compareTo(getId());
+        }
+        else
+        return o.getTitle().compareTo(getTitle());
     }
 }
