@@ -6,7 +6,7 @@ var count = 0;
 var dict = {};
 var dictping = {};
 var intervalId;
-var intervalCount = 3000;
+var intervalCount = 10000;
 //var port = chrome.runtime.connect();
 var text;
 
@@ -16,7 +16,6 @@ LazyIrBackgroundInit();
 
 function LazyIrBackgroundInit() {
 
-    alert("Add listener");
     chrome.runtime.onMessage.addListener(
         function(request, sender, sendResponse) {
             if(sender.tab) {
@@ -102,10 +101,9 @@ function tryConnect(sender) {
 function sendMsg(tab,msg){
     chrome.tabs.get(tab.id,function () {
         if (chrome.runtime.lastError) {
-            if (dict[sender.tab.id] !== undefined) {
+            if (dict[tab.id] !== undefined) {
             dict[tab.id].close();
             dict[tab.id] = undefined;
-                alert("TAB ERROR," + dict[tab.id]);
         }}
     });
         chrome.tabs.sendMessage(tab.id, {resp: msg}, function(response) {

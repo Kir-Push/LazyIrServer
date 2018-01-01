@@ -9,16 +9,24 @@ var workthroughbackhround = false;;
 var backgroundFailed;
 var jasechIntervalId;
 var pingId;
-var pingInterval = 500;
+var pingInterval = 1000;
 var setted;
 
 function setCheckServerInterval() {
     if(jasechResponse === true)
         return;
+
     clearInterval(jasechIntervalId);
     jasechIntervalId = setInterval(function() {
         if(workthroughbackhround !== true)
         checkServer();
+        else{
+            clearInterval(pingId);
+            pingId = setInterval(function() {
+                chrome.runtime.sendMessage({message: "ping"},function (response) {
+                });
+            },pingInterval);
+        }
     }, jasechInterval);
 }
 
@@ -137,11 +145,6 @@ init();
 function init() {
     checkServer();
     setCheckServerInterval();
-    clearInterval(pingId);
-    pingId = setInterval(function() {
-        chrome.runtime.sendMessage({message: "ping"},function (response) {
-        });
-    },pingInterval);
 }
 
 function parseResponse(data)
