@@ -83,12 +83,7 @@ public class HtmlVid implements OsStrategy {
         CollectingFuture<Player,Collection<Player>> browsr = null;
         try {
             browsr = PopupEndpoint.getAll();
-            ArrayList<Player> players = new ArrayList<>(browsr.getByTimerWhatHave(200, TimeUnit.MILLISECONDS));
-            for (Player player1 : players) {
-                System.out.println(player1);
-            }
-            System.out.println("=================================");
-            return players; // from browser
+            return new ArrayList<>(browsr.getByTimerWhatHave(200, TimeUnit.MILLISECONDS)); // from browser
         } catch (Exception e) {
             Loggout.e("HtmlVid","getAllPlayers ",e);
             if(browsr!=null)

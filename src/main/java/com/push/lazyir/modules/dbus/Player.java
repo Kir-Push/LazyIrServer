@@ -14,8 +14,9 @@ public class Player implements Comparable<Player> {
     private String readyTimeString;
     private String type;
     private String id;
+    private String webId;
 
-    public Player(String name, String playbackStatus, String title, double lenght, double volume, double currTime, String readyTimeString, String type, String id) {
+    public Player(String name, String playbackStatus, String title, double lenght, double volume, double currTime, String readyTimeString, String type, String id,String webId) {
         this.name = "js9876528:" + id; //i'm lazy
         this.playbackStatus = playbackStatus;
         this.title = title;
@@ -25,6 +26,7 @@ public class Player implements Comparable<Player> {
         this.readyTimeString = readyTimeString;
         this.type = type;
         this.id = id;
+        this.id = webId;
     }
 
     public Player(String name, String playbackStatus, String title, double lenght, double volume, double currTime, String readyTimeString) {
@@ -154,5 +156,13 @@ public class Player implements Comparable<Player> {
         }
         else
         return o.getTitle().compareTo(getTitle());
+    }
+
+    public String getWebId() {
+        return webId;
+    }
+
+    public void setWebId(String webId) {
+        this.webId = webId;
     }
 }

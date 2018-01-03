@@ -42,14 +42,14 @@ function LazyIrBackgroundInit() {
             if (dictping.hasOwnProperty(key)) {
                 console.log(key, dictping[key]);
                 if(dictping[key] === false){
-                    if (dict[key] !== undefined){
+                    if (dict[key] !== undefined) {
                         dict[key].close();
-                        console.log("IN PING CLOSE");
                         dict[key] = undefined;
-                        dictping[key] = undefined;
                         delete dict[key];
-                       delete dictping[key];
                     }
+                    console.log("IN PING CLOSE");
+                        dictping[key] = undefined;
+                       delete dictping[key];
                 }
                 else if(dictping[key] === true){
                     dictping[key] = false;

@@ -68,22 +68,38 @@ public class PopupEndpoint {
     @OnMessage
     public void onMessage(Session session, String msg) {
            NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(msg);
-        System.out.println(msg);
-           if(np.getValue("type").equals("getInfo"))
-           {
+        String type = np.getValue("type");
+        boolean onePlayer = type.equals("getInfo");
+        boolean manyPlayers = type.equals("getInfoMultiple");
+        if(onePlayer || manyPlayers) {
+            Player player = null;
+            Players players = null;
                try {
                    //todo check correspond in android (status and other names)
-                   String title = np.getValue("title");
-                   String readyTime = ((int)np.getDouble("time"))/60 + ":" + ((int)np.getDouble("time")) % 60 + " / " + ((int)np.getDouble("duration"))/60 + ":" + (int)np.getDouble("duration")%60;
-                   Player player = new Player(title, np.getValue("status"), title, (int)np.getDouble("duration"),
-                           (int)(np.getDouble("volume")*100), (int)np.getDouble("time"), readyTime, "browser", session.getId());
-
-                   //todo add many player's per session !!
+                   if(onePlayer) {
+                       String title = np.getValue("title");
+                       String readyTime = ((int) np.getDouble("time")) / 60 + ":" + ((int) np.getDouble("time")) % 60 + " / " + ((int) np.getDouble("duration")) / 60 + ":" + (int) np.getDouble("duration") % 60;
+                       player = new Player(title, np.getValue("status"), title, (int) np.getDouble("duration"),
+                               (int) (np.getDouble("volume") * 100), (int) np.getDouble("time"), readyTime, "browser", session.getId(), null);
+                   }
+                   else if(manyPlayers){
+                       int count = Integer.parseInt( np.getValue("numberOfVideos"));
+                       players = new Players();
+                       for(int i = 0;i<count;i++){
+                           String title = np.getValue("title"+i);
+                           String readyTime = ((int) np.getDouble("time"+i)) / 60 + ":" + ((int) np.getDouble("time"+i)) % 60 + " / " + ((int) np.getDouble("duration"+i)) / 60 + ":" + (int) np.getDouble("duration"+i) % 60;
+                          Player tmp = new Player(title, np.getValue("status+i"), title, (int) np.getDouble("duration"+i),
+                                   (int) (np.getDouble("volume"+i) * 100), (int) np.getDouble("time"+i), readyTime, "browser", session.getId(), np.getValue("localId"+i));
+                          players.addTo(tmp);
+                       }
+                   }
                    long stamp = lock.writeLock();
                    try {
-                       getAllFuture.putItem(player);
-                       System.out.println("exprectedCount " + expectedCount);
-                       System.out.println("collected " + getAllFuture.getCollectedSize());
+                       if(onePlayer)
+                           getAllFuture.putItem(player);
+                       else if(manyPlayers)
+                           for (Player player1 : players.getPlayerList())
+                               getAllFuture.putItem(player1);
                        if(expectedCount <= getAllFuture.getCollectedSize()){
                            getAllFuture.completeWithCollected();
                        }
@@ -98,21 +114,46 @@ public class PopupEndpoint {
     }
 
 
+    // sending message to browser script
+    // first check if id arg contain localId for one of many page html5 vid's(only need when on page many of vids)
+    // if yes add to message - multipleVids key with value true and lazyIrId with localId
+    // It done via recreating NetworkPackage what is cost operation, need to rewrite
+    // get stored session from hashMap and send message.
+    // todo android version id handle
     public static void sendMessage(String msg,String id)
     {
+        String[] splittedId = checkIfMultiple(id);
+        String localId;
+        String lclMsg;
+        if(splittedId == null) {
+            localId = id;
+            lclMsg = msg;
+        } else{
+            localId = splittedId[0];
+            NetworkPackage pckg = NetworkPackage.Cacher.getOrCreatePackage(msg);
+            pckg.setValue("multipleVids","true");
+            pckg.setValue("lazyIrId",splittedId[1]);
+            lclMsg = pckg.getMessage();
+        }
         try {
-            Session session = connectedSessions.get(id);
+            Session session = connectedSessions.get(localId);
             if(session != null) {
                 RemoteEndpoint.Basic basicRemote = session.getBasicRemote();
                 if(basicRemote != null) {
-                    System.out.println("Connected sessiongs " + connectedSessions.size());
-                    System.out.println(msg);
-                    basicRemote.sendText(msg);
+                    basicRemote.sendText(lclMsg);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static String[] checkIfMultiple(String id) {
+        String[] split = id.split(":::wbmpl:::");
+        if( split.length == 2)
+            return split;
+        else
+            return null;
     }
 
     //play or pause

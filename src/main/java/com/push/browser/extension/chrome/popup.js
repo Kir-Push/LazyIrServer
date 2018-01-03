@@ -153,9 +153,14 @@ function parseResponse(data)
      var json = JSON.parse(data);
 
      if(json.multipleVids === "true"){
-         //todo get video src and some id and do command's for it.
-         // iterate all over array, because many video may have one source, do command for all of them!
-
+       var locId = json.lazyIrId;
+         var arrayLength = MultipleVideos.length;
+         for (var i = 0; i < arrayLength; i++) {
+             if( MultipleVideos[i].lazyIrId === locId){
+                 MyJasechvideo  = MultipleVideos[i];
+                 break;
+             }
+         }
      }
 
      if(json.command === "pause")
@@ -169,7 +174,6 @@ function parseResponse(data)
      else if(json.command === "playPause")
      {
          playPause();
-         //todo
      }
      else if(json.command === "setTime")
      {
@@ -241,6 +245,7 @@ function sendNext() {
 
      var arrayLength = MultipleVideos.length;
     if(arrayLength === 1) {
+        MyJasechvideo.lazyIrId = Math.random() * (999999 - 1) + 1;
         var obj = {
             "type": "getInfo",
             "title": getTitle(),
@@ -249,7 +254,8 @@ function sendNext() {
             "duration": getDuration(),
             "volume": getVolume(),
             "url": getPageUrl(),
-            "videoSrc": getVideoSrc()
+            "videoSrc": getVideoSrc(),
+            "localId": MyJasechvideo.lazyIrId
         };
     }else{
         var obj = {
@@ -258,6 +264,8 @@ function sendNext() {
         }
         for (var i = 0; i < arrayLength; i++) {
             MyJasechvideo = MultipleVideos[i];
+            MyJasechvideo.lazyIrId = Math.random() * (999999 - 1) + 1;
+            obj["localId"+i] = MyJasechvideo.lazyIrId;
             obj["title"+i] = getTitle();
             obj["status"+i] = getStatus();
             obj["time"+i] = getTime();

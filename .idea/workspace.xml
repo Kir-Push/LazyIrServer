@@ -10,6 +10,9 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.js" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -37,12 +40,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="PopupEndpoint.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="PopupEndpoint.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1024">
-              <caret line="159" column="63" lean-forward="false" selection-start-line="159" selection-start-column="63" selection-end-line="159" selection-end-column="63" />
+            <state relative-caret-position="814">
+              <caret line="121" column="37" lean-forward="false" selection-start-line="121" selection-start-column="37" selection-end-line="121" selection-end-column="37" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Players.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Players.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="26" column="11" lean-forward="false" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
+              <folding>
+                <element signature="e#485#486#0" expanded="true" />
+                <element signature="e#531#532#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -50,22 +66,9 @@
       <file leaf-file-name="popup.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="31" lean-forward="false" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="31" />
+            <state relative-caret-position="454">
+              <caret line="155" column="32" lean-forward="false" selection-start-line="155" selection-start-column="24" selection-end-line="155" selection-end-column="32" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ConcurrentSkipListSet.java" pinned="false" current-in-tab="false">
-        <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/java.base/java/util/concurrent/ConcurrentSkipListSet.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1122">
-              <caret line="111" column="29" lean-forward="false" selection-start-line="111" selection-start-column="29" selection-end-line="111" selection-end-column="29" />
-              <folding>
-                <element signature="e#3505#3506#0" expanded="true" />
-                <element signature="e#3562#3563#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -73,12 +76,10 @@
       <file leaf-file-name="CollectingFuture.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/CollectingFuture.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="816">
+            <state relative-caret-position="918">
               <caret line="56" column="29" lean-forward="false" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1598#1599#0" expanded="true" />
-                <element signature="e#1641#1642#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -87,9 +88,14 @@
       <file leaf-file-name="Player.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1326">
-              <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="272">
+              <caret line="16" column="22" lean-forward="false" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+              <folding>
+                <element signature="e#4406#4407#0" expanded="true" />
+                <element signature="e#4434#4435#0" expanded="true" />
+                <element signature="e#4476#4477#0" expanded="true" />
+                <element signature="e#4510#4511#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -97,8 +103,8 @@
       <file leaf-file-name="HtmlVid.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1224">
-              <caret line="85" column="25" lean-forward="false" selection-start-line="85" selection-start-column="25" selection-end-line="85" selection-end-column="25" />
+            <state relative-caret-position="922">
+              <caret line="77" column="26" lean-forward="false" selection-start-line="77" selection-start-column="26" selection-end-line="77" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -109,16 +115,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="510">
               <caret line="30" column="25" lean-forward="false" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="background.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="687">
-              <caret line="106" column="10" lean-forward="true" selection-start-line="106" selection-start-column="10" selection-end-line="106" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -139,8 +135,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>completeOntim</find>
-      <find>zero</find>
       <find>players</find>
       <find>connected</find>
       <find>interva</find>
@@ -165,10 +159,12 @@
       <find>url</find>
       <find>ini</find>
       <find>getAllFuture</find>
-      <find>jasechResponse</find>
       <find>workthroughbackhround</find>
       <find>aler</find>
       <find>setCheckServerInterval</find>
+      <find>MultipleVideos</find>
+      <find>checkServer</find>
+      <find>jasechResponse</find>
     </findStrings>
     <replaceStrings>
       <replace>Communicator.getInstance().</replace>
@@ -247,12 +243,12 @@
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/manifest.json" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/BrowserServer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/CollectingFuture.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.js" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/CollectingFuture.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.js" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js" />
       </list>
     </option>
   </component>
@@ -339,6 +335,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="AndroidView" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -457,10 +457,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
-      <pane id="AndroidView" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1455,7 +1451,9 @@
       <workItem from="1514754897201" duration="48000" />
       <workItem from="1514755315518" duration="100000" />
       <workItem from="1514811248266" duration="25351000" />
-      <workItem from="1514836852088" duration="842000" />
+      <workItem from="1514836852088" duration="886000" />
+      <workItem from="1514999884529" duration="599000" />
+      <workItem from="1515003185804" duration="5060000" />
     </task>
     <task id="LOCAL-00001" summary="windows ftp and server pair methods">
       <created>1495381598585</created>
@@ -1639,7 +1637,14 @@
       <option name="project" value="LOCAL" />
       <updated>1514836632096</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="javascirpt fix bug's">
+      <created>1514837722057</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1514837722057</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1675,7 +1680,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1013883000" />
+    <option name="totallyTimeSpent" value="1019586000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1687,12 +1692,12 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="6" y="71" width="2560" height="1406" extended-state="6" />
+    <frame x="0" y="34" width="2560" height="1406" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11595273" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="FindBugs-IDEA" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27975738" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32127032" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329296" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
@@ -1700,11 +1705,11 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17892343" sideWeight="0.5055688" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16799048" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293944" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2252585" sideWeight="0.4944312" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2252585" sideWeight="0.4944312" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32867646" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19243027" sideWeight="0.49409157" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19561753" sideWeight="0.49409157" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297953" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24940334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1721,6 +1726,7 @@
       <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24980111" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32127032" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
@@ -1824,7 +1830,8 @@
     <MESSAGE value="add clear folder on start in setting manager" />
     <MESSAGE value="sftp win powershell close" />
     <MESSAGE value="javascript some site defence passed. fuu" />
-    <option name="LAST_COMMIT_MESSAGE" value="javascript some site defence passed. fuu" />
+    <MESSAGE value="javascirpt fix bug's" />
+    <option name="LAST_COMMIT_MESSAGE" value="javascirpt fix bug's" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1848,13 +1855,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/SmsModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="35" column="51" lean-forward="false" selection-start-line="35" selection-start-column="51" selection-end-line="35" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipboardJni.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -2078,7 +2078,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="18" column="30" lean-forward="true" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2100,7 +2099,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1532">
           <caret line="107" column="48" lean-forward="false" selection-start-line="107" selection-start-column="48" selection-end-line="107" selection-end-column="48" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2123,7 +2121,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="287">
           <caret line="1614" column="0" lean-forward="false" selection-start-line="1614" selection-start-column="0" selection-end-line="1614" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2149,22 +2146,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/CollectingFuture.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/socket.io.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="56" column="29" lean-forward="false" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1598#1599#0" expanded="true" />
-            <element signature="e#1641#1642#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1224">
-          <caret line="85" column="25" lean-forward="false" selection-start-line="85" selection-start-column="25" selection-end-line="85" selection-end-column="25" />
+        <state relative-caret-position="560">
+          <caret line="1" column="24345" lean-forward="false" selection-start-line="1" selection-start-column="24345" selection-end-line="1" selection-end-column="24345" />
           <folding />
         </state>
       </provider>
@@ -2174,24 +2159,16 @@
         <state relative-caret-position="1122">
           <caret line="111" column="29" lean-forward="false" selection-start-line="111" selection-start-column="29" selection-end-line="111" selection-end-column="29" />
           <folding>
-            <element signature="e#3505#3506#0" expanded="true" />
-            <element signature="e#3562#3563#0" expanded="true" />
+            <element signature="e#3505#3506#0" expanded="false" />
+            <element signature="e#3562#3563#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1326">
-          <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/socket.io.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="1" column="24345" lean-forward="false" selection-start-line="1" selection-start-column="24345" selection-end-line="1" selection-end-column="24345" />
+        <state relative-caret-position="763">
+          <caret line="49" column="49" lean-forward="false" selection-start-line="49" selection-start-column="49" selection-end-line="49" selection-end-column="49" />
           <folding />
         </state>
       </provider>
@@ -2204,26 +2181,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/CollectingFuture.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1024">
-          <caret line="159" column="63" lean-forward="false" selection-start-line="159" selection-start-column="63" selection-end-line="159" selection-end-column="63" />
+        <state relative-caret-position="918">
+          <caret line="56" column="29" lean-forward="false" selection-start-line="56" selection-start-column="19" selection-end-line="56" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="22" lean-forward="false" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+          <folding>
+            <element signature="e#4406#4407#0" expanded="true" />
+            <element signature="e#4434#4435#0" expanded="true" />
+            <element signature="e#4476#4477#0" expanded="true" />
+            <element signature="e#4510#4511#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="922">
+          <caret line="77" column="26" lean-forward="false" selection-start-line="77" selection-start-column="26" selection-end-line="77" selection-end-column="26" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Players.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="26" column="11" lean-forward="false" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
+          <folding>
+            <element signature="e#485#486#0" expanded="true" />
+            <element signature="e#531#532#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="31" lean-forward="false" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="31" />
+        <state relative-caret-position="454">
+          <caret line="155" column="32" lean-forward="false" selection-start-line="155" selection-start-column="24" selection-end-line="155" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="687">
-          <caret line="106" column="10" lean-forward="true" selection-start-line="106" selection-start-column="10" selection-end-line="106" selection-end-column="10" />
+        <state relative-caret-position="814">
+          <caret line="121" column="37" lean-forward="false" selection-start-line="121" selection-start-column="37" selection-end-line="121" selection-end-column="37" />
           <folding />
         </state>
       </provider>
