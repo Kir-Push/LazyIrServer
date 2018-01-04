@@ -2,6 +2,8 @@ package com.push.lazyir.service.tcp;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
+import com.push.lazyir.devices.ModuleSetting;
+import com.push.lazyir.devices.ModuleSettingList;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
@@ -13,15 +15,20 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static com.push.lazyir.devices.NetworkPackage.N_OBJECT;
 import static com.push.lazyir.service.TcpConnectionManager.*;
 
-
+/* class represent thread & tcp connection for device
+ listen for device commands and execute it's
+ SENDING command to device, going in other thread's, but used this class instance*/
 public class ConnectionThread implements Runnable {
 
 
@@ -48,17 +55,17 @@ public class ConnectionThread implements Runnable {
                 out = new PrintWriter(
                         new OutputStreamWriter(connection.getOutputStream()));
                 connectionRun = true;
-                sendIntroduce();
-                BackgroundService.getSettingManager().saveCache(connection.getInetAddress());
+                sendIntroduce(); // send tcp introduce, which initiate on remote device newDevice method
+                BackgroundService.getSettingManager().saveCache(connection.getInetAddress()); // save address to cache. Cache used when app start, to sending udp invitation's
                 while (connectionRun)
                 {
                     String clientCommand = in.readLine();
-                    if(!BackgroundService.isServerOn() || clientCommand == null) {
+                    if(!BackgroundService.isServerOn() || clientCommand == null) { // if server off, exit from read loop
                         connectionRun = false;
                         continue;
                     }
-                    NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(clientCommand);
-                    determineWhatTodo(np);
+                    NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(clientCommand); // create netwrokPackge from income message, actually it's parsing json
+                    determineWhatTodo(np); // the name speaks for itself
                 }
             }catch (IOException e)
             {
@@ -66,7 +73,7 @@ public class ConnectionThread implements Runnable {
                 Loggout.e("ConnectionThread","Error in tcp out",e);
             }
             finally {
-                closeConnection();
+                closeConnection(); // clear resources, end modules and delete device from connected list
             }
         }
 
@@ -84,6 +91,9 @@ public class ConnectionThread implements Runnable {
         receivePairResult( np.getId(),np.getValue("answer").equals("paired") ? OK : REFUSE,np.getData());
     }
 
+    /* set device paired or not based on second arg
+      inform gui about that
+    * */
     public void receivePairResult(String id,String result,String data){
         lock.lock();
         try {
@@ -104,6 +114,12 @@ public class ConnectionThread implements Runnable {
         }
     }
 
+     /*
+     must important method based on package type determined what to do
+     eat exception, we don't want to interrupt connection with device, so if something go wrong
+     forgot, because if Device always send wrong command's TCP_PING won't be executed, and device
+     will be disconnected on next pingCheck
+     * */
         private void determineWhatTodo(NetworkPackage np)
         {
                 String type = np.getType();
@@ -127,18 +143,36 @@ public class ConnectionThread implements Runnable {
                         case TCP_PAIR_RESULT:
                             receivePairResult(np);
                             break;
+                        case ENABLED_MODULES:
+                            receiveEnabledModules(np);
+                            break;
                         default:
-                            setDevicePing(deviceId, true);
-                            commandFromClient(np);
+                            setDevicePing(deviceId, true); // most used case, order to specific modules
+                            commandFromClient(np);                // modules may have specific values on json, on this stage we need to know only data & type values and id
                             break;
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
                     Loggout.e("ConnectionThread", "Error in DetermineWhatToDo ", e);
                 }
 
         }
+
+    /*
+    receive list of enabledModules from Device
+    * */
+    private void receiveEnabledModules(NetworkPackage np) { // todo in android !
+        ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
+        lock.lock();
+        try {
+        Device device = Device.getConnectedDevices().get(np.getId());
+        if(device != null){
+            device.refreshEnabledModules(object.getModuleSettingList());
+        }
+        }finally {
+            lock.unlock();
+        }
+    }
 
     private void setDevicePing(String deviceId,boolean answer){
             lock.lock();
@@ -155,6 +189,11 @@ public class ConnectionThread implements Runnable {
         try {
             String temp =String.valueOf(InetAddress.getLocalHost().getHostName().hashCode());
             NetworkPackage networkPackage =  NetworkPackage.Cacher.getOrCreatePackage(TCP_INTRODUCE,temp);
+
+            ModuleSettingList moduleSettingList = new ModuleSettingList();
+            moduleSettingList.setModuleSettingList(new ArrayList<>(BackgroundService.getMyEnabledModules().values()));
+            networkPackage.setObject(N_OBJECT,moduleSettingList);  // set myModuleConfig's to introduce package, android do the same
+
             printToOut(networkPackage.getMessage());
         } catch (UnknownHostException e) {
             Loggout.e("ConnectionThread","Send Introduce",e);
@@ -173,7 +212,8 @@ public class ConnectionThread implements Runnable {
                   //  closeConnection();
                     return;
                 }
-                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this);
+                ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
+                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList());
                 Device.getConnectedDevices().put(deviceId, device);
                 String data = np.getData();
                 if (data != null && !data.equalsIgnoreCase("null") && data.equals(BackgroundService.getSettingManager().get(deviceId))) {
@@ -238,7 +278,12 @@ public class ConnectionThread implements Runnable {
                 if (!device.isPaired()) {
                     return;
                 }
-                Module module = device.getEnabledModules().get(np.getType());
+                String moduleType = np.getType();
+                ModuleSetting myModuleSetting = BackgroundService.getMyEnabledModules().get(moduleType); // todo do so in android version
+                if(myModuleSetting == null || !myModuleSetting.isEnabled() || deviceInIgnore(device.getId(),myModuleSetting)){
+                    return;
+                }
+                Module module = device.getEnabledModules().get(moduleType);
                 if(module != null)
                 module.execute(np);
             }catch (Exception e) {
@@ -247,6 +292,14 @@ public class ConnectionThread implements Runnable {
                 lock.unlock();
             }
         }
+
+    private boolean deviceInIgnore(String id, ModuleSetting myModuleSetting) {
+            for (String s : myModuleSetting.getIgnoredId()) {
+                if(s.equals(id))
+                    return !myModuleSetting.isWorkOnly(); // isWorkOnly change ignore list to white list, so if s equal device id - when isWorkOnly true - it has in white list and return false
+            }                                             // if isWorkOnly false so it is ignore list so if s equals id we must return true
+        return false;
+    }
 
     public void printToOut(String message)
     {

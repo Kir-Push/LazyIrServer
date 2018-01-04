@@ -8,6 +8,7 @@ import com.push.lazyir.modules.ModuleFactory;
 
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,8 +28,9 @@ public class Device {
     private volatile boolean pinging;
     private volatile boolean answer;
     private ConcurrentHashMap<String, Module> enabledMdules = new ConcurrentHashMap<>();
+    private List<ModuleSetting> enabledModulesConfig;
 
-    public Device(String id, String name, InetAddress ip, ConnectionThread runnableThread) {
+    public Device(String id, String name, InetAddress ip, ConnectionThread runnableThread, List<ModuleSetting> enabledModules) {
         this.id = id;
         this.name = name;
         this.ip = ip;
@@ -38,9 +40,11 @@ public class Device {
         this.pinging = false;
         this.answer = false;
         this.deviceType = "phone";
-        for (Class registeredModule : ModuleFactory.getRegisteredModules()) {
-            enabledMdules.put(registeredModule.getSimpleName(), ModuleFactory.instantiateModule(this,registeredModule));
-        }
+        this.enabledModulesConfig = enabledModules;
+        for (ModuleSetting registeredModule : enabledModules) {
+            if(registeredModule.isEnabled()){
+                enableModule(registeredModule.getName());
+            } }
     }
 
 
@@ -123,7 +127,7 @@ public class Device {
         enabledMdules.clear();
     }
 
-    public void enableModule(String name)
+    private void enableModule(String name)
     {
         Module module = ModuleFactory.instantiateModuleByName(this, name);
         if(module != null)
@@ -152,5 +156,34 @@ public class Device {
         if(thread != null ){
             thread.unpair();
         }
+    }
+
+    public List<ModuleSetting> getEnabledModulesConfig() {
+        return enabledModulesConfig;
+    }
+
+    public void setEnabledModulesConfig(List<ModuleSetting> enabledModulesConfig) {
+        this.enabledModulesConfig = enabledModulesConfig;
+    }
+
+    /*
+    when use changes it's enabled modules on phone, it send command to other device update enabled modules
+    here iterate over hashMap of enabledModules, check if it correspond to income list
+    if disable  - end module, and remove from list
+    if enable(didn't contain in hashMap) - instantiate module
+    * */ // todo do some synchronization and lock, think about what if you execute this method, but on other thread
+         // todo someone call for example closeConnection ?
+    public void refreshEnabledModules(List<ModuleSetting> moduleSettingList) {
+        setEnabledModulesConfig(moduleSettingList);
+        for (ModuleSetting moduleSetting : moduleSettingList) {
+            String name = moduleSetting.getName();
+            if(enabledMdules.containsKey(name) && !moduleSetting.isEnabled()){ // if contain in enabledModules, but in income list is disabled
+                enabledMdules.get(name).endWork();                             // end work it and remove from list
+                enabledMdules.remove(name);
+            }else if(!enabledMdules.containsKey(name) && moduleSetting.isEnabled()){ // opposite case, don't contain in enabledModules, but in list is enabled
+                     enableModule(name);                                             // instantiate module, and put to enabledModules!
+            }
+        }
+
     }
 }

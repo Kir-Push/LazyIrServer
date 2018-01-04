@@ -1,12 +1,21 @@
 package com.push.lazyir.service.settings;
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.devices.ModuleSetting;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.pojo.Command;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.net.InetAddress;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by buhalo on 12.03.17.
@@ -15,10 +24,13 @@ public class SettingManager implements Manager {
 
     private File settings;
     protected File cache;
+    private File modules;
     private Properties properties;
     private FileInputStream fileInputStream;
     private FileOutputStream fileOutputStream;
     private String baseProp = "baseProp";
+    // file contains modules and it's setting's
+    private String confModules = "modules.xml";
     public static  String currentUsersHomeDir = System.getProperty("user.home") +  File.separator + ".Jasech" + File.separator + "ConnectedDevices";
     private String mockId = null;
     private String keyPath;
@@ -28,6 +40,7 @@ public class SettingManager implements Manager {
         baseProp = "baseProp";
         properties = new Properties();
         String settingFilePath = System.getProperty("user.home") + File.separator + ".Jasech";
+        modules = new File(settingFilePath + File.separator + confModules);
         settings = new File(settingFilePath + File.separator+ "settingFile.ini");
         cache = new File(settingFilePath + File.separator + "adresses.txt");
         keyPath = settingFilePath + File.separator + "keyFile.pem";
@@ -38,7 +51,10 @@ public class SettingManager implements Manager {
         }
         if(!settings.exists() && !settings.isDirectory())
         {
-            copyFromBackupToActual();
+            copyFromBackupToActual(baseProp,settings);
+        }
+        if(!modules.exists() && !modules.isDirectory()){
+            copyFromBackupToActual("modules.xml",modules);
         }
         if(!cache.exists() && !cache.isDirectory())
         {
@@ -49,6 +65,39 @@ public class SettingManager implements Manager {
             }
         }
 
+    }
+
+    /*
+    get enabled modules from xml list, and instantiate ModuleSetting entity
+    return the list
+    * */
+    public List<ModuleSetting> getMyEnabledModules(){
+        List<ModuleSetting> modulesResultList = new ArrayList<>();
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(modules);
+            NodeList elements = doc.getElementById("modules").getElementsByTagName("module");
+            for(int i = 0;i<elements.getLength();i++){
+                Element item = (Element)elements.item(i);
+                Boolean enabled = new Boolean(item.getElementsByTagName("enabled").item(0).getTextContent());
+                if(enabled) {
+                    String name = item.getElementsByTagName("name").item(0).getTextContent();
+                    Boolean workOnly = new Boolean(item.getElementsByTagName("workOnly").item(0).getTextContent());
+                    List<String> ignoredIds = new ArrayList<>();
+                    NodeList ignoredElements = item.getElementsByTagName("ignored");
+                    int ignoredL = ignoredElements.getLength();
+                    for (int c = 0; c < ignoredL; c++) {
+                        Node ignoredItem = ignoredElements.item(c);
+                        ignoredIds.add(ignoredItem.getTextContent());
+                    }
+                    modulesResultList.add(new ModuleSetting(name,enabled,ignoredIds,workOnly));
+                }
+            }
+        }catch (Exception e){
+            Loggout.e("SettingManager","Error in getMyEnabledModules ",e);
+        }
+        return modulesResultList;
     }
 
     //clear device internal sftp temp folder's
@@ -62,15 +111,15 @@ public class SettingManager implements Manager {
 
     }
 
-    private synchronized void copyFromBackupToActual() {
+    private synchronized void copyFromBackupToActual(String internalFile,File toWhoCopy) {
         try {
             ClassLoader classLoader =getClass().getClassLoader();
-            String file = classLoader.getResource(baseProp).getFile();
+            String file = classLoader.getResource(internalFile).getFile();
             fileInputStream = new FileInputStream(file);
                     properties.load(fileInputStream);
             if(settings.createNewFile())
             {
-                fileOutputStream = new FileOutputStream(settings);
+                fileOutputStream = new FileOutputStream(toWhoCopy);
                 properties.store(fileOutputStream,"hey ja");
             }
         } catch (IOException e) {

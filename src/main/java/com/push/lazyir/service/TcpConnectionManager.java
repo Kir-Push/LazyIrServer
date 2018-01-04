@@ -28,6 +28,7 @@ public class TcpConnectionManager {
     public final static String TCP_PAIR = "pair";
     public final static String TCP_UNPAIR = "unpair";
     public final static String TCP_SYNC = "sync";
+    public final static String ENABLED_MODULES = "enabledModules";
 
     private int port = 5667;
     private boolean tls;

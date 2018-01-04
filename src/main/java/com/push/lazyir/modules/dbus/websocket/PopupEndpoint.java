@@ -89,7 +89,7 @@ public class PopupEndpoint {
                            String title = np.getValue("title"+i);
                            String readyTime = ((int) np.getDouble("time"+i)) / 60 + ":" + ((int) np.getDouble("time"+i)) % 60 + " / " + ((int) np.getDouble("duration"+i)) / 60 + ":" + (int) np.getDouble("duration"+i) % 60;
                           Player tmp = new Player(title, np.getValue("status+i"), title, (int) np.getDouble("duration"+i),
-                                   (int) (np.getDouble("volume"+i) * 100), (int) np.getDouble("time"+i), readyTime, "browser", session.getId(), np.getValue("localId"+i));
+                                   (int) (np.getDouble("volume"+i) * 100), (int) np.getDouble("time"+i), readyTime, "browser", session.getId()+":::wbmpl:::"+np.getValue("localId"), np.getValue("localId"+i));
                           players.addTo(tmp);
                        }
                    }

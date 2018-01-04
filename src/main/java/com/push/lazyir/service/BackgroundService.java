@@ -1,10 +1,13 @@
 package com.push.lazyir.service;
 
 import com.push.lazyir.devices.Device;
+import com.push.lazyir.devices.ModuleSetting;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.service.settings.SettingManager;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
 
@@ -26,6 +29,8 @@ public class BackgroundService {
     private static int port = 5667;
 
     private volatile static BackgroundService instance;
+
+    private HashMap<String,ModuleSetting> myEnabledModules;
 
     static BackgroundService getInstance() {
         if(instance == null) {
@@ -112,6 +117,30 @@ public class BackgroundService {
                 if(device != null && device.isConnected())
                     device.sendMessage(message);
             }});
+    }
+
+    public static HashMap<String,ModuleSetting> getMyEnabledModules(){
+        getInstance().lock.writeLock().lock();
+        try{
+            if(getInstance().myEnabledModules == null){
+                updateMyEnabledModules();
+            }
+            return  getInstance().myEnabledModules;
+        }finally {
+            getInstance().lock.writeLock().unlock();
+        }
+    }
+
+    public static void updateMyEnabledModules(){
+        getInstance().lock.writeLock().lock();
+        try{
+            getInstance().myEnabledModules = new HashMap<>();
+            for (ModuleSetting moduleSetting : getInstance().settingManager.getMyEnabledModules()) {
+                getInstance().myEnabledModules.put(moduleSetting.getName(),moduleSetting);
+            }
+        }finally {
+            getInstance().lock.writeLock().unlock();
+        }
     }
 
 
