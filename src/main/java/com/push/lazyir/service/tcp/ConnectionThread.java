@@ -212,8 +212,9 @@ public class ConnectionThread implements Runnable {
                   //  closeConnection();
                     return;
                 }
-                ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
-                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList());
+                ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class); // todo for test puposes
+                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList()); // todo for test puposes
+            //    Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,new ArrayList<>(BackgroundService.getMyEnabledModules().values()));
                 Device.getConnectedDevices().put(deviceId, device);
                 String data = np.getData();
                 if (data != null && !data.equalsIgnoreCase("null") && data.equals(BackgroundService.getSettingManager().get(deviceId))) {
@@ -279,6 +280,7 @@ public class ConnectionThread implements Runnable {
                     return;
                 }
                 String moduleType = np.getType();
+                System.out.println(np.getMessage());
                 ModuleSetting myModuleSetting = BackgroundService.getMyEnabledModules().get(moduleType); // todo do so in android version
                 if(myModuleSetting == null || !myModuleSetting.isEnabled() || deviceInIgnore(device.getId(),myModuleSetting)){
                     return;

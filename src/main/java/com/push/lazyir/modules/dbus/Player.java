@@ -26,7 +26,7 @@ public class Player implements Comparable<Player> {
         this.readyTimeString = readyTimeString;
         this.type = type;
         this.id = id;
-        this.id = webId;
+        this.webId = webId;
     }
 
     public Player(String name, String playbackStatus, String title, double lenght, double volume, double currTime, String readyTimeString) {

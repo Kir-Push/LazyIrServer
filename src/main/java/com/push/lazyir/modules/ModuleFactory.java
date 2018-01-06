@@ -63,6 +63,8 @@ public class ModuleFactory {
 
     public static Module instantiateModuleByName(Device dv,String name)
     {
+        if(registeredModules == null)
+            registerModulesInit();
         for (Class registeredModule : registeredModules) {
             if(registeredModule.getSimpleName().equals(name))
             {

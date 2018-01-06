@@ -67,50 +67,52 @@ public class PopupEndpoint {
 
     @OnMessage
     public void onMessage(Session session, String msg) {
-           NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(msg);
-        String type = np.getValue("type");
-        boolean onePlayer = type.equals("getInfo");
-        boolean manyPlayers = type.equals("getInfoMultiple");
-        if(onePlayer || manyPlayers) {
-            Player player = null;
-            Players players = null;
-               try {
-                   //todo check correspond in android (status and other names)
-                   if(onePlayer) {
-                       String title = np.getValue("title");
-                       String readyTime = ((int) np.getDouble("time")) / 60 + ":" + ((int) np.getDouble("time")) % 60 + " / " + ((int) np.getDouble("duration")) / 60 + ":" + (int) np.getDouble("duration") % 60;
-                       player = new Player(title, np.getValue("status"), title, (int) np.getDouble("duration"),
-                               (int) (np.getDouble("volume") * 100), (int) np.getDouble("time"), readyTime, "browser", session.getId(), null);
-                   }
-                   else if(manyPlayers){
-                       int count = Integer.parseInt( np.getValue("numberOfVideos"));
-                       players = new Players();
-                       for(int i = 0;i<count;i++){
-                           String title = np.getValue("title"+i);
-                           String readyTime = ((int) np.getDouble("time"+i)) / 60 + ":" + ((int) np.getDouble("time"+i)) % 60 + " / " + ((int) np.getDouble("duration"+i)) / 60 + ":" + (int) np.getDouble("duration"+i) % 60;
-                          Player tmp = new Player(title, np.getValue("status+i"), title, (int) np.getDouble("duration"+i),
-                                   (int) (np.getDouble("volume"+i) * 100), (int) np.getDouble("time"+i), readyTime, "browser", session.getId()+":::wbmpl:::"+np.getValue("localId"), np.getValue("localId"+i));
-                          players.addTo(tmp);
-                       }
-                   }
-                   long stamp = lock.writeLock();
-                   try {
-                       if(onePlayer)
-                           getAllFuture.putItem(player);
-                       else if(manyPlayers)
-                           for (Player player1 : players.getPlayerList())
-                               getAllFuture.putItem(player1);
-                       if(expectedCount <= getAllFuture.getCollectedSize()){
-                           getAllFuture.completeWithCollected();
-                       }
-                   }finally {
-                       lock.unlock(stamp);
-                   }
-               }catch (Exception e)
-               {
-                   Loggout.e("Websocket","Onmessage Error",e);
-               }
-           }
+        long stamp = lock.writeLock();
+        try {
+            NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(msg);
+            String type = np.getValue("type");
+            boolean onePlayer = type.equals("getInfo");
+            boolean manyPlayers = type.equals("getInfoMultiple");
+            if (onePlayer || manyPlayers) {
+                Player player = null;
+                Players players = null;
+
+                //todo check correspond in android (status and other names)
+                // todo and player!! toy added web id and other
+                if (onePlayer) {
+                    String title = np.getValue("title");
+                    String readyTime = ((int) np.getDouble("time")) / 60 + ":" + ((int) np.getDouble("time")) % 60 + " / " + ((int) np.getDouble("duration")) / 60 + ":" + (int) np.getDouble("duration") % 60;
+                    player = new Player(title, np.getValue("status"), title, (int) np.getDouble("duration"),
+                            (int) (np.getDouble("volume") * 100), (int) np.getDouble("time"), readyTime, "browser", session.getId(), null);
+                } else if (manyPlayers) {
+                    int count = Integer.parseInt(np.getValue("numberOfVideos"));
+                    players = new Players();
+                    for (int i = 0; i < count; i++) {
+                        String title = np.getValue("title" + i);
+                        String readyTime = ((int) np.getDouble("time" + i)) / 60 + ":" + ((int) np.getDouble("time" + i)) % 60 + " / " + ((int) np.getDouble("duration" + i)) / 60 + ":" + (int) np.getDouble("duration" + i) % 60;
+                        Player tmp = new Player(title, np.getValue("status+i"), title, (int) np.getDouble("duration" + i),
+                                (int) (np.getDouble("volume" + i) * 100), (int) np.getDouble("time" + i), readyTime, "browser", session.getId() + ":::wbmpl:::" + np.getValue("localId"), np.getValue("localId" + i));
+                        players.addTo(tmp);
+                    }
+                }
+                try {
+                    if (onePlayer) {
+                        getAllFuture.putItem(player);
+                    }
+                    else if (manyPlayers)
+                        for (Player player1 : players.getPlayerList())
+                            getAllFuture.putItem(player1);
+                    if (expectedCount <= getAllFuture.getCollectedSize()) {
+                        getAllFuture.completeWithCollected();
+                    }
+
+                } catch (Exception e) {
+                    Loggout.e("Websocket", "Onmessage Error", e);
+                }
+            }
+        }finally {
+            lock.unlock(stamp);
+        }
     }
 
 

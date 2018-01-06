@@ -54,7 +54,7 @@ public class SettingManager implements Manager {
             copyFromBackupToActual(baseProp,settings);
         }
         if(!modules.exists() && !modules.isDirectory()){
-            copyFromBackupToActual("modules.xml",modules);
+            copyFromBackupToActualXml("modules.xml",modules);
         }
         if(!cache.exists() && !cache.isDirectory())
         {
@@ -67,6 +67,42 @@ public class SettingManager implements Manager {
 
     }
 
+    private void copyFromBackupToActualXml(String s, File modules) {
+        BufferedReader reader = null;
+        BufferedWriter writer = null;
+        try {
+            if (modules.createNewFile()) {
+                ClassLoader classLoader =getClass().getClassLoader();
+                 reader = new BufferedReader(
+                        new InputStreamReader(
+                                new FileInputStream(classLoader.getResource(s).getFile()),
+                                "UTF-8"
+                        )
+                );
+                 writer = new BufferedWriter(
+                        new OutputStreamWriter(
+                                new FileOutputStream(modules),
+                                "UTF-8"
+                        )
+                );
+                String read;
+                while((read = reader.readLine()) != null){
+                    System.out.println(read);
+                    writer.write(read);
+                }
+            }
+        }catch (IOException e){
+
+        }finally {
+            try {
+                reader.close();
+                writer.close();
+            }catch (Exception e){
+
+            }
+        }
+    }
+
     /*
     get enabled modules from xml list, and instantiate ModuleSetting entity
     return the list
@@ -77,7 +113,7 @@ public class SettingManager implements Manager {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(modules);
-            NodeList elements = doc.getElementById("modules").getElementsByTagName("module");
+            NodeList elements = doc.getDocumentElement().getElementsByTagName("module");
             for(int i = 0;i<elements.getLength();i++){
                 Element item = (Element)elements.item(i);
                 Boolean enabled = new Boolean(item.getElementsByTagName("enabled").item(0).getTextContent());
@@ -117,7 +153,7 @@ public class SettingManager implements Manager {
             String file = classLoader.getResource(internalFile).getFile();
             fileInputStream = new FileInputStream(file);
                     properties.load(fileInputStream);
-            if(settings.createNewFile())
+            if(toWhoCopy.createNewFile())
             {
                 fileOutputStream = new FileOutputStream(toWhoCopy);
                 properties.store(fileOutputStream,"hey ja");

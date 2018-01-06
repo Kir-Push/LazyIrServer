@@ -106,13 +106,11 @@ public class HtmlVid implements OsStrategy {
         try {
             // todo rewrite, just send to popupendpoint command to pause all, and there iterate all over session's send pauseall
             List<Player> playerList = new ArrayList<>(PopupEndpoint.getAll().get(200, TimeUnit.MILLISECONDS));
-            if (playerList != null) {
-                for (Player pl : playerList) {
-                    if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) {
-                        String substring = pl.getName().substring(10);
-                        PopupEndpoint.sendStatus(substring, "pause");
-                        pausedPlayersBrowser.put(substring, pl.getPlaybackStatus());
-                    }
+            for (Player pl : playerList) {
+                if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) {
+                    String substring = pl.getName().substring(10);
+                    PopupEndpoint.sendStatus(substring, "pause");
+                    pausedPlayersBrowser.put(substring, pl.getPlaybackStatus());
                 }
             }
         } catch (Exception e) {
