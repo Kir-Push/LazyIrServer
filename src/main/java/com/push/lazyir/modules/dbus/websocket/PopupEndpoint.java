@@ -35,18 +35,8 @@ public class PopupEndpoint {
     @OnOpen
     public void onOpen(Session session)
     {
-        System.out.println("OPENED SESSION " + session.getId() +   "      "    + connectedSessions.size());
         long writeLock = lock.writeLock();
-//        if(connectedSessions.containsKey(session.getId())){
-//            try {
-//                connectedSessions.get(session.getId()).close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-        System.out.println("OPENED SESSION222 " + session.getId() +   "      "    + connectedSessions.size());
         connectedSessions.put(session.getId(), session);
-        System.out.println("OPENED SESSION33333 " + session.getId() +   "      "    + connectedSessions.size());
         lock.unlockWrite(writeLock);
     }
 
@@ -78,12 +68,11 @@ public class PopupEndpoint {
                 Players players = null;
 
                 //todo check correspond in android (status and other names)
-                // todo and player!! toy added web id and other
                 if (onePlayer) {
                     String title = np.getValue("title");
                     String readyTime = ((int) np.getDouble("time")) / 60 + ":" + ((int) np.getDouble("time")) % 60 + " / " + ((int) np.getDouble("duration")) / 60 + ":" + (int) np.getDouble("duration") % 60;
                     player = new Player(title, np.getValue("status"), title, (int) np.getDouble("duration"),
-                            (int) (np.getDouble("volume") * 100), (int) np.getDouble("time"), readyTime, "browser", session.getId(), null);
+                            (int) (np.getDouble("volume") * 100), (int) np.getDouble("time"), readyTime, "browser", session.getId(),np.getValue("videoSrc"),np.getValue("url"), null);
                 } else if (manyPlayers) {
                     int count = Integer.parseInt(np.getValue("numberOfVideos"));
                     players = new Players();
@@ -91,7 +80,7 @@ public class PopupEndpoint {
                         String title = np.getValue("title" + i);
                         String readyTime = ((int) np.getDouble("time" + i)) / 60 + ":" + ((int) np.getDouble("time" + i)) % 60 + " / " + ((int) np.getDouble("duration" + i)) / 60 + ":" + (int) np.getDouble("duration" + i) % 60;
                         Player tmp = new Player(title, np.getValue("status+i"), title, (int) np.getDouble("duration" + i),
-                                (int) (np.getDouble("volume" + i) * 100), (int) np.getDouble("time" + i), readyTime, "browser", session.getId() + ":::wbmpl:::" + np.getValue("localId"), np.getValue("localId" + i));
+                                (int) (np.getDouble("volume" + i) * 100), (int) np.getDouble("time" + i), readyTime, "browser", session.getId() + ":::wbmpl:::" + np.getValue("localId"),np.getValue("videoSrc")+i,np.getValue("url")+i, np.getValue("localId" + i));
                         players.addTo(tmp);
                     }
                 }

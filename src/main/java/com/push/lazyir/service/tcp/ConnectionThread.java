@@ -213,13 +213,16 @@ public class ConnectionThread implements Runnable {
                     return;
                 }
                 ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class); // todo for test puposes
-                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList()); // todo for test puposes
-            //    Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,new ArrayList<>(BackgroundService.getMyEnabledModules().values()));
+                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList());
                 Device.getConnectedDevices().put(deviceId, device);
                 String data = np.getData();
-                if (data != null && !data.equalsIgnoreCase("null") && data.equals(BackgroundService.getSettingManager().get(deviceId))) {
+                String pair = BackgroundService.getSettingManager().get(deviceId);
+                if (data != null && !data.equalsIgnoreCase("null") && data.equals(pair)) {
                     device.setPaired(true);
                     BackgroundService.pairResultFromGui(deviceId, OK, data);
+                }else if(data == null || data.equals("nonPaired") || !data.equals(pair)){
+                    unpair();
+                    BackgroundService.pairResultFromGui(deviceId, REFUSE, data);
                 }
                 ping();
                 pingCheck();
@@ -280,8 +283,7 @@ public class ConnectionThread implements Runnable {
                     return;
                 }
                 String moduleType = np.getType();
-                System.out.println(np.getMessage());
-                ModuleSetting myModuleSetting = BackgroundService.getMyEnabledModules().get(moduleType); // todo do so in android version
+                ModuleSetting myModuleSetting = BackgroundService.getMyEnabledModules().get(moduleType);
                 if(myModuleSetting == null || !myModuleSetting.isEnabled() || deviceInIgnore(device.getId(),myModuleSetting)){
                     return;
                 }
