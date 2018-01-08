@@ -1,5 +1,6 @@
 package com.push.gui.basew;
 
+import com.notification.Notification;
 import com.notification.NotificationFactory;
 import com.notification.manager.QueueManager;
 import com.push.gui.controllers.MainController;
@@ -11,6 +12,7 @@ import com.utils.Time;
 import javafx.stage.Screen;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Popup {
@@ -42,6 +44,13 @@ public class Popup {
             // add the Notification
             manager.setScrollDirection(QueueManager.ScrollDirection.NORTH);
             initialized = true;
+        }
+        // if you have many than 10 notif on screen remove all oldest
+        List<Notification> notifications = manager.getNotifications();
+        if(notifications.size() >= 10){
+            for(int i = 10;i<notifications.size();i++) {
+                notifications.get(i).removeFromManager();
+            }
         }
         CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController);
         boolean incoming = notification.getType().equalsIgnoreCase(callTypes.incoming.name());
