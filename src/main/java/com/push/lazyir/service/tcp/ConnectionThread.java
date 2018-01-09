@@ -73,7 +73,7 @@ public class ConnectionThread implements Runnable {
                 Loggout.e("ConnectionThread","Error in tcp out",e);
             }
             finally {
-                closeConnection(); // clear resources, end modules and delete device from connected list
+                Device.getConnectedDevices().get(deviceId).closeConnection();  // clear resources, end modules and delete device from connected list
             }
         }
 
@@ -161,7 +161,7 @@ public class ConnectionThread implements Runnable {
     /*
     receive list of enabledModules from Device
     * */
-    private void receiveEnabledModules(NetworkPackage np) { // todo in android !
+    private void receiveEnabledModules(NetworkPackage np) {
         ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
         lock.lock();
         try {
@@ -212,7 +212,7 @@ public class ConnectionThread implements Runnable {
                   //  closeConnection();
                     return;
                 }
-                ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class); // todo for test puposes
+                ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
                 Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList());
                 Device.getConnectedDevices().put(deviceId, device);
                 String data = np.getData();
@@ -322,19 +322,18 @@ public class ConnectionThread implements Runnable {
     public boolean isConnected() {
         lock.lock();
         try {
-            return connection != null && out != null && in != null && connectionRun;
+            return connection != null && out != null && in != null && connectionRun && connection.isConnected();
         }finally {
             lock.unlock();
         }
     }
 
-    public void closeConnection() {
+    public void closeConnection(Device device) {
         lock.lock();
         try {
             if (timerFuture != null && !timerFuture.isDone()) {
                 timerFuture.cancel(true);
             }
-            Device device = Device.getConnectedDevices().get(deviceId);
             if(device != null) {
                 ConcurrentHashMap<String, Module> enabledModules = device.getEnabledModules();
                 if(enabledModules != null)

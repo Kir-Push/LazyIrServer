@@ -94,7 +94,6 @@ public class HtmlVid implements OsStrategy {
 
     @Override
     public void playAll(String id) {
-        // todo as pauseAll
         for (String s : pausedPlayersBrowser.keySet()) {
             PopupEndpoint.sendStatus(s,"play");
             pausedPlayersBrowser.clear();
@@ -104,7 +103,6 @@ public class HtmlVid implements OsStrategy {
     @Override
     public void pauseAll(String id) {
         try {
-            // todo rewrite, just send to popupendpoint command to pause all, and there iterate all over session's send pauseall
             List<Player> playerList = new ArrayList<>(PopupEndpoint.getAll().get(200, TimeUnit.MILLISECONDS));
             for (Player pl : playerList) {
                 if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) {

@@ -18,7 +18,6 @@ public class ClipboardJni {
     public ClipboardJni() {
     }
 
-    // todo проверь внимательно чтоб нельзя было два раза запустить и типо того
     public ClipboardJni(String libend, ClientRegister server) {
         try {
             System.load(new File(ClipboardRmiSeparateProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard" + libend);
@@ -38,7 +37,7 @@ public class ClipboardJni {
             try {
                 server.receiveClipboard(text);
             } catch (RemoteException e) {
-                //todo
+
             }
         }
     }

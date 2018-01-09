@@ -38,11 +38,6 @@ var onopen = function() {
 
 var onclose = function(event) {
 
-    if (event.wasClean) {
-        //todo
-    } else {
-        // например, "убит" процесс сервера
-    }
     jasechResponse = false;
     jasechsocket.close();
     jasechsocket = undefined;

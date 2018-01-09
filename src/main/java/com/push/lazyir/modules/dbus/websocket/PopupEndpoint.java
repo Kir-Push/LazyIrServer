@@ -67,7 +67,7 @@ public class PopupEndpoint {
                 Player player = null;
                 Players players = null;
 
-                //todo check correspond in android (status and other names)
+
                 if (onePlayer) {
                     String title = np.getValue("title");
                     String readyTime = ((int) np.getDouble("time")) / 60 + ":" + ((int) np.getDouble("time")) % 60 + " / " + ((int) np.getDouble("duration")) / 60 + ":" + (int) np.getDouble("duration") % 60;
@@ -110,7 +110,6 @@ public class PopupEndpoint {
     // if yes add to message - multipleVids key with value true and lazyIrId with localId
     // It done via recreating NetworkPackage what is cost operation, need to rewrite
     // get stored session from hashMap and send message.
-    // todo android version id handle
     public static void sendMessage(String msg,String id)
     {
         String[] splittedId = checkIfMultiple(id);

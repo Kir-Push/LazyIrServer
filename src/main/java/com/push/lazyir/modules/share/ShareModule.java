@@ -97,9 +97,14 @@ public class ShareModule extends Module {
         }
     }
 
-    public void recconectToSftp(NetworkPackage np) //todo in android
+    public void recconectToSftp(NetworkPackage np)
     {
-          connectToSftpServer(np);
+        lock.lock();
+        try {
+            connectToSftpServer(np);
+        }finally {
+            lock.unlock();
+        }
     }
 
     private void stopSftpServer() {

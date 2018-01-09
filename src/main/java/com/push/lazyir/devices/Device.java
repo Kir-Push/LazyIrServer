@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by buhalo on 19.02.17.
@@ -29,6 +31,7 @@ public class Device {
     private volatile boolean answer;
     private ConcurrentHashMap<String, Module> enabledMdules = new ConcurrentHashMap<>();
     private List<ModuleSetting> enabledModulesConfig;
+    private Lock lock = new ReentrantLock();
 
     public Device(String id, String name, InetAddress ip, ConnectionThread runnableThread, List<ModuleSetting> enabledModules) {
         this.id = id;
@@ -55,7 +58,12 @@ public class Device {
 
     public void closeConnection()
     {
-        thread.closeConnection();
+     lock.lock();
+        try {
+            thread.closeConnection(this);
+        }finally {
+            lock.unlock();
+        }
     }
 
     public static Map<String, Device> getConnectedDevices() {
@@ -171,19 +179,25 @@ public class Device {
     here iterate over hashMap of enabledModules, check if it correspond to income list
     if disable  - end module, and remove from list
     if enable(didn't contain in hashMap) - instantiate module
-    * */ // todo do some synchronization and lock, think about what if you execute this method, but on other thread
-         // todo someone call for example closeConnection ?
+    * */
     public void refreshEnabledModules(List<ModuleSetting> moduleSettingList) {
-        setEnabledModulesConfig(moduleSettingList);
-        for (ModuleSetting moduleSetting : moduleSettingList) {
-            String name = moduleSetting.getName();
-            if(enabledMdules.containsKey(name) && !moduleSetting.isEnabled()){ // if contain in enabledModules, but in income list is disabled
-                enabledMdules.get(name).endWork();                             // end work it and remove from list
-                enabledMdules.remove(name);
-            }else if(!enabledMdules.containsKey(name) && moduleSetting.isEnabled()){ // opposite case, don't contain in enabledModules, but in list is enabled
-                     enableModule(name);                                             // instantiate module, and put to enabledModules!
+        lock.lock();
+        try {
+            if(!isConnected()){
+                return;
             }
+            setEnabledModulesConfig(moduleSettingList);
+            for (ModuleSetting moduleSetting : moduleSettingList) {
+                String name = moduleSetting.getName();
+                if (enabledMdules.containsKey(name) && !moduleSetting.isEnabled()) { // if contain in enabledModules, but in income list is disabled
+                    enabledMdules.get(name).endWork();                             // end work it and remove from list
+                    enabledMdules.remove(name);
+                } else if (!enabledMdules.containsKey(name) && moduleSetting.isEnabled()) { // opposite case, don't contain in enabledModules, but in list is enabled
+                    enableModule(name);                                             // instantiate module, and put to enabledModules!
+                }
+            }
+        }finally {
+            lock.unlock();
         }
-
     }
 }

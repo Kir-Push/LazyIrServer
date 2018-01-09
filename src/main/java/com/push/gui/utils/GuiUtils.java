@@ -43,7 +43,6 @@ public class GuiUtils {
 
     public static Image getImage(String name,double requestedWidth,double requestedHeigh){
         try {
-         // todo change to resourceasstream anywhere (from simple getresouce)
             return new Image(MainWin.class.getResourceAsStream("/icons/"+name+".png"),requestedWidth,requestedHeigh,true,false);
         } catch (Exception e) {
             e.printStackTrace();

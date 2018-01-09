@@ -117,7 +117,7 @@ public class Win implements OsStrategy {
                 strategy.initiate();
                 List<Player> playerList = strategy.getGetAll().getPlayerList();
                 for (Player pl : playerList) {
-                    if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) //todo проовервь везде ли playing статус а не play например и pause тоже (может быть paused например)
+                    if (pl.getPlaybackStatus().equalsIgnoreCase("playing") || pl.getPlaybackStatus().equalsIgnoreCase("play"))
                     {
                         pausedPlayersWin.put(pl.getName(), pl.getPlaybackStatus());
                         strategy.playPause(pl.getName());

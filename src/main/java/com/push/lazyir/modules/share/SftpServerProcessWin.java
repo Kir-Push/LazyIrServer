@@ -77,7 +77,6 @@ public class SftpServerProcessWin implements SftpServerProcess {
         }
         try {
             String result = connect();
-            //todo work wirth result, check if connection established, read result's utc
             running = true;
             connectedDrivesMap.put(id,driveLetter);
             renameDrive(driveLetter,userName + " MainStorage");
@@ -90,7 +89,6 @@ public class SftpServerProcessWin implements SftpServerProcess {
                     String externalResult = connect();
                     connectedDrivesMap.put(id,driveLetter);
                     renameDrive(driveLetter,id + " ExternalStorage");
-                    //todo work wirth result, check if connection established, read result's utc
                 }
 
             }
@@ -129,7 +127,6 @@ public class SftpServerProcessWin implements SftpServerProcess {
     }
 
 
-    //todo add to path new lib!
    // https://github.com/profesorfalken/jPowerShell
     private void renameDrive(String driveLetter,String newName){
         String cmd = " $rename.NameSpace(\"" + driveLetter + "\").Self.Name = \"" + newName +"\"";
