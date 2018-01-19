@@ -51,8 +51,13 @@ public class PopupEndpoint {
     @OnError
     public void onError(Session session, Throwable t)
     {
-        System.out.println("ERROR SESSION " + session.getId());
-        connectedSessions.remove(session.getId());
+        System.out.println("ERROR SESSION " + session.getId() + " " + session.isOpen());
+//        try {
+//            session.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        connectedSessions.remove(session.getId());
     }
 
     @OnMessage
@@ -74,13 +79,13 @@ public class PopupEndpoint {
                     player = new Player(title, np.getValue("status"), title, (int) np.getDouble("duration"),
                             (int) (np.getDouble("volume") * 100), (int) np.getDouble("time"), readyTime, "browser", session.getId(),np.getValue("videoSrc"),np.getValue("url"), null);
                 } else if (manyPlayers) {
-                    int count = Integer.parseInt(np.getValue("numberOfVideos"));
+                    int count = (int) np.getDouble("numberOfVideos");
                     players = new Players();
                     for (int i = 0; i < count; i++) {
                         String title = np.getValue("title" + i);
                         String readyTime = ((int) np.getDouble("time" + i)) / 60 + ":" + ((int) np.getDouble("time" + i)) % 60 + " / " + ((int) np.getDouble("duration" + i)) / 60 + ":" + (int) np.getDouble("duration" + i) % 60;
-                        Player tmp = new Player(title, np.getValue("status+i"), title, (int) np.getDouble("duration" + i),
-                                (int) (np.getDouble("volume" + i) * 100), (int) np.getDouble("time" + i), readyTime, "browser", session.getId() + ":::wbmpl:::" + np.getValue("localId"),np.getValue("videoSrc")+i,np.getValue("url")+i, np.getValue("localId" + i));
+                        Player tmp = new Player(title, np.getValue("status"+i), title, (int) np.getDouble("duration" + i),
+                                (int) (np.getDouble("volume" + i) * 100), (int) np.getDouble("time" + i), readyTime, "browser", session.getId() + ":::wbmpl:::" + np.getValue("localId"),np.getValue("videoSrc"+i),np.getValue("url"+i), np.getValue("localId" + i));
                         players.addTo(tmp);
                     }
                 }
@@ -189,7 +194,6 @@ public class PopupEndpoint {
                 if (stamp != 0L) {
                     getAllFuture = new CollectingFuture<>();
                     getAllFuture.setCollection( new ConcurrentSkipListSet<>());
-                    System.out.println("Initiate collecton");
                     sendGetInfo();
                 }
             }

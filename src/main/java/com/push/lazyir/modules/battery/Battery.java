@@ -18,6 +18,7 @@ public class Battery extends Module {
 
     @Override
     public void execute(NetworkPackage np) {
+        System.out.println(np.getMessage());
         String id = np.getId();
         String percenstage = np.getValue(PERCENTAGE);
         String status = np.getValue(STATUS);

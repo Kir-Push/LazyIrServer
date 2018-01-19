@@ -1,4 +1,4 @@
-package com.push.lazyir.modules.notifications;
+package com.push.lazyir.modules.notifications.notifications;
 
 import java.util.ArrayList;
 import java.util.List;

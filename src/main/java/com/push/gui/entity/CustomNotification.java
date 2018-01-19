@@ -2,15 +2,12 @@ package com.push.gui.entity;
 
 import com.notification.NotificationBuilder;
 import com.notification.NotificationFactory;
-import com.notification.NotificationManager;
 import com.notification.manager.QueueManager;
-import com.notification.manager.SimpleManager;
-import com.notification.manager.SlideManager;
 import com.notification.types.BorderLayoutNotification;
 import com.push.gui.controllers.MainController;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.gui.GuiCommunicator;
-import com.push.lazyir.modules.notifications.callTypes;
+import com.push.lazyir.modules.notifications.call.callTypes;
 import com.theme.TextTheme;
 import com.theme.ThemePackage;
 import com.theme.ThemePackagePresets;
@@ -18,13 +15,10 @@ import com.theme.WindowTheme;
 import com.utils.Time;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.image.Image;
 import javafx.stage.Screen;
 
 import javax.swing.*;
-import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CustomNotification extends BorderLayoutNotification {

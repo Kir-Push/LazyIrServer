@@ -1,32 +1,13 @@
 package com.push.gui.controllers;
 
-import com.push.gui.basew.MainWin;
 import com.push.gui.basew.Popup;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
-import com.push.gui.utils.GuiUtils;
-import com.push.lazyir.modules.notifications.Notification;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import org.controlsfx.control.Notifications;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 // Class wich actually update gui

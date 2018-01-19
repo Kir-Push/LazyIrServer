@@ -5,9 +5,10 @@ import com.push.lazyir.devices.Device;
 import com.push.lazyir.modules.battery.Battery;
 import com.push.lazyir.modules.clipboard.ClipBoard;
 import com.push.lazyir.modules.dbus.Mpris;
-import com.push.lazyir.modules.notifications.Messengers;
-import com.push.lazyir.modules.notifications.ShowNotification;
-import com.push.lazyir.modules.notifications.SmsModule;
+import com.push.lazyir.modules.notifications.call.CallModule;
+import com.push.lazyir.modules.notifications.messengers.Messengers;
+import com.push.lazyir.modules.notifications.notifications.ShowNotification;
+import com.push.lazyir.modules.notifications.sms.SmsModule;
 import com.push.lazyir.modules.command.SendCommand;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.modules.touch.TouchControl;
@@ -59,6 +60,7 @@ public class ModuleFactory {
         registeredModules.add(ClipBoard.class);
         registeredModules.add(Messengers.class);
         registeredModules.add(TouchControl.class);
+        registeredModules.add(CallModule.class);
     }
 
     public static Module instantiateModuleByName(Device dv,String name)

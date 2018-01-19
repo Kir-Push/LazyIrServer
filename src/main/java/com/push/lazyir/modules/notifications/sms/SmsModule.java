@@ -1,4 +1,4 @@
-package com.push.lazyir.modules.notifications;
+package com.push.lazyir.modules.notifications.sms;
 
 
 import com.push.lazyir.devices.NetworkPackage;
@@ -33,7 +33,7 @@ public class SmsModule extends Module {
 
     public static void send_sms(String name,String text,String dvId) {
         NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SMS_TYPE,SEND);
-        Sms message = new Sms(name,text,null,null);
+        Sms message = new Sms(name,name,text,null,null);
         np.setObject(NetworkPackage.N_OBJECT,message);
         BackgroundService.sendToDevice(dvId,np.getMessage());
     }

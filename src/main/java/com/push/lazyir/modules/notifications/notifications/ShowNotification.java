@@ -1,4 +1,4 @@
-package com.push.lazyir.modules.notifications;
+package com.push.lazyir.modules.notifications.notifications;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
@@ -9,8 +9,6 @@ import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.service.BackgroundService;
 
 import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by buhalo on 21.03.17.
@@ -20,12 +18,8 @@ public class ShowNotification extends Module {
     public static final String RECEIVE_NOTIFICATION = "receiveNotification";
     public static final String NOTIFICATION_CLASS = "notificationClass";
     public static final String REMOVE_NOTIFICATION = "removeNotification";
-    public static final String CALL = "com.android.call";
-    public static final String ENDCALL = "com.android.endCall";
-    public static final String ANSWER = "answer";
     public static final String ALL_NOTIFS = "ALL NOTIFS";
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
-    private static volatile boolean CALLING = false;
 
     @Override
     public void execute(NetworkPackage np) {
@@ -46,41 +40,15 @@ public class ShowNotification extends Module {
                                     GuiCommunicator.receive_notifications(device.getId(), new ArrayList<>());
                                 }
                             }
-                            else if(CALL.equals(data))
-                            {
-                                if(!CALLING) {
-                                    Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
-                                    if(mpris != null)
-                                    {
-                                        mpris.pauseAll(np.getId());
-                                    }
-                                    CALLING = true;
-                                }
-                                GuiCommunicator.call_Notif(np);
-                            }
-                            else if(CALLING && ENDCALL.equals(data))
-                            {
-                                CALLING = false;
-                                Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
-                                if(mpris != null)
-                                {
-                                    mpris.playAll(np.getId());
-                                }
-                                GuiCommunicator.call_notif_end(np);
-                            }else if(ANSWER.equals(data)){
-                                GuiCommunicator.call_notif_end(np);
-                            }
-
-                    } catch(NullPointerException e){
-                            Loggout.e("ShowNotification", "execute",e);
-                        }
+        } catch(NullPointerException e){
+            System.out.println(np.getMessage());
+            Loggout.e("ShowNotification", "execute ",e);
+        }
 }
 
     @Override
     public void endWork() {
-        if( Device.getConnectedDevices().size() == 0) {
-            CALLING = false;
-        }
+
     }
 
 

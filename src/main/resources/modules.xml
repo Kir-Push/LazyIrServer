@@ -30,12 +30,6 @@
         <workOnly>true</workOnly>
     </module>
     <module>
-        <name>Modules</name>
-        <enabled>true</enabled>
-        <ignored>*</ignored>
-        <workOnly>true</workOnly>
-    </module>
-    <module>
         <name>SmsModule</name>
         <enabled>true</enabled>
         <ignored>*</ignored>
@@ -48,6 +42,12 @@
         <workOnly>true</workOnly>
     </module>
     <module>
+        <name>Messengers</name>
+        <enabled>true</enabled>
+        <ignored>*</ignored>
+        <workOnly>true</workOnly>
+    </module>
+    <module>
         <name>ShareModule</name>
         <enabled>true</enabled>
         <ignored>*</ignored>
@@ -55,6 +55,12 @@
     </module>
     <module>
         <name>TouchControl</name>
+        <enabled>true</enabled>
+        <ignored>*</ignored>
+        <workOnly>true</workOnly>
+    </module>
+    <module>
+        <name>CallModule</name>
         <enabled>true</enabled>
         <ignored>*</ignored>
         <workOnly>true</workOnly>

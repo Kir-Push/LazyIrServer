@@ -5,7 +5,11 @@ import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.modules.notifications.*;
+import com.push.lazyir.modules.notifications.messengers.Messengers;
+import com.push.lazyir.modules.notifications.notifications.Notification;
+import com.push.lazyir.modules.notifications.notifications.ShowNotification;
+import com.push.lazyir.modules.notifications.sms.Sms;
+import com.push.lazyir.modules.notifications.sms.SmsModule;
 import com.push.lazyir.service.BackgroundService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +17,7 @@ import javafx.collections.ObservableList;
 import java.io.File;
 import java.util.List;
 
-import static com.push.lazyir.modules.notifications.SmsModule.SMS_TYPE;
+import static com.push.lazyir.modules.notifications.sms.SmsModule.SMS_TYPE;
 import static com.push.lazyir.service.TcpConnectionManager.OK;
 import static com.push.lazyir.service.TcpConnectionManager.REFUSE;
 

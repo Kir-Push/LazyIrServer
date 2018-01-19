@@ -1,4 +1,4 @@
-package com.push.lazyir.modules.notifications;
+package com.push.lazyir.modules.notifications.notifications;
 
 /**
  * Created by buhalo on 26.03.17.

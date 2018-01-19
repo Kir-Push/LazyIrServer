@@ -46,6 +46,7 @@ public class Device {
         this.enabledModulesConfig = enabledModules;
         for (ModuleSetting registeredModule : enabledModules) {
             if(registeredModule.isEnabled()){
+                System.out.println(registeredModule.getName());
                 enableModule(registeredModule.getName());
             } }
     }

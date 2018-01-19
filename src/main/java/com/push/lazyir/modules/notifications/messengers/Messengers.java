@@ -1,8 +1,9 @@
-package com.push.lazyir.modules.notifications;
+package com.push.lazyir.modules.notifications.messengers;
 
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
+import com.push.lazyir.modules.notifications.notifications.Notification;
 import com.push.lazyir.service.BackgroundService;
 
 /**
