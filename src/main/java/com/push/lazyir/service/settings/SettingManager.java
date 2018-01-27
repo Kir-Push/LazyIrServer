@@ -87,7 +87,6 @@ public class SettingManager implements Manager {
                 );
                 String read;
                 while((read = reader.readLine()) != null){
-                    System.out.println(read);
                     writer.write(read);
                 }
             }
@@ -107,7 +106,7 @@ public class SettingManager implements Manager {
     get enabled modules from xml list, and instantiate ModuleSetting entity
     return the list
     * */
-    public List<ModuleSetting> getMyEnabledModules(){
+    public synchronized List<ModuleSetting> getMyEnabledModules(){
         List<ModuleSetting> modulesResultList = new ArrayList<>();
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -137,7 +136,7 @@ public class SettingManager implements Manager {
     }
 
     //clear device internal sftp temp folder's
-    public void clearFolders(){
+    public synchronized void clearFolders(){
         File file = new File(currentUsersHomeDir);
         File[] files = file.listFiles();
         if (files != null)
@@ -224,7 +223,7 @@ public class SettingManager implements Manager {
          //  writer.write(strAddr);
         //   writer.newLine();
             for (String address : addresses) {
-                if(count >= 10)
+                if(count >= 20)
                 {
                     break;
                 }

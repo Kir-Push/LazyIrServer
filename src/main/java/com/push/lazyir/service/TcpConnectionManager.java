@@ -30,7 +30,7 @@ public class TcpConnectionManager {
     public final static String TCP_SYNC = "sync";
     public final static String ENABLED_MODULES = "enabledModules";
 
-    private int port = 5667;
+    private int port;
     private boolean tls;
 
     private ServerSocket myServerSocket;
@@ -71,37 +71,26 @@ public class TcpConnectionManager {
 
     void startServer()
     {
-        boolean trying = true;
-        int firstTryPort = port;
-       // tls = Boolean.parseBoolean(BackgroundService.getSettingManager().get("TLS"));
-        tls = true;
-        while(trying && firstTryPort < 5777) { //todo внимание проверь остальные порты чтоб не пересекались
+        port = Integer.parseInt(BackgroundService.getSettingManager().get("TCP-port"));
+        tls = Boolean.parseBoolean(BackgroundService.getSettingManager().get("TLS"));
             try {
                 if(tls)
                 {
                     SSLServerSocketFactory sslServerSocketFactory = createSSLContext().getServerSocketFactory();
                     if(sslServerSocketFactory == null)
                         BackgroundService.crushed("startServer");
-                    myServerSocket = sslServerSocketFactory.createServerSocket(firstTryPort);
+                    myServerSocket = sslServerSocketFactory.createServerSocket(port);
                 }
                 else
-                    myServerSocket = new ServerSocket(firstTryPort);
-                this.port = firstTryPort;
-                trying = false;
+                    myServerSocket = new ServerSocket(port);
                 // you need clear folder when server created, because you may start multiple instances of app
                 // and you clear folder of other instance
                 // after server created(using one port) you know that only one instance running.
                 BackgroundService.clearTempFolders();
             } catch (Exception e) {
-                Loggout.e("Tcp", "startServer with port " + firstTryPort + " failed ",e);
-                firstTryPort++;
-                if(firstTryPort >= 5777)
-                {
-                    BackgroundService.crushed("startServer");
-                }
-                trying = false; // for testing purposes /todo
+                Loggout.e("Tcp", "startServer with port " + port + " failed ",e);
+                BackgroundService.crushed("startServer");
             }
-        }
     }
 
 

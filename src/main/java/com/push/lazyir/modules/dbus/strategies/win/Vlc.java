@@ -4,6 +4,8 @@ package com.push.lazyir.modules.dbus.strategies.win;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.modules.dbus.Player;
 import com.push.lazyir.modules.dbus.Players;
+import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.settings.SettingManager;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -223,14 +225,12 @@ public class Vlc implements Strategy {
 
     }
 
-    private void initParameted() //todo i commented this for test purpose
+    private void initParameted()
     {
-//        SettingManager settingManager = BackgroundService.getSettingManager();
-//        String vlcPass = settingManager.get("Vlc-pass");
-  //      port = Integer.parseInt(settingManager.get("Vlc-port"));
-  //      passEncoded =  new String(Base64.getEncoder().encode(vlcPass.getBytes()));
-        port = 9090;
-        passEncoded = new String(Base64.getEncoder().encode(":567".getBytes()));
+        SettingManager settingManager = BackgroundService.getSettingManager();
+       String vlcPass = settingManager.get("Vlc-pass");
+        port = Integer.parseInt(settingManager.get("Vlc-port"));
+        passEncoded =  new String(Base64.getEncoder().encode(vlcPass.getBytes()));
     }
 
     private void sendGet(String command)

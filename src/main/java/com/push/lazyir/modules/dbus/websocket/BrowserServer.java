@@ -3,6 +3,7 @@ package com.push.lazyir.modules.dbus.websocket;
 //import org.glassfish.tyrus.server.Server;
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.service.BackgroundService;
 import org.glassfish.tyrus.server.Server;
 
 
@@ -48,6 +49,7 @@ public class BrowserServer {
         running = true;
             final Map<String, Object> serverProperties = new HashMap<String, Object>();
             serverProperties.put(Server.STATIC_CONTENT_ROOT, "./src/main/webapp");
+            port = Integer.parseInt(BackgroundService.getSettingManager().get("websocketPort"));
             server = new Server("127.0.0.1", port, contextPath, null, PopupEndpoint.class);
             server.start();
         }catch (Exception e) {

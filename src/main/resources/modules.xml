@@ -65,4 +65,10 @@
         <ignored>*</ignored>
         <workOnly>true</workOnly>
     </module>
+    <module>
+        <name>Reminder</name>
+        <enabled>true</enabled>
+        <ignored>*</ignored>
+        <workOnly>true</workOnly>
+    </module>
 </modules>

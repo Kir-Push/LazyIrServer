@@ -43,7 +43,7 @@ public class ClipboardRmiServer implements ClientRegister {
             listening = true;
             ClientRegister stub = (ClientRegister) UnicastRemoteObject.exportObject(this,0);
 
-            Registry registry = LocateRegistry.createRegistry(7010);
+            Registry registry = LocateRegistry.createRegistry(Integer.parseInt(BackgroundService.getSettingManager().get("jniPort")));
             registry.bind("ClientRegister",stub);
 
             startSepateProcessWithClient();

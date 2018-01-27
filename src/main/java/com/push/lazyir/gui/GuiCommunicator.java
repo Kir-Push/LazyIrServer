@@ -71,9 +71,11 @@ public class GuiCommunicator {
     public static void receive_notifications(String id,List<Notification> notifications){
         ObservableList<NotificationDevice> notificationDevices = FXCollections.observableArrayList();
                 for (Notification notification : notifications) {
-            notificationDevices.add(new NotificationDevice(notification.getText(),notification.getType(),
-                    notification.getTitle(),notification.getPack(),notification.getTicker(),
-                    notification.getId(),notification.getIcon(),notification.getPicture()));
+                    NotificationDevice notificationDevice = new NotificationDevice(notification.getText(), notification.getType(),
+                            notification.getTitle(), notification.getPack(), notification.getTicker(),
+                            notification.getId(), notification.getIcon(), notification.getPicture());
+                    notificationDevice.setOwnerName(id);
+                    notificationDevices.add(notificationDevice);
         }
         ApiController.getInstance().setDeviceNotifications(id,notificationDevices);
     }
@@ -82,12 +84,14 @@ public class GuiCommunicator {
         NotificationDevice notificationDevice = new NotificationDevice(notification.getText(), notification.getType(),
                 notification.getTitle(), notification.getPack(), notification.getTicker(),
                 notification.getId(), notification.getIcon(), notification.getPicture());
-        ApiController.getInstance().showNotification(id,notificationDevice);
+        notificationDevice.setOwnerName(Device.getConnectedDevices().get(id).getName());
+        ApiController.getInstance().showNotification(id,notificationDevice,arg);
     }
 
     public static void show_sms(String id, Sms sms) {
         try {
             NotificationDevice notification = new NotificationDevice(sms.getText(), "sms", sms.getName(), SMS_TYPE, sms.getNumber(), sms.getNumber(), sms.getIcon(), sms.getPicture());
+            notification.setOwnerName(Device.getConnectedDevices().get(id).getName());
             ApiController.getInstance().showNotification(id, notification);
         }catch (Throwable e){
             e.printStackTrace();
@@ -131,13 +135,16 @@ public class GuiCommunicator {
     }
 
     public static void requestPair(NetworkPackage np) {
-        NotificationDevice notificationDevice = new NotificationDevice("Request Pair" ,"pair", np.getName(),np.getType(),np.getData(),np.getId(),np.getValue("icon"),null);
+        String name = np.getName();
+        NotificationDevice notificationDevice = new NotificationDevice("Request Pair" ,"pair", name,np.getType(),np.getData(),np.getId(),np.getValue("icon"),null);
+        notificationDevice.setOwnerName(name);
         ApiController.getInstance().requestPair(np.getId(),notificationDevice);
     }
 
     public static void call_Notif(NetworkPackage np) {
         String callType = np.getValue("callType");
            NotificationDevice notificationDevice = new NotificationDevice(np.getValue("text"),callType,np.getValue("number"),callType,callType,np.getId(),np.getValue("icon"),null);
+           notificationDevice.setOwnerName(np.getName());
            ApiController.getInstance().showNotification(np.getId(),notificationDevice);
 
     }

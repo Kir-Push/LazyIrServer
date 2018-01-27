@@ -116,9 +116,10 @@ public class CustomNotification extends BorderLayoutNotification {
         return text_lbl.getText();
     }
 
-    public void setText(String text,String title) {
+    public void setText(String text,String title,String dvName) {
         title = "<b>" + title + "</b><br/>";
-        text = "<html>" + title +  text.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + "</html>";
+        dvName = "<br/><font size=\"2\">" + dvName +  "</font>";
+        text = "<html>" + title +  text.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + dvName + "</html>";
         text_lbl.setText(text);
     }
 
@@ -149,9 +150,9 @@ public class CustomNotification extends BorderLayoutNotification {
                 return null;
             // handled by us
             if (args.length > 0) {
-                notification.setText(notificationDevice.getText(),notificationDevice.getTitle());
+                notification.setText(notificationDevice.getText(),notificationDevice.getTitle(),notificationDevice.getOwnerName());
             } else {
-                notification.setText("","");
+                notification.setText("","","");
             }
 
             String icon = notificationDevice.getIcon();

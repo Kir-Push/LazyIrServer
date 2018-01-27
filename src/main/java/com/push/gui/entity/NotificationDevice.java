@@ -15,6 +15,7 @@ public class NotificationDevice {
     private StringProperty icon;
     private StringProperty picture;
     private StringProperty ownerId;
+    private StringProperty ownerName;
 
     public NotificationDevice(String text, String title, String pack, String ticker, String id, String icon, String picture) {
         this.text = new SimpleStringProperty(text);
@@ -149,5 +150,17 @@ public class NotificationDevice {
                 ", picture=" + picture +
                 ", ownerId=" + ownerId +
                 '}';
+    }
+
+    public String getOwnerName() {
+        return ownerName.get();
+    }
+
+    public StringProperty ownerNameProperty() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName.set(ownerName);
     }
 }

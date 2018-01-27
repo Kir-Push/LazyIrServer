@@ -10,6 +10,7 @@ import com.push.lazyir.modules.notifications.messengers.Messengers;
 import com.push.lazyir.modules.notifications.notifications.ShowNotification;
 import com.push.lazyir.modules.notifications.sms.SmsModule;
 import com.push.lazyir.modules.command.SendCommand;
+import com.push.lazyir.modules.reminder.Reminder;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.modules.touch.TouchControl;
 
@@ -61,6 +62,7 @@ public class ModuleFactory {
         registeredModules.add(Messengers.class);
         registeredModules.add(TouchControl.class);
         registeredModules.add(CallModule.class);
+        registeredModules.add(Reminder.class);
     }
 
     public static Module instantiateModuleByName(Device dv,String name)

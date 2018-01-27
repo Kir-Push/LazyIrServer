@@ -3,6 +3,7 @@ package com.push.lazyir.modules.clipboard.Rmi;
 import com.push.gui.basew.MainWin;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.modules.clipboard.ClipboardJni;
+import com.push.lazyir.service.BackgroundService;
 import com.push.lazyir.service.MainClass;
 
 import java.io.File;
@@ -25,7 +26,7 @@ public class ClipboardRmiSeparateProcess  implements ClipboardChanger{
     public static void main(String[] args) {
         ClipboardRmiSeparateProcess client = new ClipboardRmiSeparateProcess();
         try {
-            Registry registry = LocateRegistry.getRegistry(null, 7010);
+            Registry registry = LocateRegistry.getRegistry(null, Integer.parseInt(BackgroundService.getSettingManager().get("jniPort")));
 
             ClientRegister server = (ClientRegister) registry.lookup("ClientRegister");
 

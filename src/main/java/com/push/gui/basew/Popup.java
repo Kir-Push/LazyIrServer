@@ -7,6 +7,7 @@ import com.push.gui.controllers.MainController;
 import com.push.gui.entity.CustomNotification;
 import com.push.gui.entity.NotificationDevice;
 import com.push.lazyir.modules.notifications.call.callTypes;
+import com.push.lazyir.service.BackgroundService;
 import com.theme.ThemePackagePresets;
 import com.utils.Time;
 import javafx.stage.Screen;
@@ -20,6 +21,8 @@ public class Popup {
      private volatile static boolean initialized;
      private static NotificationFactory factory;
      private static QueueManager manager;
+     private static double notTime;
+     private static double callNotTime;
 
      private static HashMap<String,CustomNotification> callNotifs = new HashMap<>();
      private static int countScreens;
@@ -44,6 +47,8 @@ public class Popup {
             // add the Notification
             manager.setScrollDirection(QueueManager.ScrollDirection.NORTH);
             initialized = true;
+            notTime = Double.parseDouble(BackgroundService.getSettingManager().get("Notif-time"));
+            callNotTime = Double.parseDouble(BackgroundService.getSettingManager().get("Call-Notif-time"));
         }
         // if you have many than 5 notif on screen remove all oldest
         List<Notification> notifications = manager.getNotifications();
@@ -60,9 +65,9 @@ public class Popup {
         if(incoming || missed || outgoing){
             callNotifs.put(notification.getTitle(),build);
         }
-        Time time = Time.seconds(20);
+        Time time = Time.seconds(notTime);
         if(incoming){
-           time = Time.seconds(120);
+           time = Time.seconds(callNotTime);
         }
         manager.addNotification(build, time);
 

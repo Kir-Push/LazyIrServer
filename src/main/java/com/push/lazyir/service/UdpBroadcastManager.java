@@ -28,7 +28,7 @@ public class UdpBroadcastManager  {
     private  DatagramSocket server;
     private int send_period = 30000;
 
-    public static int port = 5667;
+    public static int port = 0;
     private volatile static boolean listening = false;
     public volatile static boolean exitedFromSend = true;
     private volatile static boolean sending;
@@ -58,6 +58,7 @@ public class UdpBroadcastManager  {
                 return;
             }
             try {
+                this.port = port;
                 server = new DatagramSocket(port);
                 server.setReuseAddress(true);
             } catch (SocketException e) {
@@ -143,7 +144,7 @@ public class UdpBroadcastManager  {
             }
             else
             {
-                sendUdp(packet.getAddress(),5667);
+                sendUdp(packet.getAddress(),port);
             }
         }
     }
@@ -219,7 +220,7 @@ public class UdpBroadcastManager  {
     public void connectRecconect(String id)  {
         for (String allCachedThing : BackgroundService.getSettingManager().getAllCachedThings()) {
             try {
-                sendUdp(InetAddress.getByName(allCachedThing),5667);
+                sendUdp(InetAddress.getByName(allCachedThing),port);
             } catch (UnknownHostException e) {
                 Loggout.e("Udp","connect recconect error: " ,e);
             }

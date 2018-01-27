@@ -41,7 +41,6 @@ public class ShowNotification extends Module {
                                 }
                             }
         } catch(NullPointerException e){
-            System.out.println(np.getMessage());
             Loggout.e("ShowNotification", "execute ",e);
         }
 }

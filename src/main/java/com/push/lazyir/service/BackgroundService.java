@@ -26,7 +26,7 @@ public class BackgroundService {
     private TcpConnectionManager tcp;
     private UdpBroadcastManager udp;
     private SettingManager settingManager;
-    private static int port = 5667;
+    private static int port = 0;
 
     private volatile static BackgroundService instance;
 
@@ -72,7 +72,7 @@ public class BackgroundService {
 
     private void startUdpListening() {
         udp.configureManager();
-        udp.startUdpListener(port);
+        udp.startUdpListener(getPort());
     }
 
     private void connectCached() {
@@ -157,6 +157,8 @@ public class BackgroundService {
     }
 
     public static int getPort() {
+        if(port == 0)
+            port = Integer.parseInt(getSettingManager().get("TCP-port"));
         return port;
     }
 
