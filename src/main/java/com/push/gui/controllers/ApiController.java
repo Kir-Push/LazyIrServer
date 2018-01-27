@@ -86,8 +86,8 @@ public class ApiController {
         return first.orElse(null);
     }
 
-    public void showNotification(String id, NotificationDevice notification) {
-        Popup.show(id,notification,mainController);
+    public void showNotification(String id, NotificationDevice notification,Object... arg) {
+        Popup.show(id,notification,mainController,arg);
     }
 
     public void removeNotificationCallEnd(String id, String callerNumber){

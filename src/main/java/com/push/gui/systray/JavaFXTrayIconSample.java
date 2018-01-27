@@ -21,6 +21,8 @@ public class JavaFXTrayIconSample extends Application {
     // you could also use multiple icons to allow for clean display of tray icons on hi-dpi devices.
     private static final String iconImageLoc = null;
 
+    private static JavaFXTrayIconSample instance;
+
     // application stage is stored so that it can be shown and hidden based on system tray icon operations.
     private Stage stage;
 
@@ -30,13 +32,17 @@ public class JavaFXTrayIconSample extends Application {
     // format used to display the current time in a tray icon notification.
     private DateFormat timeFormat = SimpleDateFormat.getTimeInstance();
 
+    public static JavaFXTrayIconSample getInstance() {
+        return instance;
+    }
+
     // sets up the javafx application.
     // a tray icon is setup for the icon, but the main stage remains invisible until the user
     // interacts with the tray icon.
     @Override public void start(final Stage stage) {
         // stores a reference to the stage.
         this.stage = stage;
-
+        instance = this;
         // instructs the javafx system not to exit implicitly when the last application window is shut.
         Platform.setImplicitExit(false);
 
@@ -130,7 +136,7 @@ public class JavaFXTrayIconSample extends Application {
     /**
      * Shows the application stage and ensures that it is brought ot the front of all stages.
      */
-    private void showStage() {
+    public void showStage() {
         if (stage != null) {
             stage.show();
             stage.toFront();

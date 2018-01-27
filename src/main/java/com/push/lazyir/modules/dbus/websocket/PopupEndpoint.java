@@ -29,6 +29,7 @@ public class PopupEndpoint {
     private volatile static CollectingFuture<Player,Collection<Player>> getAllFuture;
     private static StampedLock lock = new StampedLock();
     private static int expectedCount;
+    private static int collected;
 
     private final static ConcurrentHashMap<String,Session> connectedSessions = new ConcurrentHashMap<>();
 
@@ -85,7 +86,7 @@ public class PopupEndpoint {
                         String title = np.getValue("title" + i);
                         String readyTime = ((int) np.getDouble("time" + i)) / 60 + ":" + ((int) np.getDouble("time" + i)) % 60 + " / " + ((int) np.getDouble("duration" + i)) / 60 + ":" + (int) np.getDouble("duration" + i) % 60;
                         Player tmp = new Player(title, np.getValue("status"+i), title, (int) np.getDouble("duration" + i),
-                                (int) (np.getDouble("volume" + i) * 100), (int) np.getDouble("time" + i), readyTime, "browser", session.getId() + ":::wbmpl:::" + np.getValue("localId"),np.getValue("videoSrc"+i),np.getValue("url"+i), np.getValue("localId" + i));
+                                (int) (np.getDouble("volume" + i) * 100), (int) np.getDouble("time" + i), readyTime, "browser", session.getId() + ":::wbmpl:::" + np.getDouble("localId"+i),np.getValue("videoSrc"+i),np.getValue("url"+i), np.getValue("localId" + i));
                         players.addTo(tmp);
                     }
                 }
@@ -96,15 +97,19 @@ public class PopupEndpoint {
                     else if (manyPlayers)
                         for (Player player1 : players.getPlayerList())
                             getAllFuture.putItem(player1);
-                    if (expectedCount <= getAllFuture.getCollectedSize()) {
+                    collected++;
+                    if (expectedCount <= collected) {
                         getAllFuture.completeWithCollected();
+                        collected = 0;
                     }
 
                 } catch (Exception e) {
+                    collected = 0;
                     Loggout.e("Websocket", "Onmessage Error", e);
                 }
             }
         }finally {
+            collected = 0;
             lock.unlock(stamp);
         }
     }
@@ -129,6 +134,7 @@ public class PopupEndpoint {
             pckg.setValue("multipleVids","true");
             pckg.setValue("lazyIrId",splittedId[1]);
             lclMsg = pckg.getMessage();
+            System.out.println(lclMsg);
         }
         try {
             Session session = connectedSessions.get(localId);

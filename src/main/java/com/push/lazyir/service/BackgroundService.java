@@ -184,7 +184,7 @@ public class BackgroundService {
         //todo
     }
 
-    public static void clearTempFolders(){
+    static void clearTempFolders(){
         getInstance().settingManager.clearFolders();
     }
 }

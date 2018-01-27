@@ -25,7 +25,7 @@ public class Popup {
      private static int countScreens;
 
 
-    public static void show(String id, NotificationDevice notification, MainController mainController) {
+    public static void show(String id, NotificationDevice notification, MainController mainController,Object... arg) {
 
 
         int numberOfMonitors = Screen.getScreens().size();
@@ -45,14 +45,14 @@ public class Popup {
             manager.setScrollDirection(QueueManager.ScrollDirection.NORTH);
             initialized = true;
         }
-        // if you have many than 10 notif on screen remove all oldest
+        // if you have many than 5 notif on screen remove all oldest
         List<Notification> notifications = manager.getNotifications();
-        if(notifications.size() >= 10){
-            for(int i = 10;i<notifications.size();i++) {
+        if(notifications.size() >= 5){
+            for(int i = 5;i<notifications.size();i++) {
                 notifications.get(i).removeFromManager();
             }
         }
-        CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController);
+        CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController,arg == null ? null : arg[0]);
         boolean incoming = notification.getType().equalsIgnoreCase(callTypes.incoming.name());
         boolean missed = notification.getType().equalsIgnoreCase(callTypes.missedIn.name());
         boolean outgoing = notification.getType().equalsIgnoreCase(callTypes.outgoing.name());

@@ -147,12 +147,18 @@ function parseResponse(data)
      console.log(data);
      var json = JSON.parse(data);
 
+     console.log(json);
      if(json.multipleVids === "true"){
        var locId = json.lazyIrId;
          var arrayLength = MultipleVideos.length;
          for (var i = 0; i < arrayLength; i++) {
-             if( MultipleVideos[i].lazyIrId === locId){
+             console.log("======");
+             console.log(MultipleVideos[i].lazyIrId);
+             console.log(locId);
+             console.log("======");
+             if( MultipleVideos[i].lazyIrId == locId){
                  MyJasechvideo  = MultipleVideos[i];
+                 console.log("!!!" + MyJasechvideo.lazyIrId);
                  break;
              }
          }
@@ -240,6 +246,7 @@ function sendNext() {
 
      var arrayLength = MultipleVideos.length;
     if(arrayLength === 1) {
+        if(MyJasechvideo.lazyIrId === undefined || MyJasechvideo.lazyIrId === null || MyJasechvideo.lazyIrId === 0)
         MyJasechvideo.lazyIrId = Math.random() * (999999 - 1) + 1;
         var obj = {
             "type": "getInfo",
@@ -259,6 +266,7 @@ function sendNext() {
         }
         for (var i = 0; i < arrayLength; i++) {
             MyJasechvideo = MultipleVideos[i];
+            if(MyJasechvideo.lazyIrId === undefined || MyJasechvideo.lazyIrId === null || MyJasechvideo.lazyIrId === 0)
             MyJasechvideo.lazyIrId = Math.random() * (999999 - 1) + 1;
             obj["localId"+i] = MyJasechvideo.lazyIrId;
             obj["title"+i] = getTitle();

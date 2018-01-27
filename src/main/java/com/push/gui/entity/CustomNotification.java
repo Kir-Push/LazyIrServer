@@ -5,9 +5,11 @@ import com.notification.NotificationFactory;
 import com.notification.manager.QueueManager;
 import com.notification.types.BorderLayoutNotification;
 import com.push.gui.controllers.MainController;
+import com.push.gui.systray.JavaFXTrayIconSample;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.notifications.call.callTypes;
+import com.push.lazyir.modules.reminder.MessagesPack;
 import com.theme.TextTheme;
 import com.theme.ThemePackage;
 import com.theme.ThemePackagePresets;
@@ -168,9 +170,29 @@ public class CustomNotification extends BorderLayoutNotification {
             if(picture != null && picture.length() > 0)
             notification.setImage(picture,150,150);
 
-
-
-            if(notificationDevice.getType().equals("sms")) {
+            if(notificationDevice.getType().equals("missedCalls")){
+                notification.setFirstButton("DismissAll",action -> {
+                    notification.hide();
+                    Platform.runLater(()->{
+                        GuiCommunicator.dismissAllCalls(notificationDevice,id);
+                    });
+                });
+            }
+            else if(notificationDevice.getType().equalsIgnoreCase("unreadMessages")){
+                notification.setFirstButton("DissmissAll",action -> {
+                    notification.hide();
+                    Platform.runLater(()->{
+                        GuiCommunicator.dissMissAllMessages(notificationDevice,id, (MessagesPack) args[3]);
+                    });
+                });
+                notification.setSecondButton("Show All",action ->{
+                    notification.hide();
+                    Platform.runLater(()->{
+                        JavaFXTrayIconSample.getInstance().showStage();
+                    });
+                });
+            }
+            else if(notificationDevice.getType().equals("sms")) {
                 notification.setFirstButton("Reply", action -> {
                     notification.hide();
                     Platform.runLater(() -> {

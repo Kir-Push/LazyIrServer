@@ -10,6 +10,9 @@ public class Sms {
     private String text;
     private String icon;
     private String picture;
+    private String type = "sms";
+    private long date; // todo add to server
+    private String id;
 
     public Sms() {
     }
@@ -28,6 +31,19 @@ public class Sms {
         this.text = text;
         this.picture = picture;
         this.icon = icon;
+    }
+
+    public Sms(String number, String text,Long date,String icon,String picture) {
+        this.number = number;
+        this.text = text;
+        this.picture = picture;
+        this.icon = icon;
+        this.date = date;
+    }
+
+    public Sms(String name,String number, String text,Long date,String icon,String picture){
+        this(name,number,text,icon,picture);
+        this.date = date;
     }
 
     public String getNumber() {
@@ -68,5 +84,41 @@ public class Sms {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "Sms{" +
+                "number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", text='" + text + '\'' +
+                ", icon='" + icon + '\'' +
+                ", picture='" + picture + '\'' +
+                '}';
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

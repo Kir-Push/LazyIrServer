@@ -52,6 +52,7 @@ public class HtmlVid implements OsStrategy {
 
     @Override
     public void playPause(NetworkPackage np) {
+        System.out.println(np.getMessage());
         String playerValue = np.getValue(player);
         PopupEndpoint.sendStatus(playerValue.substring(10),playPause);
     }
@@ -83,7 +84,7 @@ public class HtmlVid implements OsStrategy {
         CollectingFuture<Player,Collection<Player>> browsr = null;
         try {
             browsr = PopupEndpoint.getAll();
-            return new ArrayList<>(browsr.getByTimerWhatHave(200, TimeUnit.MILLISECONDS)); // from browser
+            return new ArrayList<>(browsr.getByTimerWhatHave(500, TimeUnit.MILLISECONDS)); // from browser
         } catch (Exception e) {
             Loggout.e("HtmlVid","getAllPlayers ",e);
             if(browsr!=null)

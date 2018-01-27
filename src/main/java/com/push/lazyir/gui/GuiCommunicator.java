@@ -10,6 +10,8 @@ import com.push.lazyir.modules.notifications.notifications.Notification;
 import com.push.lazyir.modules.notifications.notifications.ShowNotification;
 import com.push.lazyir.modules.notifications.sms.Sms;
 import com.push.lazyir.modules.notifications.sms.SmsModule;
+import com.push.lazyir.modules.reminder.MessagesPack;
+import com.push.lazyir.modules.reminder.Reminder;
 import com.push.lazyir.service.BackgroundService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -76,7 +78,7 @@ public class GuiCommunicator {
         ApiController.getInstance().setDeviceNotifications(id,notificationDevices);
     }
 
-    public static void show_notification(String id,Notification notification){
+    public static void show_notification(String id,Notification notification,Object... arg){
         NotificationDevice notificationDevice = new NotificationDevice(notification.getText(), notification.getType(),
                 notification.getTitle(), notification.getPack(), notification.getTicker(),
                 notification.getId(), notification.getIcon(), notification.getPicture());
@@ -162,5 +164,14 @@ public class GuiCommunicator {
 
     public static void rejectOutgoingcall(NotificationDevice notificationDevice, String id) {
 
+    }
+
+    public static void dismissAllCalls(NotificationDevice notificationDevice, String id) {
+        Reminder.sendDissmisAllCalls(id,notificationDevice.getId());
+    }
+
+
+    public static void dissMissAllMessages(NotificationDevice notificationDevice, String id, MessagesPack msg) {
+        Reminder.sendDissmisAllMessages(id,msg);
     }
 }
