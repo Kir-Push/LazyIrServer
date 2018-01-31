@@ -42,6 +42,9 @@ public class JavaFXTrayIconSample extends Application {
     @Override public void start(final Stage stage) {
         // stores a reference to the stage.
         this.stage = stage;
+        this.stage.setOnHidden((event)->{ // todo check work or no
+            GuiCommunicator.clearGetRequestTimer();
+        });
         instance = this;
         // instructs the javafx system not to exit implicitly when the last application window is shut.
         Platform.setImplicitExit(false);
@@ -144,8 +147,10 @@ public class JavaFXTrayIconSample extends Application {
             if(mainWin.getConnectedDevices().size() <= selectedIndex || selectedIndex == -1)
             mainWin.getController().getPersonList().getSelectionModel().select(0);
             PhoneDevice selectedItem = mainWin.getController().getPersonList().getSelectionModel().getSelectedItem();
-            if(selectedItem != null)
-            GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
+            if(selectedItem != null) {
+                GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
+                GuiCommunicator.setGetRequestTimer(selectedItem.getId(),5000);
+            }
         }
     }
 

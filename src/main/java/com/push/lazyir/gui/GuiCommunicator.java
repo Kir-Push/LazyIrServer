@@ -5,6 +5,9 @@ import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.modules.memory.CRTEntity;
+import com.push.lazyir.modules.memory.Memory;
+import com.push.lazyir.modules.memory.MemoryEntity;
 import com.push.lazyir.modules.notifications.messengers.Messengers;
 import com.push.lazyir.modules.notifications.notifications.Notification;
 import com.push.lazyir.modules.notifications.notifications.ShowNotification;
@@ -180,5 +183,21 @@ public class GuiCommunicator {
 
     public static void dissMissAllMessages(NotificationDevice notificationDevice, String id, MessagesPack msg) {
         Reminder.sendDissmisAllMessages(id,msg);
+    }
+
+    public static void setDeviceCRT(CRTEntity crt,String id){
+        ApiController.getInstance().setDeviceCRT(crt,id);
+    }
+
+    public static void setDeviceMemory(MemoryEntity memory,String id){
+        ApiController.getInstance().setDeviceMemory(memory,id);
+    }
+
+    public static void setGetRequestTimer(String id, int time) {
+        Memory.setGetRequestTimer(time,id);
+    }
+
+    public static void clearGetRequestTimer(){
+        Memory.clearTimer();
     }
 }

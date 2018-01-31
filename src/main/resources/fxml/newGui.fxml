@@ -12,7 +12,6 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.ToggleButton?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="721.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.MainController">
    <children>
     <AnchorPane id="devicePane" minHeight="0.0" minWidth="0.0" prefHeight="224.0" prefWidth="721.0" style="-fx-background-color: white;">
@@ -43,7 +42,12 @@
                   <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />
                </textFill>
             </Label>
-            <Pane prefHeight="0.0" prefWidth="579.0" HBox.hgrow="ALWAYS" />
+            <Pane prefHeight="0.0" prefWidth="579.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label id="memoryLbl" layoutX="37.0" layoutY="-1.0" prefHeight="16.0" prefWidth="233.0" />
+                  <Label id="cpuLoad" layoutX="382.0" layoutY="-1.0" prefHeight="16.0" prefWidth="76.0" />
+                  <Label id="ramLbl" layoutX="468.0" layoutY="-1.0" prefHeight="16.0" prefWidth="111.0" />
+               </children></Pane>
             <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
          </children>
          <padding>

@@ -9,10 +9,12 @@ import com.push.lazyir.gui.GuiCommunicator;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -83,8 +85,10 @@ public class MainController {
 
         personList.setOnMouseClicked(event -> {
             PhoneDevice selectedItem = personList.getSelectionModel().getSelectedItem();
-            if(selectedItem != null)
-            GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
+            if(selectedItem != null) {
+                GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
+                GuiCommunicator.setGetRequestTimer(selectedItem.getId(),5000);
+            }
         });
 
 
@@ -196,6 +200,18 @@ public class MainController {
 
         Button ping = (Button) rootLayout.lookup("#pingBtn");
         ping.setOnAction(event -> GuiCommunicator.ping(newSelection.getId()));
+
+        Label memory = (Label) rootLayout.lookup("#memoryLbl");
+        memory.setText("Main Storage(MB): " + newSelection.getFreeSpace() + "/" + newSelection.getTotalSpace() + ";  External Storage(s): " + newSelection.getFreeSpaceExt() + "/"+newSelection.getTotalSpaceExt());
+
+        Label cpu = (Label) rootLayout.lookup("#cpuLoad");
+        cpu.setText("Cpu load: " + newSelection.getCpuLoad() + "%");
+
+        Label ram = (Label) rootLayout.lookup("#ramLbl");
+        ram.setText("Ram usage(MB): " + newSelection.getFreeRam()+"/"+newSelection.getTotalRam());
+        boolean lowMemory = newSelection.isLowMemory();
+        if(lowMemory)
+            ram.setTextFill(Color.RED);
 
         // присваиваем списку уведомление, список из текущего устройсва
         mainApp.getNotificationsList().clear();

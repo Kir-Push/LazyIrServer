@@ -14,6 +14,14 @@ public class PhoneDevice {
     private BooleanProperty paired;
     private BooleanProperty mounted;
     private LongProperty freeSpace; // todo
+    private LongProperty totalSpace;
+    private LongProperty totalSpaceExt;
+    private LongProperty freeSpaceExt;
+    private IntegerProperty cpuLoad;
+    private LongProperty totalRam;
+    private LongProperty freeRam;
+    private BooleanProperty lowMemory;
+    private DoubleProperty temp;
     private ListProperty<String> enabledModules;
     private ListProperty<NotificationDevice> notifications;
 
@@ -137,4 +145,111 @@ public class PhoneDevice {
     }
 
 
+    public long getFreeSpace() {
+        return freeSpace.get();
+    }
+
+    public LongProperty freeSpaceProperty() {
+        return freeSpace;
+    }
+
+    public void setFreeSpace(long freeSpace) {
+        this.freeSpace.set(freeSpace);
+    }
+
+    public long getTotalSpace() {
+        return totalSpace.get();
+    }
+
+    public LongProperty totalSpaceProperty() {
+        return totalSpace;
+    }
+
+    public void setTotalSpace(long totalSpace) {
+        this.totalSpace.set(totalSpace);
+    }
+
+    public int getCpuLoad() {
+        return cpuLoad.get();
+    }
+
+    public IntegerProperty cpuLoadProperty() {
+        return cpuLoad;
+    }
+
+    public void setCpuLoad(int cpuLoad) {
+        this.cpuLoad.set(cpuLoad);
+    }
+
+    public long getTotalRam() {
+        return totalRam.get();
+    }
+
+    public LongProperty totalRamProperty() {
+        return totalRam;
+    }
+
+    public void setTotalRam(long totalRam) {
+        this.totalRam.set(totalRam);
+    }
+
+    public long getFreeRam() {
+        return freeRam.get();
+    }
+
+    public LongProperty freeRamProperty() {
+        return freeRam;
+    }
+
+    public void setFreeRam(long freeRam) {
+        this.freeRam.set(freeRam);
+    }
+
+    public double getTemp() {
+        return temp.get();
+    }
+
+    public DoubleProperty tempProperty() {
+        return temp;
+    }
+
+    public void setTemp(double temp) {
+        this.temp.set(temp);
+    }
+
+    public boolean isLowMemory() {
+        return lowMemory.get();
+    }
+
+    public BooleanProperty lowMemoryProperty() {
+        return lowMemory;
+    }
+
+    public void setLowMemory(boolean lowMemory) {
+        this.lowMemory.set(lowMemory);
+    }
+
+    public long getFreeSpaceExt() {
+        return freeSpaceExt.get();
+    }
+
+    public LongProperty freeSpaceExtProperty() {
+        return freeSpaceExt;
+    }
+
+    public void setFreeSpaceExt(long freeSpaceExt) {
+        this.freeSpaceExt.set(freeSpaceExt);
+    }
+
+    public long getTotalSpaceExt() {
+        return totalSpaceExt.get();
+    }
+
+    public LongProperty totalSpaceExtProperty() {
+        return totalSpaceExt;
+    }
+
+    public void setTotalSpaceExt(long totalSpaceExt) {
+        this.totalSpaceExt.set(totalSpaceExt);
+    }
 }

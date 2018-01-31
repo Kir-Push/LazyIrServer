@@ -3,6 +3,9 @@ package com.push.gui.controllers;
 import com.push.gui.basew.Popup;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
+import com.push.lazyir.modules.memory.CRTEntity;
+import com.push.lazyir.modules.memory.MemPair;
+import com.push.lazyir.modules.memory.MemoryEntity;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 
@@ -96,5 +99,39 @@ public class ApiController {
 
     public void requestPair(String id,NotificationDevice notificationDevice) {
        showNotification(id,notificationDevice);
+    }
+
+    public void setDeviceCRT(CRTEntity crt, String id) {
+        Platform.runLater(()->{
+            PhoneDevice deviceById = getDeviceById(id);
+            deviceById.setCpuLoad(crt.getCpuLoad());
+            deviceById.setFreeRam(crt.getFreeRam()/1024/1024);
+            deviceById.setTotalRam(crt.getFreeRamAll()/1024/1024);
+            deviceById.setLowMemory(crt.isLowMem());
+            deviceById.setTemp(crt.getTempC());
+            refreshSelection(id);
+        });
+    }
+
+    public void setDeviceMemory(MemoryEntity entity,String id){
+        List<MemPair> extMem = entity.getExtMem();
+        long mainMem = entity.getMainMem() / 1024 / 1024; // to mb
+        long mainMemFree = entity.getMainMemFree() / 1024 / 1024;
+        long extTotal = 0;
+        long extFree = 0;
+        for (MemPair memPair : extMem) {
+            extTotal += memPair.getAllMem();
+            extFree += memPair.getFreeMem();
+        }
+        long finalExtFree = extFree / 1024 / 1024; // effectively final hack
+        long finalExtTotal = extTotal / 1024 / 1024;
+        Platform.runLater(()->{
+            PhoneDevice deviceById = getDeviceById(id);
+            deviceById.setFreeSpace(mainMemFree);
+            deviceById.setFreeSpaceExt(finalExtFree);
+            deviceById.setTotalSpace(mainMem);
+            deviceById.setTotalSpaceExt(finalExtTotal);
+            refreshSelection(id);
+        });
     }
 }
