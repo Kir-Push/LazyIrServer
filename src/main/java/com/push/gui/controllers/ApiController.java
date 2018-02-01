@@ -6,6 +6,7 @@ import com.push.gui.entity.PhoneDevice;
 import com.push.lazyir.modules.memory.CRTEntity;
 import com.push.lazyir.modules.memory.MemPair;
 import com.push.lazyir.modules.memory.MemoryEntity;
+import com.push.lazyir.pojo.Command;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 
@@ -140,5 +141,9 @@ public class ApiController {
             deviceById.setTotalSpaceExt(finalExtTotal);
             refreshSelection(id);
         });
+    }
+
+    public void receiveCommands(List<Command> commands, String id) {
+        mainController.setCommands(commands,id);
     }
 }

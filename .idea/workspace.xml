@@ -7,24 +7,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5f696011-2726-4df9-993f-c5deebd9f80a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ping/Ping.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/CommandsWindow.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/fxml/commandWindow.fxml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/com/push/lazyir/devices/NetworkPackage.class" afterPath="$PROJECT_DIR$/target/classes/com/push/lazyir/devices/NetworkPackage.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ModuleFactory.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ModuleFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcessNix.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcessNix.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/TcpConnectionManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/TcpConnectionManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/UdpBroadcastManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/UdpBroadcastManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/tcp/ConnectionThread.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/tcp/ConnectionThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/modules.xml" afterPath="$PROJECT_DIR$/src/main/resources/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/com/push/lazyir/managers/ConnectionThreadTest.java" afterPath="$PROJECT_DIR$/src/test/java/com/push/lazyir/managers/ConnectionThreadTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -52,15 +44,98 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="BackgroundService.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java">
+      <file leaf-file-name="GuiCommunicator.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3128">
-              <caret line="211" column="23" lean-forward="false" selection-start-line="211" selection-start-column="23" selection-end-line="211" selection-end-column="23" />
+            <state relative-caret-position="1176">
+              <caret line="217" column="39" lean-forward="false" selection-start-line="217" selection-start-column="39" selection-end-line="217" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ApiController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1176">
+              <caret line="146" column="28" lean-forward="false" selection-start-line="146" selection-start-column="28" selection-end-line="146" selection-end-column="28" />
               <folding>
-                <element signature="e#6513#6514#0" expanded="true" />
-                <element signature="e#6567#6568#0" expanded="true" />
+                <element signature="e#5149#5150#0" expanded="true" />
+                <element signature="e#5204#5205#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1776">
+              <caret line="99" column="9" lean-forward="true" selection-start-line="99" selection-start-column="9" selection-end-line="99" selection-end-column="9" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainWin.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="602">
+              <caret line="54" column="41" lean-forward="false" selection-start-line="54" selection-start-column="41" selection-end-line="54" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Dialogs.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Dialogs.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="34" column="41" lean-forward="true" selection-start-line="34" selection-start-column="41" selection-end-line="34" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CommandsWindow.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/CommandsWindow.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="636">
+              <caret line="38" column="44" lean-forward="false" selection-start-line="38" selection-start-column="44" selection-end-line="38" selection-end-column="44" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#480#481#0" expanded="true" />
+                <element signature="e#509#510#0" expanded="true" />
+                <element signature="e#554#555#0" expanded="true" />
+                <element signature="e#590#591#0" expanded="true" />
+                <element signature="e#1390#1391#0" expanded="true" />
+                <element signature="e#1419#1420#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="commandWindow.fxml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/fxml/commandWindow.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="26" lean-forward="false" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="26" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SynchroModule.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="578">
+              <caret line="42" column="35" lean-forward="true" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="35" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -72,16 +147,14 @@
       <list>
         <option value="JUnit5 Test Class" />
         <option value="JUnit4 Test Class" />
-        <option value="FxmlFile" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="FxmlFile" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>notification</find>
-      <find>added</find>
       <find>sh</find>
       <find>sho</find>
       <find>unpa</find>
@@ -110,6 +183,8 @@
       <find>SETUP_SERVER_AND_SEND_ME_PORT</find>
       <find>remove</find>
       <find>dele</find>
+      <find>syn</find>
+      <find>dialogs</find>
     </findStrings>
     <replaceStrings>
       <replace>Communicator.getInstance().</replace>
@@ -143,11 +218,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Messengers/Messengers.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Notifications/Notification.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/Call/callTypes.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/callTypes.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/callModules.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/Device.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/SmsModule.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/callModule.java" />
@@ -172,15 +242,12 @@
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/CRTEntity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/MemoryEntity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/gui/systray/JavaFXTrayIconSample.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/gui/entity/PhoneDevice.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/gui/entity/NotificationDevice.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/Memory.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/Reminder.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/tcp/ConnectionThread.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/UdpBroadcastManager.java" />
@@ -192,8 +259,16 @@
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcessNix.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Dialogs.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/basew/SettingWindow.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/fxml/commandWindow.fxml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/basew/CommandsWindow.java" />
       </list>
     </option>
   </component>
@@ -279,7 +354,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -339,6 +414,16 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="push" type="462c0819:PsiDirectoryNode" />
               <item name="gui" type="462c0819:PsiDirectoryNode" />
+              <item name="basew" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
               <item name="controllers" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -350,6 +435,16 @@
               <item name="push" type="462c0819:PsiDirectoryNode" />
               <item name="gui" type="462c0819:PsiDirectoryNode" />
               <item name="entity" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+              <item name="systray" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
@@ -379,6 +474,17 @@
               <item name="push" type="462c0819:PsiDirectoryNode" />
               <item name="lazyir" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="command" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
@@ -531,9 +637,9 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="AndroidView" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1577,7 +1683,9 @@
       <workItem from="1517455561240" duration="412000" />
       <workItem from="1517456000942" duration="9792000" />
       <workItem from="1517473940123" duration="249000" />
-      <workItem from="1517474324392" duration="765000" />
+      <workItem from="1517474324392" duration="824000" />
+      <workItem from="1517503861987" duration="54000" />
+      <workItem from="1517514322610" duration="8616000" />
     </task>
     <task id="LOCAL-00001" summary="windows ftp and server pair methods">
       <created>1495381598585</created>
@@ -1845,7 +1953,14 @@
       <option name="project" value="LOCAL" />
       <updated>1517455113657</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Gui action created (mount, unmount, recconect,ping (module)) remove notification's, -- all tested">
+      <created>1517475138102</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1517475138102</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1881,7 +1996,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1128235000" />
+    <option name="totallyTimeSpent" value="1136964000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1893,7 +2008,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="71" width="2560" height="1406" extended-state="6" />
+    <frame x="0" y="34" width="2560" height="1406" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -2009,7 +2124,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="start migrating to JavaFx from Qt, Created MainWindow and Controller(not completely)" />
     <MESSAGE value="continue migrating to fx" />
     <MESSAGE value="continue migrating to fx - added notification actions" />
     <MESSAGE value="add gui notification hide after clicking reply button" />
@@ -2034,7 +2148,8 @@
     <MESSAGE value="create settingManager (SharedPreferences) and change some variables to get from settingManager" />
     <MESSAGE value="created Memory module, added it's values to gui" />
     <MESSAGE value="tested crt and mem gui, fixed notif missed call and messges, some bug's fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="tested crt and mem gui, fixed notif missed call and messges, some bug's fix" />
+    <MESSAGE value="Gui action created (mount, unmount, recconect,ping (module)) remove notification's, -- all tested" />
+    <option name="LAST_COMMIT_MESSAGE" value="Gui action created (mount, unmount, recconect,ping (module)) remove notification's, -- all tested" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2070,69 +2185,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/SettableFuture.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="18" column="13" lean-forward="false" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/FutureCollectionCantBeNull.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/ExtScheduledThreadPoolExecutor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/exceptions/FutureCollectionAlreadySetted.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/CollectingFuture.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="16" column="13" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/portManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundServiceCmds.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/MainClass.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/SettingManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2273">
-          <caret line="37" column="16" lean-forward="true" selection-start-line="37" selection-start-column="16" selection-end-line="37" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/messengers/Messengers.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -2169,24 +2221,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/javafx.graphics/javafx/stage/Window.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="1026" column="22" lean-forward="false" selection-start-line="1026" selection-start-column="22" selection-end-line="1026" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/pojo/Command.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="6" column="13" lean-forward="false" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="27" column="35" lean-forward="false" selection-start-line="27" selection-start-column="35" selection-end-line="27" selection-end-column="35" />
         </state>
       </provider>
     </entry>
@@ -2204,17 +2242,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="19" lean-forward="false" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/MemPair.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
@@ -2229,13 +2256,6 @@
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/systray/JavaFXTrayIconSample.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="704">
-          <caret line="151" column="42" lean-forward="false" selection-start-line="151" selection-start-column="42" selection-end-line="151" selection-end-column="42" />
         </state>
       </provider>
     </entry>
@@ -2333,22 +2353,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/modules.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="634">
-          <caret line="76" column="28" lean-forward="true" selection-start-line="76" selection-start-column="28" selection-end-line="76" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/tcp/ConnectionThread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="353">
           <caret line="257" column="26" lean-forward="true" selection-start-line="257" selection-start-column="26" selection-end-line="257" selection-end-column="26" />
           <folding>
-            <element signature="e#10268#10269#0" expanded="true" />
-            <element signature="e#10307#10308#0" expanded="true" />
-            <element signature="e#10360#10361#0" expanded="true" />
-            <element signature="e#10407#10408#0" expanded="true" />
+            <element signature="e#10268#10269#0" expanded="false" />
+            <element signature="e#10307#10308#0" expanded="false" />
+            <element signature="e#10360#10361#0" expanded="false" />
+            <element signature="e#10407#10408#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2387,8 +2400,8 @@
         <state relative-caret-position="425">
           <caret line="27" column="20" lean-forward="false" selection-start-line="27" selection-start-column="20" selection-end-line="27" selection-end-column="20" />
           <folding>
-            <element signature="e#3301#3302#0" expanded="true" />
-            <element signature="e#3337#3338#0" expanded="true" />
+            <element signature="e#3301#3302#0" expanded="false" />
+            <element signature="e#3337#3338#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2401,26 +2414,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="919">
-          <caret line="110" column="40" lean-forward="false" selection-start-line="110" selection-start-column="40" selection-end-line="110" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="466">
           <caret line="121" column="64" lean-forward="false" selection-start-line="121" selection-start-column="64" selection-end-line="121" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="62" column="55" lean-forward="false" selection-start-line="62" selection-start-column="55" selection-end-line="62" selection-end-column="55" />
           <folding />
         </state>
       </provider>
@@ -2441,21 +2438,177 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="89" column="62" lean-forward="false" selection-start-line="89" selection-start-column="50" selection-end-line="89" selection-end-column="62" />
+        <state relative-caret-position="0">
+          <caret line="158" column="23" lean-forward="false" selection-start-line="158" selection-start-column="23" selection-end-line="158" selection-end-column="23" />
+          <folding>
+            <element signature="e#6513#6514#0" expanded="false" />
+            <element signature="e#6567#6568#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/modules.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="587">
+          <caret line="74" column="17" lean-forward="false" selection-start-line="74" selection-start-column="14" selection-end-line="74" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java">
+    <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/javafx.graphics/javafx/stage/Window.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3128">
-          <caret line="211" column="23" lean-forward="false" selection-start-line="211" selection-start-column="23" selection-end-line="211" selection-end-column="23" />
+        <state relative-caret-position="338">
+          <caret line="904" column="22" lean-forward="false" selection-start-line="904" selection-start-column="22" selection-end-line="904" selection-end-column="22" />
           <folding>
-            <element signature="e#6513#6514#0" expanded="true" />
-            <element signature="e#6567#6568#0" expanded="true" />
+            <element signature="e#33388#33389#0" expanded="false" />
+            <element signature="e#33439#33440#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/command/SendCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="38" column="57" lean-forward="true" selection-start-line="38" selection-start-column="57" selection-end-line="38" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="42" column="35" lean-forward="true" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1176">
+          <caret line="217" column="39" lean-forward="false" selection-start-line="217" selection-start-column="39" selection-end-line="217" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1176">
+          <caret line="146" column="28" lean-forward="false" selection-start-line="146" selection-start-column="28" selection-end-line="146" selection-end-column="28" />
+          <folding>
+            <element signature="e#5149#5150#0" expanded="true" />
+            <element signature="e#5204#5205#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/DialogController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/fxml/answerWindow.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="147" lean-forward="false" selection-start-line="11" selection-start-column="135" selection-end-line="11" selection-end-column="147" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1776">
+          <caret line="99" column="9" lean-forward="true" selection-start-line="99" selection-start-column="9" selection-end-line="99" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/systray/JavaFXTrayIconSample.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1149">
+          <caret line="42" column="29" lean-forward="false" selection-start-line="42" selection-start-column="20" selection-end-line="42" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/javafx.graphics/javafx/scene/Scene.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1365">
+          <caret line="206" column="11" lean-forward="false" selection-start-line="206" selection-start-column="11" selection-end-line="206" selection-end-column="11" />
+          <folding>
+            <element signature="e#7396#7397#0" expanded="true" />
+            <element signature="e#7478#7479#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/javafx.graphics/javafx/stage/Stage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="173" column="13" lean-forward="false" selection-start-line="173" selection-start-column="13" selection-end-line="173" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="602">
+          <caret line="54" column="41" lean-forward="false" selection-start-line="54" selection-start-column="41" selection-end-line="54" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="591">
+          <caret line="49" column="95" lean-forward="false" selection-start-line="49" selection-start-column="95" selection-end-line="49" selection-end-column="95" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Dialogs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="34" column="41" lean-forward="true" selection-start-line="34" selection-start-column="41" selection-end-line="34" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/fxml/commandWindow.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="26" lean-forward="false" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/CommandsWindow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="636">
+          <caret line="38" column="44" lean-forward="false" selection-start-line="38" selection-start-column="44" selection-end-line="38" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#480#481#0" expanded="true" />
+            <element signature="e#509#510#0" expanded="true" />
+            <element signature="e#554#555#0" expanded="true" />
+            <element signature="e#590#591#0" expanded="true" />
+            <element signature="e#1390#1391#0" expanded="true" />
+            <element signature="e#1419#1420#0" expanded="true" />
           </folding>
         </state>
       </provider>

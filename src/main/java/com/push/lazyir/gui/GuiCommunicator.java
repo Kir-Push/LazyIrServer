@@ -15,6 +15,7 @@ import com.push.lazyir.modules.notifications.sms.Sms;
 import com.push.lazyir.modules.notifications.sms.SmsModule;
 import com.push.lazyir.modules.reminder.MessagesPack;
 import com.push.lazyir.modules.reminder.Reminder;
+import com.push.lazyir.pojo.CommandsList;
 import com.push.lazyir.service.BackgroundService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,7 +57,7 @@ public class GuiCommunicator {
         BackgroundService.submitNewTask(()->{
             ShowNotification.sendRemoveNotification(ownerId,notificationId);
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -137,9 +138,11 @@ public class GuiCommunicator {
     }
 
     public static void iamCrushedUdpListen() {
+        //todo
     }
 
     public static void iamCrushed(String message) {
+        //todo
     }
 
     public static void pairAnswer(String id, boolean answer, String data){
@@ -167,22 +170,23 @@ public class GuiCommunicator {
     }
 
     public static void tcpClosed() {
-
+        //todo
     }
 
     public static void answerCall(NotificationDevice notificationDevice, String id) {
-
+        //todo
     }
 
     public static void rejectCall(NotificationDevice notificationDevice, String id) {
+        //todo
     }
 
     public static void recall(NotificationDevice item, String id) {
-
+        //todo
     }
 
     public static void rejectOutgoingcall(NotificationDevice notificationDevice, String id) {
-
+        //todo
     }
 
     public static void dismissAllCalls(NotificationDevice notificationDevice, String id) {
@@ -208,5 +212,9 @@ public class GuiCommunicator {
 
     public static void clearGetRequestTimer(){
         Memory.clearTimer();
+    }
+
+    public static void receiveCommands(CommandsList cmds, String id) {
+        ApiController.getInstance().receiveCommands(cmds.getCommands(),id);
     }
 }

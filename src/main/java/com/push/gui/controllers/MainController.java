@@ -2,15 +2,16 @@ package com.push.gui.controllers;
 
 import com.push.gui.basew.Dialogs;
 import com.push.gui.basew.MainWin;
+import com.push.gui.basew.CommandsWindow;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.gui.GuiCommunicator;
+import com.push.lazyir.pojo.Command;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +20,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+
+import java.util.List;
 
 
 public class MainController {
@@ -33,6 +36,7 @@ public class MainController {
     private MainWin mainApp;
 
     private Dialogs dialogs = new Dialogs();
+    private CommandsWindow commandsWindow = new CommandsWindow();
 
     /**
      * Конструктор.
@@ -255,5 +259,11 @@ public class MainController {
 
     public void setNotifTList(ListView<NotificationDevice> notifTList) {
         this.notifTList = notifTList;
+    }
+
+    public void setCommands(List<Command> commands, String id) {
+        if(!commandsWindow.isOpened() || !commandsWindow.usedId().equals(id))
+            return;
+        commandsWindow.receiveCommands(commands,id);
     }
 }

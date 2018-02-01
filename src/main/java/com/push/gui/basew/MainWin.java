@@ -50,11 +50,9 @@ public class MainWin  {
             loader.setLocation(MainWin.class.getClassLoader().getResource("fxml/newGui.fxml"));
             rootLayout = (VBox) loader.load();
 
-
             // Отображаем сцену, содержащую корневой макет.
             scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
-
             // Инициализируем MainController и присваиваем его ApiController ответсвенному за взаимосдействие с backend
              controller = loader.getController();
             controller.setMainApp(this);
