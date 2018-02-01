@@ -53,7 +53,15 @@ public class GuiCommunicator {
     }
 
     public static void removeNotification(String ownerId, String notificationId) {
-        ShowNotification.sendRemoveNotification(ownerId,notificationId);
+        BackgroundService.submitNewTask(()->{
+            ShowNotification.sendRemoveNotification(ownerId,notificationId);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            GuiCommunicator.sendToGetAllNotif(ownerId);
+        });
     }
 
     public static void sendToGetAllNotif(String id) {
@@ -100,6 +108,7 @@ public class GuiCommunicator {
             e.printStackTrace();
         }
     }
+
 
 
 

@@ -65,7 +65,7 @@ public class ApiController {
     public void setDeviceMounted(String id,boolean mounted){
         Platform.runLater(()->{
             PhoneDevice deviceById = getDeviceById(id);
-            deviceById.setPaired(mounted);
+            deviceById.setMounted(mounted);
             refreshSelection(id);
         });
     }
@@ -111,6 +111,13 @@ public class ApiController {
             deviceById.setTemp(crt.getTempC());
             refreshSelection(id);
         });
+    }
+
+    public void simpleRefresh(String id){
+        Platform.runLater(()->{
+            refreshSelection(id);
+        });
+
     }
 
     public void setDeviceMemory(MemoryEntity entity,String id){

@@ -160,7 +160,7 @@ public class NetworkPackage {
         return null;
     }
 
-    public final String getMyId()
+    public static final String getMyId()
     {
         try {
             return InetAddress.getLocalHost().getHostName();
@@ -179,7 +179,7 @@ public class NetworkPackage {
         return idNode.get(NAME).textValue();
     }
 
-    public String getMyName()
+    public static String getMyName()
     {
         return System.getProperty("user.name");
     }

@@ -20,7 +20,7 @@ import java.security.*;
 
 public class TcpConnectionManager {
     public final static String TCP_INTRODUCE = "tcpIntroduce";
-    public final static String TCP_PING = "ping pong";
+    public final static String TCP_PING = "Ping pong";
     public final static String TCP_PAIR_RESULT = "pairedresult";
     public final static String RESULT = "result";
     public final static String OK = "ok";
@@ -130,8 +130,13 @@ public class TcpConnectionManager {
 
     void sendRequestPairDevice(String id)
     {
-        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(TCP_PAIR,"REQUEST");
-        BackgroundService.sendToDevice(id,np.getMessage());
+        NetworkPackage np = null;
+        try {
+            np = NetworkPackage.Cacher.getOrCreatePackage(TCP_PAIR,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
+            BackgroundService.sendToDevice(id,np.getMessage());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     void sendPairResult(String id, String result, String data) {

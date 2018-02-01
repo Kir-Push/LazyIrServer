@@ -89,6 +89,7 @@ public class ConnectionThread implements Runnable {
     public void receivePairResult(NetworkPackage np)
     {
         receivePairResult( np.getId(),np.getValue("answer").equals("paired") ? OK : REFUSE,np.getData());
+        BackgroundService.pairResultFromGui(np.getId(),OK,np.getData());
     }
 
     /* set device paired or not based on second arg

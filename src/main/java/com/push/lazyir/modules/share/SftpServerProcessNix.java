@@ -153,7 +153,7 @@ public class SftpServerProcessNix implements SftpServerProcess {
                 }
                 tryCount--;
             }
-            running = i == 0;
+            running = (i == 0);
         } catch (IOException | InterruptedException e) {
             Loggout.e("sftp", "connect", e);
         }

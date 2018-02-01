@@ -149,7 +149,7 @@ public class UdpBroadcastManager  {
         }
     }
 
-    private void sendUdp(InetAddress address, int port) {
+    public void sendUdp(InetAddress address, int port) {
         lock.lock();
         try {
             NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(BROADCAST_INTRODUCE, BROADCAST_INTRODUCE_MSG);

@@ -3,9 +3,13 @@ package com.push.lazyir.service;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.ModuleSetting;
 import com.push.lazyir.gui.GuiCommunicator;
+import com.push.lazyir.modules.Module;
+import com.push.lazyir.modules.ping.Ping;
+import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.service.settings.SettingManager;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.*;
@@ -170,20 +174,43 @@ public class BackgroundService {
         return getInstance().timerService;
     }
 
+    /*
+    first close connection, after that sendUdp as you do when receive broadcast
+    * */
     public static void reconnect(String id) {
-        //todo
+        BackgroundService.submitNewTask(()->{
+            Device device = Device.getConnectedDevices().get(id);
+            if(device == null)
+                return;
+            InetAddress ip = device.getIp();
+            device.closeConnection();
+            getInstance().udp.sendUdp(ip,getPort());
+        });
     }
 
     public static void sendPing(String id) {
-        //todo
+        Device device = Device.getConnectedDevices().get(id);
+        if(device == null)
+            return;
+        Ping module = (Ping) device.getEnabledModules().get(Ping.class.getSimpleName());
+        if(module != null)
+            module.sendPing();
     }
 
     public static void unMount(String id) {
-        //todo
+        BackgroundService.submitNewTask(()-> {
+            Device device = Device.getConnectedDevices().get(id);
+            if (device == null)
+                return;
+            Module module = device.getEnabledModules().get(ShareModule.class.getSimpleName());
+            if (module != null) {
+                module.endWork();
+            }
+        });
     }
 
     public static void mount(String id) {
-        //todo
+        ShareModule.sendSetupServerCommand(id);
     }
 
     static void clearTempFolders(){

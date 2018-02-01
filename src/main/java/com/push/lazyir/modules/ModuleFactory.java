@@ -11,6 +11,7 @@ import com.push.lazyir.modules.notifications.messengers.Messengers;
 import com.push.lazyir.modules.notifications.notifications.ShowNotification;
 import com.push.lazyir.modules.notifications.sms.SmsModule;
 import com.push.lazyir.modules.command.SendCommand;
+import com.push.lazyir.modules.ping.Ping;
 import com.push.lazyir.modules.reminder.Reminder;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.modules.sync.SynchroModule;
@@ -67,6 +68,7 @@ public class ModuleFactory {
         registeredModules.add(Reminder.class);
         registeredModules.add(Memory.class);
         registeredModules.add(SynchroModule.class);
+        registeredModules.add(Ping.class);
     }
 
     public static Module instantiateModuleByName(Device dv,String name)

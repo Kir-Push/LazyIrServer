@@ -6,6 +6,7 @@ import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.gui.GuiCommunicator;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -121,7 +122,9 @@ public class MainController {
                     listCellContents.setHgap(10);
 
                     if(item.getIcon()!= null) {
-                        ImageView icon = new ImageView(GuiUtils.pictureFromBase64(item.getIcon()));
+                        ImageView icon = new ImageView(SwingFXUtils.toFXImage(GuiUtils.pictureFromBase64Swing(item.getIcon()),null));
+                        icon.setFitHeight(50);
+                        icon.setFitWidth(50);
                         listCellContents.add(icon, 0, 0);
                     }
                     if(item.getPicture() != null){

@@ -108,6 +108,17 @@ public class GuiUtils {
         return new ImageIcon(image.getScaledInstance(width,height,java.awt.Image.SCALE_SMOOTH));
     }
 
+    public static BufferedImage pictureFromBase64Swing(String base64){
+        byte[] dencodedImg = Base64.getMimeDecoder().decode(base64);
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new ByteArrayInputStream(dencodedImg));
+        } catch (IOException e) {
+            return null;
+        }
+        return image;
+    }
+
     public static String formatText(String text){
         return null;
     }

@@ -4,6 +4,7 @@ package com.push.lazyir.modules.share;
 
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.BackgroundService;
 import com.push.lazyir.service.MainClass;
@@ -118,7 +119,7 @@ public class ShareModule extends Module {
                 sftpServerProcess.stopProcess();
             lock.unlock();
         }
-
+        GuiCommunicator.sftpConnectResult(false,device.getId());
     }
 
     private SftpServerProcess instantiateSftpServerProcess(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id){

@@ -87,7 +87,7 @@ public class ConnectionThreadTest {
 //    }
 //
 //    @Test
-//    public void ping() throws Exception {
+//    public void Ping() throws Exception {
 //    }
 //
 //    @Test
