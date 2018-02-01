@@ -70,7 +70,7 @@ public class ConnectionThread implements Runnable {
             }catch (IOException e)
             {
                 connectionRun = false;
-                Loggout.e("ConnectionThread","Error in tcp out",e);
+                Loggout.e("ConnectionThread " + deviceId,"Error in tcp out ",e);
             }
             finally {
                 Device.getConnectedDevices().get(deviceId).closeConnection();  // clear resources, end modules and delete device from connected list

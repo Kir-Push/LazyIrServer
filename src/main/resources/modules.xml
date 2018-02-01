@@ -71,4 +71,16 @@
         <ignored>*</ignored>
         <workOnly>true</workOnly>
     </module>
+    <module>
+        <name>SynchroModule</name>
+        <enabled>true</enabled>
+        <ignored>*</ignored>
+        <workOnly>true</workOnly>
+    </module>
+    <module>
+        <name>Memory</name>
+        <enabled>true</enabled>
+        <ignored>*</ignored>
+        <workOnly>true</workOnly>
+    </module>
 </modules>

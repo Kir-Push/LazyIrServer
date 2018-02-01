@@ -9,6 +9,9 @@ import com.push.lazyir.modules.notifications.sms.Sms;
 import com.push.lazyir.modules.notifications.sms.SmsPack;
 import com.push.lazyir.service.BackgroundService;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,7 +65,7 @@ public class Reminder extends Module {
         type = "unreadMessages";
         ticker = device.getName();
         icon = null;
-        title = "You have " + size + " unread Messages on " + ticker;
+        title = "You have " + size + " unread message on " + ticker;
         id = "some Id";
         StringBuilder textBuilder = new StringBuilder();
         if(sms != null){
@@ -71,7 +74,9 @@ public class Reminder extends Module {
             for (String s : stringListHashMap.keySet()) {
                 List<Sms> messagesList = stringListHashMap.get(s);
                 Sms msg = messagesList.get(0);
-                textBuilder.append(msg.getName());
+                String name = msg.getName();
+                if(name != null && !name.equalsIgnoreCase("null"))
+                textBuilder.append(name);
                 long dat = 0;
                 for (Sms sms1 : messagesList){
                     if(sms1.getDate() > dat)
@@ -79,32 +84,33 @@ public class Reminder extends Module {
                     if(icon == null)
                         icon = sms1.getIcon();
                 }
-                Date dt = new Date(dat);
+                LocalDateTime date =
+                        LocalDateTime.ofInstant(Instant.ofEpochMilli(dat), ZoneId.systemDefault());
                 textBuilder.append(" (").append(msg.getNumber()).append(") ").append(messagesList.size())
-                        .append(" messages,last: ").append(dt.getYear()).append(".")
-                        .append(dt.getMonth()).append(".")
-                        .append(dt.getDay()).append("-")
-                        .append(dt.getHours()).append(":")
-                        .append(dt.getMinutes()).append(":").
-                        append(dt.getSeconds()).append("\n");
+                        .append(" messages, last: ").append(date.getYear()).append("/")
+                        .append(date.getMonthValue()).append("/")
+                        .append(date.getDayOfMonth()).append(" - (")
+                        .append(date.getHour()).append(":")
+                        .append(date.getMinute()).append(")\n");
             }
-            textBuilder.append("-----");
         }
         if(notificationsList != null){
-            textBuilder.append("Messages in ");
             HashMap<String, List<Notification>> listHashMap = collectNotificationByMessenger(notificationsList);
-            for (String s : listHashMap.keySet()) {
-                List<Notification> notificationsLst = listHashMap.get(s);
-                if(icon == null){
-                    for (Notification notification : notificationsLst) {
-                        if(icon == null) {
-                            icon = notification.getIcon();
-                        }else{
-                            break;
+            if(listHashMap.size() > 0) {
+                textBuilder.append("Messengers messages: ");
+                for (String s : listHashMap.keySet()) {
+                    List<Notification> notificationsLst = listHashMap.get(s);
+                    if (icon == null) {
+                        for (Notification notification : notificationsLst) {
+                            if (icon == null) {
+                                icon = notification.getIcon();
+                            } else {
+                                break;
+                            }
                         }
                     }
+                    textBuilder.append(s).append(" ").append(notificationsLst.get(notificationsLst.size() - 1).getTitle()).append("\n");
                 }
-                textBuilder.append(s).append(" ").append(notificationsLst.get(notificationsLst.size()-1).getTitle()).append("\n");
             }
         }
         text = textBuilder.toString();
@@ -136,26 +142,28 @@ public class Reminder extends Module {
         for (List<MissedCall> missedCalls : missedCallMap.values()) {
             if(missedCalls.size() == 0)
                 continue;
-            long date = 0;
+            long dat = 0;
             for (MissedCall missedCall : missedCalls) {
                 db.append(missedCall.getId());
                 db.append(":::");
                 if(icon == null)
                     icon = missedCall.getPicture();
-                if(missedCall.getDate() > date)
-                    date = missedCall.getDate();
+                if(missedCall.getDate() > dat)
+                    dat = missedCall.getDate();
             }
-            Date dt = new Date(date);
+            LocalDateTime date =
+                    LocalDateTime.ofInstant(Instant.ofEpochMilli(dat), ZoneId.systemDefault());
             textBuilder.append("From ")
                     .append(missedCalls.get(0).getName()).append(" (")
                     .append(missedCalls.get(0).getNumber()).append(") ")
                     .append(missedCalls.size()).append(" calls, last: ")
-                    .append(dt.getYear()).append(".")
-                    .append(dt.getMonth()).append(".")
-                    .append(dt.getDay()).append("-")
-                    .append(dt.getHours()).append(":")
-                    .append(dt.getMinutes()).append(":").
-                    append(dt.getSeconds()).append("\n");
+                    .append(date.getYear()).append(".")
+                    .append(date.getYear()).append("/")
+                    .append(date.getMonth()).append("/(")
+                    .append(date.getDayOfMonth()).append(" - ")
+                    .append(date.getHour()).append(":")
+                    .append(date.getMinute()).append(":").
+                    append(date.getSecond()).append(")\n");
 
         }
         text = textBuilder.toString();

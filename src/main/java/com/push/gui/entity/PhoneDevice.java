@@ -34,6 +34,15 @@ public class PhoneDevice {
         this.paired =  new SimpleBooleanProperty(paired);
         this.mounted =  new SimpleBooleanProperty(mounted);
         this.notifications = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.freeSpace = new SimpleLongProperty();
+        this.totalSpace = new SimpleLongProperty();
+        this.totalSpaceExt = new SimpleLongProperty();
+        this.freeSpaceExt = new SimpleLongProperty();
+        this.cpuLoad = new SimpleIntegerProperty();
+        this.totalRam = new SimpleLongProperty();
+        this.freeRam = new SimpleLongProperty();
+        this.lowMemory = new SimpleBooleanProperty();
+        this.temp = new SimpleDoubleProperty();
     }
 
     public String getId() {

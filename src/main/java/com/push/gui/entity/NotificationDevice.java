@@ -27,6 +27,8 @@ public class NotificationDevice {
         this.id = new SimpleStringProperty(id);
         this.icon = new SimpleStringProperty(icon);
         this.picture = new SimpleStringProperty(picture);
+        this.ownerName = new SimpleStringProperty();
+        this.ownerId = new SimpleStringProperty();
     }
 
     public NotificationDevice(String text,String type, String title, String pack, String ticker, String id, String icon, String picture) {
@@ -38,6 +40,8 @@ public class NotificationDevice {
         this.id = new SimpleStringProperty(id);
         this.icon = new SimpleStringProperty(icon);
         this.picture = new SimpleStringProperty(picture);
+        this.ownerName = new SimpleStringProperty();
+        this.ownerId = new SimpleStringProperty();
     }
 
     public String getText() {

@@ -57,7 +57,7 @@ public class Popup {
                 notifications.get(i).removeFromManager();
             }
         }
-        CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController,arg == null ? null : arg[0]);
+        CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController,(arg == null || arg.length == 0) ? null : arg[0]);
         boolean incoming = notification.getType().equalsIgnoreCase(callTypes.incoming.name());
         boolean missed = notification.getType().equalsIgnoreCase(callTypes.missedIn.name());
         boolean outgoing = notification.getType().equalsIgnoreCase(callTypes.outgoing.name());

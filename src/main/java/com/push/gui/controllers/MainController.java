@@ -203,12 +203,15 @@ public class MainController {
 
         Label memory = (Label) rootLayout.lookup("#memoryLbl");
         memory.setText("Main Storage(MB): " + newSelection.getFreeSpace() + "/" + newSelection.getTotalSpace() + ";  External Storage(s): " + newSelection.getFreeSpaceExt() + "/"+newSelection.getTotalSpaceExt());
+        memory.setFont(Font.font(11));
 
         Label cpu = (Label) rootLayout.lookup("#cpuLoad");
         cpu.setText("Cpu load: " + newSelection.getCpuLoad() + "%");
+        cpu.setFont(Font.font(11));
 
         Label ram = (Label) rootLayout.lookup("#ramLbl");
         ram.setText("Ram usage(MB): " + newSelection.getFreeRam()+"/"+newSelection.getTotalRam());
+        ram.setFont(Font.font(11));
         boolean lowMemory = newSelection.isLowMemory();
         if(lowMemory)
             ram.setTextFill(Color.RED);

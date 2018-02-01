@@ -19,6 +19,7 @@ public class Memory extends Module {
     private final static String GET_CRT = "getCrt";
     private final static ReentrantLock staticLock = new ReentrantLock();
     private static volatile boolean timerSetted = false;
+    private static volatile int memoryTimerCounter = 0;
     private static volatile  ScheduledFuture<?> timerFuture;
 
     @Override
@@ -52,11 +53,14 @@ public class Memory extends Module {
         try{
             Runnable cmd = ()->{
                 NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(Memory.class.getSimpleName(), GET_CRT);
+                if(memoryTimerCounter % 5 == 0 || memoryTimerCounter == 0)
+                    BackgroundService.sendToDevice(id,NetworkPackage.Cacher.getOrCreatePackage(Memory.class.getSimpleName(),GET_FREE_MEM).getMessage());
+                memoryTimerCounter++;
                 BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
             };
             if(timerFuture != null)
                 clearTimer();
-            timerFuture = BackgroundService.getTimerService().scheduleAtFixedRate(cmd, time, time, TimeUnit.MILLISECONDS);
+            timerFuture = BackgroundService.getTimerService().scheduleAtFixedRate(cmd, 0, time, TimeUnit.MILLISECONDS);
             timerSetted = true;
         }finally {
             staticLock.unlock();
@@ -69,6 +73,7 @@ public class Memory extends Module {
             if(timerFuture != null)
                 timerFuture.cancel(true);
             timerFuture = null;
+            memoryTimerCounter = 0;
             timerSetted = false;
         }finally {
             staticLock.unlock();
