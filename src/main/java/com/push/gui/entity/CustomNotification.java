@@ -117,6 +117,12 @@ public class CustomNotification extends BorderLayoutNotification {
     }
 
     public void setText(String text,String title,String dvName) {
+        if(title == null)
+            title = "";
+        if(text == null)
+            text = "";
+        if(dvName == null)
+            dvName = "";
         title = "<b>" + title + "</b><br/>";
         dvName = "<br/><font size=\"2\">" + dvName +  "</font>";
         text = "<html>" + title +  text.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + dvName + "</html>";
