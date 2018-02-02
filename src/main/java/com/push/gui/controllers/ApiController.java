@@ -42,8 +42,8 @@ public class ApiController {
 
     public void deviceDisconnected(String id){
         Platform.runLater(
-                () -> {  PhoneDevice deviceById = getDeviceById(id);
-                        mainController.getMainApp().getConnectedDevices().remove(deviceById);});
+                () -> { PhoneDevice deviceById = getDeviceById(id);
+                        mainController.setAllToDefault(deviceById); });
     }
 
     public void setBatteryStatus(String id,int battery,boolean charging){

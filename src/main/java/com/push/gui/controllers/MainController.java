@@ -266,4 +266,10 @@ public class MainController {
             return;
         commandsWindow.receiveCommands(commands,id);
     }
+
+    public void setAllToDefault(PhoneDevice id) {
+        getMainApp().getConnectedDevices().remove(id);
+       getMainApp().getNotificationsList().clear();
+       //todo
+    }
 }

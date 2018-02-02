@@ -6,7 +6,7 @@
         <workOnly>true</workOnly>
     </module>
     <module>
-        <name>Clipboard</name>
+        <name>ClipBoard</name>
         <enabled>true</enabled>
         <ignored>*</ignored>
         <workOnly>true</workOnly>
