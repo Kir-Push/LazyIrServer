@@ -169,6 +169,24 @@ public class UdpBroadcastManager  {
         }
     }
 
+    public void sendUdp(InetAddress address, int port,String message) {
+        lock.lock();
+        try {
+            if (message == null)
+                return;
+            byte[] bytes = message.getBytes();
+            DatagramPacket dp = new DatagramPacket(bytes, bytes.length, address, port);
+            Loggout.d("Udp", "send udp " + dp);
+            try {
+                socket.send(dp);
+            } catch (IOException e) {
+                Loggout.e("Udp", "Exception in sendUdp",e);
+            }
+        }finally {
+            lock.unlock();
+        }
+    }
+
     public void addToNeighboors(NetworkPackage np)
     {
     }

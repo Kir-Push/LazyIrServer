@@ -157,10 +157,9 @@ public class Reminder extends Module {
                     .append(missedCalls.get(0).getName()).append(" (")
                     .append(missedCalls.get(0).getNumber()).append(") ")
                     .append(missedCalls.size()).append(" calls, last: ")
-                    .append(date.getYear()).append(".")
                     .append(date.getYear()).append("/")
-                    .append(date.getMonth()).append("/(")
-                    .append(date.getDayOfMonth()).append(" - ")
+                    .append(date.getMonth()).append("/")
+                    .append(date.getDayOfMonth()).append(" - (")
                     .append(date.getHour()).append(":")
                     .append(date.getMinute()).append(":").
                     append(date.getSecond()).append(")\n");

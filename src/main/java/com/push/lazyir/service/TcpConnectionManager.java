@@ -20,7 +20,7 @@ import java.security.*;
 
 public class TcpConnectionManager {
     public final static String TCP_INTRODUCE = "tcpIntroduce";
-    public final static String TCP_PING = "Ping pong";
+    public final static String TCP_PING = "ping pong";
     public final static String TCP_PAIR_RESULT = "pairedresult";
     public final static String RESULT = "result";
     public final static String OK = "ok";

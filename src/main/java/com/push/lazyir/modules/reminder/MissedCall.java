@@ -14,6 +14,9 @@ public class MissedCall {
         this.id = id;
     }
 
+    public MissedCall() {
+    }
+
     private String number;
     private String name;
     private int count;

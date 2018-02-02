@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
 import static com.push.lazyir.devices.NetworkPackage.N_OBJECT;
 import static com.push.lazyir.service.TcpConnectionManager.*;
@@ -43,7 +44,7 @@ public class ConnectionThread implements Runnable {
         public ConnectionThread(Socket socket) throws SocketException {
             this.connection = socket;
             connection.setKeepAlive(true);
-            connection.setSoTimeout(60000);
+            connection.setSoTimeout(120000);
         }
 
         @Override
@@ -60,6 +61,7 @@ public class ConnectionThread implements Runnable {
                 while (connectionRun)
                 {
                     String clientCommand = in.readLine();
+                    Loggout.d("",clientCommand);
                     if(!BackgroundService.isServerOn() || clientCommand == null) { // if server off, exit from read loop
                         connectionRun = false;
                         continue;
@@ -259,10 +261,12 @@ public class ConnectionThread implements Runnable {
     }
 
         private void pingCheck() {
-            if(timerFuture == null || timerFuture.isDone() || timerFuture.isCancelled())
+            if(timerFuture != null && (!timerFuture.isDone() || !timerFuture.isCancelled())){
+                timerFuture.cancel(true);
+            }
             timerFuture = BackgroundService.getTimerService().scheduleWithFixedDelay(()->{
                     Device device = Device.getConnectedDevices().get(deviceId);
-                    if(device != null && device.isAnswer()) {
+                    if(device != null) {
                         device.setAnswer(false);
                         ping();
                     }
@@ -270,7 +274,9 @@ public class ConnectionThread implements Runnable {
         }
 
         private void ping() {
-           printToOut(NetworkPackage.Cacher.getOrCreatePackage(TCP_PING,TCP_PING).getMessage());
+            String message = NetworkPackage.Cacher.getOrCreatePackage(TCP_PING, TCP_PING).getMessage();
+            printToOut(message);
+            BackgroundService.sendUdpPing(Device.getConnectedDevices().get(deviceId).getIp(),BackgroundService.getPort(),message);
         }
 
         public void commandFromClient(NetworkPackage np)

@@ -2,6 +2,7 @@ package com.push.lazyir.service;
 
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.ModuleSetting;
+import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.ping.Ping;
@@ -215,5 +216,9 @@ public class BackgroundService {
 
     static void clearTempFolders(){
         getInstance().settingManager.clearFolders();
+    }
+
+    public static void sendUdpPing(InetAddress ip, int port, String message) {
+        getInstance().udp.sendUdp(ip,port, message);
     }
 }
