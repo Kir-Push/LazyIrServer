@@ -19,6 +19,10 @@ import com.push.lazyir.modules.touch.TouchControl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,16 +33,16 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ModuleFactory {
 
 
-    private static List<Class> registeredModules;
+    private static List<Class> registeredModules = new CopyOnWriteArrayList<>();
+    static {
+       registerModulesInit();
+    }
     private static Lock lock = new ReentrantLock();
 
     public static Module instantiateModule(Device dv, Class registeredModule)
     {
         lock.lock();
         try {
-            if (registeredModules == null) {
-                registerModulesInit();
-            }
             Module module = null;
             try {
                 module = (Module) registeredModule.newInstance();
@@ -54,7 +58,6 @@ public class ModuleFactory {
     }
 
     private static void registerModulesInit() {
-        registeredModules = new ArrayList<>();
         registeredModules.add(SendCommand.class);
         registeredModules.add(ShareModule.class);
         registeredModules.add(ShowNotification.class);
@@ -73,8 +76,6 @@ public class ModuleFactory {
 
     public static Module instantiateModuleByName(Device dv,String name)
     {
-        if(registeredModules == null)
-            registerModulesInit();
         for (Class registeredModule : registeredModules) {
             if(registeredModule.getSimpleName().equals(name))
             {
@@ -88,9 +89,6 @@ public class ModuleFactory {
     public static List<Class> getRegisteredModules() {
         lock.lock();
         try {
-            if (registeredModules == null) {
-                registerModulesInit();
-            }
             return registeredModules;
         }finally {
             lock.unlock();

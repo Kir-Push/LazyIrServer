@@ -10,6 +10,7 @@ import com.push.lazyir.pojo.Command;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

@@ -7,6 +7,7 @@ import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.gui.GuiCommunicator;
+import com.push.lazyir.modules.sync.SynchroModule;
 import com.push.lazyir.pojo.Command;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -204,6 +205,12 @@ public class MainController {
             mount.setOnAction(event -> GuiCommunicator.mount(newSelection.getId()));
         }
 
+        Button commandsButtn = (Button) rootLayout.lookup("#CommandsBtn");
+        commandsButtn.setOnAction(event -> {
+            SynchroModule.sendGetAllCommands(newSelection.getId());
+            commandsWindow.showWindow(newSelection.getId(),this);
+        });
+
 
         Button ping = (Button) rootLayout.lookup("#pingBtn");
         ping.setOnAction(event -> GuiCommunicator.ping(newSelection.getId()));
@@ -262,8 +269,8 @@ public class MainController {
     }
 
     public void setCommands(List<Command> commands, String id) {
-        if(!commandsWindow.isOpened() || !commandsWindow.usedId().equals(id))
-            return;
+//        if(!commandsWindow.isOpened() || !commandsWindow.usedId().equals(id))
+//            return;
         commandsWindow.receiveCommands(commands,id);
     }
 

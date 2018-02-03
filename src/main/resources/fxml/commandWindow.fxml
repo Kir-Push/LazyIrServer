@@ -9,13 +9,10 @@
 <AnchorPane prefHeight="394.0" prefWidth="701.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
    <children>
       <TableView id="table" prefHeight="368.0" prefWidth="701.0">
-        <columns>
-          <TableColumn id="nameC" prefWidth="130.0" text="Name" />
-            <TableColumn id="CommandC" prefWidth="517.0" text="Command" />
-        </columns>
+
       </TableView>
-      <Button layoutX="517.0" layoutY="367.0" mnemonicParsing="false" text="Save &amp; Close" />
-      <Button layoutX="633.0" layoutY="367.0" mnemonicParsing="false" text="Close" />
+      <Button id="clsBtn" layoutX="517.0" layoutY="367.0" mnemonicParsing="false" text="Save &amp; Close" />
+      <Button id="cls" layoutX="633.0" layoutY="367.0" mnemonicParsing="false" text="Close" />
       <Label id="textLbl" layoutX="14.0" layoutY="372.0" prefHeight="16.0" prefWidth="135.0" text="Some Text" />
    </children>
 </AnchorPane>

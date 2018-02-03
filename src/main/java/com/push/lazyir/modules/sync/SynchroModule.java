@@ -65,6 +65,11 @@ public class SynchroModule extends Module {
         BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
+    public static void sendGetAllCommands(String id){
+        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(SynchroModule.class.getSimpleName(), GET_ALL_COMMANDS);
+        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    }
+
     @Override
     public void endWork() {
         
