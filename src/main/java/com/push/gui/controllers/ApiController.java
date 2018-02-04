@@ -111,7 +111,9 @@ public class ApiController {
             deviceById.setTotalRam(crt.getFreeRamAll()/1024/1024);
             deviceById.setLowMemory(crt.isLowMem());
             deviceById.setTemp(crt.getTempC());
-            refreshSelection(id);
+            mainController.setCpu(crt.getCpuLoad());
+            mainController.setRam(crt.getFreeRam()/1024/1024,crt.getFreeRamAll()/1024/1024,crt.isLowMem());
+          //  refreshSelection(id);
         });
     }
 
@@ -140,7 +142,8 @@ public class ApiController {
             deviceById.setFreeSpaceExt(finalExtFree);
             deviceById.setTotalSpace(mainMem);
             deviceById.setTotalSpaceExt(finalExtTotal);
-            refreshSelection(id);
+            mainController.setMemoryText(mainMemFree,mainMem,finalExtFree,finalExtTotal);
+       //     refreshSelection(id);
         });
     }
 

@@ -215,24 +215,35 @@ public class MainController {
         Button ping = (Button) rootLayout.lookup("#pingBtn");
         ping.setOnAction(event -> GuiCommunicator.ping(newSelection.getId()));
 
-        Label memory = (Label) rootLayout.lookup("#memoryLbl");
-        memory.setText("Main Storage(MB): " + newSelection.getFreeSpace() + "/" + newSelection.getTotalSpace() + ";  External Storage(s): " + newSelection.getFreeSpaceExt() + "/"+newSelection.getTotalSpaceExt());
-        memory.setFont(Font.font(11));
+        setMemoryText(newSelection.getFreeSpace(),newSelection.getTotalSpace(),newSelection.getFreeSpaceExt(),newSelection.getTotalSpaceExt());
 
-        Label cpu = (Label) rootLayout.lookup("#cpuLoad");
-        cpu.setText("Cpu load: " + newSelection.getCpuLoad() + "%");
-        cpu.setFont(Font.font(11));
+        setCpu(newSelection.getCpuLoad());
 
-        Label ram = (Label) rootLayout.lookup("#ramLbl");
-        ram.setText("Ram usage(MB): " + newSelection.getFreeRam()+"/"+newSelection.getTotalRam());
-        ram.setFont(Font.font(11));
-        boolean lowMemory = newSelection.isLowMemory();
-        if(lowMemory)
-            ram.setTextFill(Color.RED);
+        setRam(newSelection.getFreeRam(),newSelection.getTotalRam(),newSelection.isLowMemory());
 
         // присваиваем списку уведомление, список из текущего устройсва
         mainApp.getNotificationsList().clear();
         mainApp.getNotificationsList().addAll(newSelection.getNotifications());
+    }
+
+    public void setMemoryText(long freeMem,long allMem,long freeExt,long allExt){
+        Label memory = (Label) mainApp.getRootLayout().lookup("#memoryLbl");
+        memory.setText("Main Storage(MB): " + freeMem + "/" + allMem + ";  External Storage(s): " + freeExt + "/"+allExt);
+        memory.setFont(Font.font(11));
+    }
+
+    public void setRam(long freeRam,long totalRam,boolean lowMemory){
+        Label ram = (Label) mainApp.getRootLayout().lookup("#ramLbl");
+        ram.setText("Ram usage(MB): " + freeRam+"/"+totalRam);
+        ram.setFont(Font.font(11));
+        if(lowMemory)
+            ram.setTextFill(Color.RED);
+    }
+
+    public void setCpu(int cpuLoad){
+        Label cpu = (Label) mainApp.getRootLayout().lookup("#cpuLoad");
+        cpu.setText("Cpu load: " + cpuLoad + "%");
+        cpu.setFont(Font.font(11));
     }
 
     private void recall(NotificationDevice item, String id) {
