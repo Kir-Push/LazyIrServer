@@ -83,6 +83,8 @@ public class GuiCommunicator {
     public static void receive_notifications(String id,List<Notification> notifications){
         ObservableList<NotificationDevice> notificationDevices = FXCollections.observableArrayList();
                 for (Notification notification : notifications) {
+                    if(notification == null)
+                        continue;
                     NotificationDevice notificationDevice = new NotificationDevice(notification.getText(), notification.getType(),
                             notification.getTitle(), notification.getPack(), notification.getTicker(),
                             notification.getId(), notification.getIcon(), notification.getPicture());

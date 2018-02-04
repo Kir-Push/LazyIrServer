@@ -65,7 +65,12 @@ public class Popup {
         if(incoming || missed || outgoing){
             callNotifs.put(notification.getTitle(),build);
         }
-        Time time = Time.seconds(notTime);
+        double timeTemp = notTime;
+        for(int i = 20;i<build.getText().length();i+=20){
+            timeTemp += 5;
+        }
+        Time time = Time.seconds(timeTemp);
+
         if(incoming){
            time = Time.seconds(callNotTime);
         }

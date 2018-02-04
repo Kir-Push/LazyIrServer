@@ -301,6 +301,8 @@ public class CustomNotification extends BorderLayoutNotification {
            for(int i =0;i<count;i++){
                 calculatedHeight += 5;
            }
+            if(calculatedHeight > height/2)
+                calculatedHeight = (int) ((double)height/2);
             theme.width = calculatedWidth;
             theme.height = calculatedHeight;
             notification.setWindowTheme(theme);

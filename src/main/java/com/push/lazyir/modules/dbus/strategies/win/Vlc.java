@@ -14,6 +14,9 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -370,5 +373,24 @@ public class Vlc implements Strategy {
             }
         }
     }
+
+//    public static void main(String args[]){
+//        try {
+//            Robot robot = new Robot();
+//
+//            // Simulate a mouse click
+//
+//
+//            // Simulate a key press
+//            robot.keyPress(KeyEvent.VK_ALT);
+//            robot.keyPress(KeyEvent.VK_CONTROL);
+//            robot.keyPress(KeyEvent.VK_J);
+//            robot.keyRelease(KeyEvent.VK_ALT);
+//            robot.keyRelease(KeyEvent.VK_CONTROL);
+//            robot.keyRelease(KeyEvent.VK_J);
+//        } catch (AWTException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }

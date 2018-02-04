@@ -33,7 +33,10 @@ public class ShowNotification extends Module {
                             {
                                 Notifications notifications = np.getObject(NetworkPackage.N_OBJECT, Notifications.class);
                                 if(notifications.getNotifications().size() > 0) {
-                                    notifications.getNotifications().forEach(notification -> notification.setType("notification"));
+                                    notifications.getNotifications().forEach(notification ->{
+                                        if(notification != null)
+                                            notification.setType("notification");
+                                    });
                                     GuiCommunicator.receive_notifications(device.getId(), notifications.getNotifications());
                                 }
                                 else{
