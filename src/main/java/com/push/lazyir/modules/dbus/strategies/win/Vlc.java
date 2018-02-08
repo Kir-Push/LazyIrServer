@@ -132,22 +132,28 @@ public class Vlc implements Strategy {
     @Override
     public Players getGetAll() { // yes it stupid,
         List<Player> playerList = new ArrayList<>();
-        playerList.add(getOnePlayer());
+        Player onePlayer = getOnePlayer();
+        System.out.println(onePlayer);
+        playerList.add(onePlayer);
         return new Players(playerList);
     }
 
     @Override
     public Player getOnePlayer() {
+        lock.lock();
+        try {
         sendGet("requests/status.xml");
         String line = getLine();
         if(line.length() == 0)
             return null;
+            System.out.println(line);
         InputSource inputSource = new InputSource(new StringReader(line.substring(line.indexOf("<?xml version="))));
-        try {
             saxParser.parse(inputSource,handler);
             return handler.isEnded() ? handler.getPlayer() :null;
         }  catch (SAXException |  IOException e) {
             Loggout.e("VlcStrategy","getOneplayer error",e);
+        }finally {
+            lock.unlock();
         }
         return null;
     }
@@ -194,7 +200,7 @@ public class Vlc implements Strategy {
 
     @Override
     public void setVolume(String player, String value) {
-        double v = Double.parseDouble(value) * 2.56;
+        double v = Double.parseDouble(value) * 256;
         sendGet("requests/status.xml?command=volume&val="+String.valueOf(v));
     }
 
@@ -233,7 +239,7 @@ public class Vlc implements Strategy {
         SettingManager settingManager = BackgroundService.getSettingManager();
        String vlcPass = settingManager.get("Vlc-pass");
         port = Integer.parseInt(settingManager.get("Vlc-port"));
-        passEncoded =  new String(Base64.getEncoder().encode(vlcPass.getBytes()));
+        passEncoded =  (Base64.getUrlEncoder().encodeToString((":" + vlcPass).getBytes()));
     }
 
     private void sendGet(String command)
@@ -242,19 +248,26 @@ public class Vlc implements Strategy {
         {
             return;
         }
-        String getCmd = "GET /%s HTTP/1.1";
-        String format = String.format(getCmd, command);
-        out.println(format);
-        out.println("\"Host: 127.0.0.1:" + port);
-        out.println("Connection: keep-alive\nCache-Control: max-age=0");
-        out.println("Authorization: Basic " +passEncoded);
-        out.println("Upgrade-Insecure-Requests: 1\n" +
-                "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36\n" +
-                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\n" +
-                "Accept-Encoding: gzip, deflate, br\n" +
-                "Accept-Language: ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4,lv;q=0.2");
-        out.println("");
-        out.flush();
+        lock.lock();
+        try {
+            String getCmd = "GET /%s HTTP/1.1";
+            String format = String.format(getCmd, command);
+            out.println(format);
+            out.println("\"Host: 127.0.0.1:" + port);
+            out.println("Connection: keep-alive\nCache-Control: max-age=0");
+            out.println("Authorization: Basic " + passEncoded);
+            out.println("Upgrade-Insecure-Requests: 1\n" +
+                    "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36\n" +
+                    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\n" +
+                    "Accept-Encoding: gzip, deflate, br\n" +
+                    "Accept-Language: ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4,lv;q=0.2");
+            out.println("");
+            out.flush();
+            if(!command.equalsIgnoreCase("requests/status.xml"))
+            System.out.println( getLine());
+        }finally {
+            lock.unlock();
+        }
     }
 
     private String getLine()
