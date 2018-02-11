@@ -6,26 +6,10 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f696011-2726-4df9-993f-c5deebd9f80a" name="Default" comment="some changes to udp listener">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/chat.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/information.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/missed.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/outgoing.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/person.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/unreadMessages.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/icons/user.png" />
+    <list default="true" id="5f696011-2726-4df9-993f-c5deebd9f80a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/CustomNotification.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/CustomNotification.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Vlc.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Vlc.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/CallModule.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/CallModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/Reminder.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/Reminder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/baseProp" afterPath="$PROJECT_DIR$/src/main/resources/baseProp" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -83,7 +67,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GuiUtils.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GuiUtils.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="875">
@@ -125,11 +109,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Popup.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Popup.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="430">
-              <caret line="64" column="92" lean-forward="true" selection-start-line="64" selection-start-column="67" selection-end-line="64" selection-end-column="92" />
+            <state relative-caret-position="464">
+              <caret line="54" column="49" lean-forward="false" selection-start-line="54" selection-start-column="49" selection-end-line="54" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -272,12 +256,12 @@
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Vlc.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/CallModule.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java" />
         <option value="$PROJECT_DIR$/src/main/resources/baseProp" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/Reminder.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/gui/entity/CustomNotification.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java" />
       </list>
     </option>
   </component>
@@ -1721,7 +1705,7 @@
       <workItem from="1517935737829" duration="3634000" />
       <workItem from="1518110046404" duration="2427000" />
       <workItem from="1518202455574" duration="860000" />
-      <workItem from="1518360555517" duration="12792000" />
+      <workItem from="1518360555517" duration="12840000" />
     </task>
     <task id="LOCAL-00001" summary="windows ftp and server pair methods">
       <created>1495381598585</created>
@@ -2059,7 +2043,14 @@
       <option name="project" value="LOCAL" />
       <updated>1518116441615</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="notiifcatrion icons updated">
+      <created>1518374480445</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1518374480445</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -2095,7 +2086,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1193273000" />
+    <option name="totallyTimeSpent" value="1193321000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -2223,7 +2214,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="multimonitor javafx" />
     <MESSAGE value="add clear folder on start in setting manager" />
     <MESSAGE value="sftp win powershell close" />
     <MESSAGE value="javascript some site defence passed. fuu" />
@@ -2248,7 +2238,8 @@
     <MESSAGE value="notif size heigh count improved, leng of showing based on text size" />
     <MESSAGE value="crt &amp; mem update withoit wisible flicking" />
     <MESSAGE value="some changes to udp listener" />
-    <option name="LAST_COMMIT_MESSAGE" value="some changes to udp listener" />
+    <MESSAGE value="notiifcatrion icons updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="notiifcatrion icons updated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2663,14 +2654,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="430">
-          <caret line="64" column="92" lean-forward="true" selection-start-line="64" selection-start-column="67" selection-end-line="64" selection-end-column="92" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/entity/CustomNotification.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
@@ -2689,6 +2672,14 @@
             <element signature="e#20010#20011#0" expanded="true" />
             <element signature="e#20078#20079#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="464">
+          <caret line="54" column="49" lean-forward="false" selection-start-line="54" selection-start-column="49" selection-end-line="54" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>

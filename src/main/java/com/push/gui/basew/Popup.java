@@ -52,9 +52,9 @@ public class Popup {
             callNotTime = Double.parseDouble(BackgroundService.getSettingManager().get("Call-Notif-time"));
             maxNotifOnScreen = Integer.parseInt(BackgroundService.getSettingManager().get("maxNotifOnScreen"));
         }
-        // if you have many than 4 notif on screen remove all oldest
+        // if you have many than maxNotifOnScreen notif on screen remove all oldest
         List<Notification> notifications = manager.getNotifications();
-        if(notifications.size() >= 4){
+        if(notifications.size() >= maxNotifOnScreen){
             for(int i = 4;i<notifications.size();i++) {
                 notifications.get(i).removeFromManager();
             }
