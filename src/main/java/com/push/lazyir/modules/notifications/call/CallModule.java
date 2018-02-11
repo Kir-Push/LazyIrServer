@@ -8,6 +8,10 @@ import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.service.BackgroundService;
 
+import javax.sound.sampled.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+
 public class CallModule extends Module {
     public static final String CALL = "com.android.call";
     public static final String ENDCALL = "com.android.endCall";
@@ -15,6 +19,7 @@ public class CallModule extends Module {
     private static volatile boolean CALLING = false;
     private static volatile int muteWhenCall = -1;
     private static volatile int muteWhenOutcomingCall = -1;
+    private static ConcurrentSkipListSet<String> muted = new ConcurrentSkipListSet<>();
 
     public CallModule() {
         if(muteWhenCall == -1)
@@ -74,17 +79,75 @@ public class CallModule extends Module {
     }
 
     private void unMute(NetworkPackage np) {
-
+        muteUnmute(false);
     }
 
     private void mute(NetworkPackage np) {
-
+        muteUnmute(true);
     }
 
     @Override
     public void endWork() {
         if( Device.getConnectedDevices().size() == 0) {
             CALLING = false;
+        }
+    }
+
+    private static void muteUnmute(boolean mute){
+        Mixer.Info [] mixers = AudioSystem.getMixerInfo();
+        for (Mixer.Info mixerInfo : mixers) {
+            Mixer mixer = AudioSystem.getMixer(mixerInfo);
+            Line.Info [] lineInfos = mixer.getTargetLineInfo(); // target, not source
+            for (Line.Info lineInfo : lineInfos) {
+                Line line = null;
+                boolean opened = true;
+                try {
+                    line = mixer.getLine(lineInfo);
+                    opened = line.isOpen() || line instanceof Clip;
+                    if (!opened) {
+                        line.open();
+                    }
+                    for (Control control : line.getControls()) {
+                        findMuteControlAndMute(control,control.toString(),mixerInfo.getName(),mute);
+                    }
+                }
+                catch (LineUnavailableException | IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    if (line != null && !opened) {
+                        line.close();
+                    }
+                }
+            }
+        }
+    }
+
+    private static void findMuteControlAndMute(Control control,String parentControlName,String mixer,boolean mute)
+    {
+        if (control instanceof CompoundControl)
+        {
+            Control[] controls = ((CompoundControl)control).getMemberControls();
+            for (Control c: controls)
+            {
+                 findMuteControlAndMute(c,parentControlName,mixer,mute);
+            }
+        }else if(control instanceof BooleanControl && control.getType() == BooleanControl.Type.MUTE){
+            boolean value = ((BooleanControl) control).getValue();
+            if(mute) {
+                if (!value) {
+                    String s =  mixer;
+                    muted.add(s);
+                    ((BooleanControl) control).setValue(true);
+                }
+            }else {
+                if(value){
+                    String s = mixer;
+                    if(muted.contains(s)){
+                        ((BooleanControl)control).setValue(false);
+                    }
+                }
+            }
         }
     }
 }

@@ -183,6 +183,10 @@ public class GuiCommunicator {
         //todo
     }
 
+    public static void muteCall(NotificationDevice notificationDevice, String id){
+        //todo
+    }
+
     public static void recall(NotificationDevice item, String id) {
         //todo
     }

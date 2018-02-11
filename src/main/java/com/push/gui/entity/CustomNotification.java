@@ -76,8 +76,8 @@ public class CustomNotification extends BorderLayoutNotification {
     }
 
     public void setTextThemeCallColor(){
-        m_button.setForeground(Color.GREEN);
-        m_button2.setForeground(   Color.RED );
+     //   m_button.setForeground(Color.GREEN);
+      //  m_button2.setForeground(   Color.RED );
     }
 
     public void setTextThemecallMissedFont(TextTheme theme) {
@@ -98,6 +98,11 @@ public class CustomNotification extends BorderLayoutNotification {
 
     public void setIcon(String base64,int width,int heigh){
         icon_lbl.setIcon(GuiUtils.pictureFromBase64Swing(base64,width,heigh));
+    }
+
+    public void setIcon(Icon icon){
+        if(icon != null)
+        icon_lbl.setIcon(icon);
     }
 
     public void setFirstButton(String text,ActionListener action){
@@ -170,9 +175,17 @@ public class CustomNotification extends BorderLayoutNotification {
             if(icon != null && icon.length() > 0)
             notification.setIcon(icon, 100, 100);
             else if(icon == null && notificationDevice.getType().equals("sms"))
-                notification.setIcon(GuiUtils.getDefaultIconMessage(),100,100);
+                notification.setIcon(GuiUtils.getDefaultSmsIcon(100,100));
             else if(icon == null && incoming){
-                notification.setIcon(GuiUtils.getDefaultCallMessage(),100,100);
+                notification.setIcon(GuiUtils.getDefaultPersonIcon(100,100));
+            }else if(icon == null && notificationDevice.getType().equals("missedCalls")){
+                notification.setIcon(GuiUtils.getDefaultMissedCallIcon(100,100));
+            }else if(icon == null && notificationDevice.getType().equalsIgnoreCase(callTypes.outgoing.name())){
+                notification.setIcon(GuiUtils.getDefaultOutgoingCall(100,100));
+            }else if(icon == null && notificationDevice.getType().equals("unreadMessages")){
+                notification.setIcon(GuiUtils.getDefaultUnreadMessagesIcon(100,100));
+            }else if(icon == null){
+                notification.setIcon(GuiUtils.getDefaultInfo(100,100));
             }
             if(picture != null && picture.length() > 0)
             notification.setImage(picture,150,150);
@@ -215,10 +228,10 @@ public class CustomNotification extends BorderLayoutNotification {
                     });
                 });
             }else if(incoming){
-                notification.setFirstButton("Answer",action->{
+                notification.setFirstButton("Mute",action->{
                     notification.hide();
                     Platform.runLater(()->{
-                        GuiCommunicator.answerCall(notificationDevice,id);
+                        GuiCommunicator.muteCall(notificationDevice,id);
                     });
                 });
                 notification.setSecondButton("Reject",action->{
@@ -301,8 +314,8 @@ public class CustomNotification extends BorderLayoutNotification {
            for(int i =0;i<count;i++){
                 calculatedHeight += 5;
            }
-            if(calculatedHeight > height/2)
-                calculatedHeight = (int) ((double)height/2);
+            if(calculatedHeight > height/4)
+                calculatedHeight = (int) ((double)height/4);
             theme.width = calculatedWidth;
             theme.height = calculatedHeight;
             notification.setWindowTheme(theme);

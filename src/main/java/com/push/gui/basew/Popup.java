@@ -23,6 +23,7 @@ public class Popup {
      private static QueueManager manager;
      private static double notTime;
      private static double callNotTime;
+     private static int maxNotifOnScreen;
 
      private static HashMap<String,CustomNotification> callNotifs = new HashMap<>();
      private static int countScreens;
@@ -49,11 +50,12 @@ public class Popup {
             initialized = true;
             notTime = Double.parseDouble(BackgroundService.getSettingManager().get("Notif-time"));
             callNotTime = Double.parseDouble(BackgroundService.getSettingManager().get("Call-Notif-time"));
+            maxNotifOnScreen = Integer.parseInt(BackgroundService.getSettingManager().get("maxNotifOnScreen"));
         }
-        // if you have many than 5 notif on screen remove all oldest
+        // if you have many than 4 notif on screen remove all oldest
         List<Notification> notifications = manager.getNotifications();
-        if(notifications.size() >= 5){
-            for(int i = 5;i<notifications.size();i++) {
+        if(notifications.size() >= 4){
+            for(int i = 4;i<notifications.size();i++) {
                 notifications.get(i).removeFromManager();
             }
         }
@@ -67,7 +69,7 @@ public class Popup {
         }
         double timeTemp = notTime;
         for(int i = 20;i<build.getText().length();i+=20){
-            timeTemp += 5;
+            timeTemp += 2;
         }
         Time time = Time.seconds(timeTemp);
 

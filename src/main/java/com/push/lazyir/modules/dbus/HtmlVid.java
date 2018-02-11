@@ -104,7 +104,7 @@ public class HtmlVid implements OsStrategy {
     @Override
     public void pauseAll(String id) {
         try {
-            List<Player> playerList = new ArrayList<>(PopupEndpoint.getAll().get(200, TimeUnit.MILLISECONDS));
+            List<Player> playerList = new ArrayList<>(PopupEndpoint.getAll().getByTimerWhatHave(1000, TimeUnit.MILLISECONDS));
             for (Player pl : playerList) {
                 if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) {
                     String substring = pl.getName().substring(10);

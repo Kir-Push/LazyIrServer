@@ -130,7 +130,7 @@ public class Vlc implements Strategy {
     }
 
     @Override
-    public Players getGetAll() { // yes it stupid,
+    public Players getGetAll() { // yes it's stupid,
         List<Player> playerList = new ArrayList<>();
         Player onePlayer = getOnePlayer();
         System.out.println(onePlayer);

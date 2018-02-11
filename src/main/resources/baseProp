@@ -9,3 +9,4 @@ jniPort=7010
 websocketPort=11520
 muteWhenCall=true
 muteWhenOutcomingCall=true
+maxNotifOnScreen=4
