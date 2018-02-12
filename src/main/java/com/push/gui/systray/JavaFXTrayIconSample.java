@@ -2,6 +2,7 @@ package com.push.gui.systray;
 
 import com.push.gui.basew.MainWin;
 import com.push.gui.entity.PhoneDevice;
+import com.push.lazyir.service.BackgroundService;
 import com.push.lazyir.service.MainClass;
 import com.push.lazyir.gui.GuiCommunicator;
 import javafx.application.*;
@@ -93,7 +94,7 @@ public class JavaFXTrayIconSample extends Application {
 //            URL imageLoc = new URL(
 //                    iconImageLoc
 //            );
-            java.awt.Image image = ImageIO.read(JavaFXTrayIconSample.class.getClassLoader().getResource("icons/callPhone.png"));
+            java.awt.Image image = ImageIO.read(JavaFXTrayIconSample.class.getClassLoader().getResource("icons/phone.png"));
             java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image.getScaledInstance(27,27,SCALE_AREA_AVERAGING));
             trayIcon.setImageAutoSize(true);
 
@@ -102,7 +103,7 @@ public class JavaFXTrayIconSample extends Application {
 
             // if the user selects the default menu item (which includes the app name), 
             // show the main app stage.
-            java.awt.MenuItem openItem = new java.awt.MenuItem("Open");
+            java.awt.MenuItem openItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("openTray"));
             openItem.addActionListener(event -> Platform.runLater(this::showStage));
 
             // the convention for tray icons seems to be to set the default icon for opening
@@ -114,7 +115,7 @@ public class JavaFXTrayIconSample extends Application {
             // to really exit the application, the user must go to the system tray icon
             // and select the exit option, this will shutdown JavaFX and remove the
             // tray icon (removing the tray icon will also shut down AWT).
-            java.awt.MenuItem exitItem = new java.awt.MenuItem("Exit");
+            java.awt.MenuItem exitItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("exitTray"));
             exitItem.addActionListener(event -> {
                 Platform.exit();
                 System.exit(0);
@@ -158,6 +159,7 @@ public class JavaFXTrayIconSample extends Application {
         // Just launches the JavaFX application.
         // Due to way the application is coded, the application will remain running
         // until the user selects the Exit menu option from the tray icon.
+        BackgroundService.getInstance(); // initialize BackgroundService and in it - localizationManager
         launch(args);
 
     }

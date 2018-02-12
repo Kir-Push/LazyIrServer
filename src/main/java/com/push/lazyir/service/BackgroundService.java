@@ -7,6 +7,7 @@ import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.ping.Ping;
 import com.push.lazyir.modules.share.ShareModule;
+import com.push.lazyir.service.settings.LocalizationManager;
 import com.push.lazyir.service.settings.SettingManager;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 
@@ -31,13 +32,14 @@ public class BackgroundService {
     private TcpConnectionManager tcp;
     private UdpBroadcastManager udp;
     private SettingManager settingManager;
+    private LocalizationManager localizationManager;
     private static int port = 0;
 
     private volatile static BackgroundService instance;
 
     private HashMap<String,ModuleSetting> myEnabledModules;
 
-    static BackgroundService getInstance() {
+    public static BackgroundService getInstance() {
         if(instance == null) {
             instance = new BackgroundService();
         }
@@ -48,6 +50,8 @@ public class BackgroundService {
         tcp = new TcpConnectionManager();
         udp = new UdpBroadcastManager();
         settingManager = new SettingManager();
+        localizationManager = new LocalizationManager();
+        localizationManager.changeLanguage(settingManager.get("LANG"));
     }
 
     void configServices(){
@@ -105,6 +109,8 @@ public class BackgroundService {
     }
 
     public static SettingManager getSettingManager(){return getInstance().settingManager;}
+
+    public static LocalizationManager getLocalizationManager(){return getInstance().localizationManager;}
 
     public static void sendToDevice(String id, String msg) {
         // separate thread maybe?

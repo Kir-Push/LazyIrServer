@@ -80,9 +80,11 @@ public class CallModule extends Module {
 
     private void unMute(NetworkPackage np) {
         muteUnmute(false);
+        muted.clear();
     }
 
     private void mute(NetworkPackage np) {
+        muted.clear();
         muteUnmute(true);
     }
 
@@ -123,6 +125,10 @@ public class CallModule extends Module {
         }
     }
 
+    /*
+    recursive descent to muteControl and set it true if mute arg true, false otherwise.
+    if mute true add mixer arg to set, otherwise remove
+    * */
     private static void findMuteControlAndMute(Control control,String parentControlName,String mixer,boolean mute)
     {
         if (control instanceof CompoundControl)

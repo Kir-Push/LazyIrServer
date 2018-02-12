@@ -25,10 +25,13 @@ public class SettingManager implements Manager {
     private File settings;
     protected File cache;
     private File modules;
+    private File localization;
     private Properties properties;
     private FileInputStream fileInputStream;
     private FileOutputStream fileOutputStream;
     private String baseProp = "baseProp";
+    private String rusLoc = "russianLoc";
+    private String engLoc = "engLoc";
     // file contains modules and it's setting's
     private String confModules = "modules.xml";
     public static  String currentUsersHomeDir = System.getProperty("user.home") +  File.separator + ".Jasech" + File.separator + "ConnectedDevices";
@@ -45,9 +48,22 @@ public class SettingManager implements Manager {
         cache = new File(settingFilePath + File.separator + "adresses.txt");
         keyPath = settingFilePath + File.separator + "keyFile.pem";
         File dir = new File(settingFilePath);
+        String localizationPath = settingFilePath + File.separator + "localization";
+        localization = new File(localizationPath);
+        File engLocF =new File(localizationPath + File.separator + "loc_eng.ini");
+        File rusLocF = new File(localizationPath + File.separator + "loc_rus.ini");
         if(!dir.exists())
         {
             dir.mkdir();
+        }
+        if(!localization.exists()){
+            localization.mkdir();
+        }
+        if(!engLocF.exists() && !engLocF.isDirectory()){
+            copyFromBackupToActual(engLoc,engLocF);
+        }
+        if(!rusLocF.exists() && !rusLocF.isDirectory()){
+            copyFromBackupToActual(rusLoc,rusLocF);
         }
         if(!settings.exists() && !settings.isDirectory())
         {
