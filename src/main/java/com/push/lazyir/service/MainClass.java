@@ -21,7 +21,6 @@ public class MainClass {
                 }
             }
         });
-        BackgroundService.getInstance().configServices();
         BackgroundService.getInstance().startTasks();
     }
 

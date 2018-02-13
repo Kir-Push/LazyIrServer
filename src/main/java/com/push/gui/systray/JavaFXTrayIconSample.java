@@ -1,6 +1,7 @@
 package com.push.gui.systray;
 
 import com.push.gui.basew.MainWin;
+import com.push.gui.basew.SettingsWindow;
 import com.push.gui.entity.PhoneDevice;
 import com.push.lazyir.service.BackgroundService;
 import com.push.lazyir.service.MainClass;
@@ -111,6 +112,8 @@ public class JavaFXTrayIconSample extends Application {
         //    java.awt.Font defaultFont = java.awt.Font.decode(null);
          //   java.awt.Font boldFont = defaultFont.deriveFont(java.awt.Font.BOLD);
          //   openItem.setFont(boldFont);
+            java.awt.MenuItem settingItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("settingTray"));
+            settingItem.addActionListener(event ->  Platform.runLater(()->SettingsWindow.showWindow("id",null)));
 
             // to really exit the application, the user must go to the system tray icon
             // and select the exit option, this will shutdown JavaFX and remove the
@@ -125,6 +128,8 @@ public class JavaFXTrayIconSample extends Application {
             // setup the popup menu for the application.
             final java.awt.PopupMenu popup = new java.awt.PopupMenu();
             popup.add(openItem);
+            popup.addSeparator();
+            popup.add(settingItem);
             popup.addSeparator();
             popup.add(exitItem);
             trayIcon.setPopupMenu(popup);
@@ -160,6 +165,7 @@ public class JavaFXTrayIconSample extends Application {
         // Due to way the application is coded, the application will remain running
         // until the user selects the Exit menu option from the tray icon.
         BackgroundService.getInstance(); // initialize BackgroundService and in it - localizationManager
+        BackgroundService.getInstance().configServices();
         launch(args);
 
     }

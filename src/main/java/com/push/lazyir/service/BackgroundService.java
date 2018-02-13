@@ -54,7 +54,7 @@ public class BackgroundService {
         localizationManager.changeLanguage(settingManager.get("LANG"));
     }
 
-    void configServices(){
+    public void configServices(){
         timerService.setRemoveOnCancelPolicy(true);
         timerService.setKeepAliveTime(10, TimeUnit.SECONDS);
         timerService.allowCoreThreadTimeOut(true);

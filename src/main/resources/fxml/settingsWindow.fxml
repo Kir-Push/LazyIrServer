@@ -2,11 +2,12 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
+<AnchorPane prefHeight="466.0" prefWidth="478.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
    <children>
       <Label id="mainPort" layoutX="51.0" layoutY="22.0" prefHeight="20.0" prefWidth="115.0" text="Tcp &amp; Udp port" />
       <TextField id="mainPortInput" layoutX="258.0" layoutY="19.0" prefHeight="26.0" prefWidth="84.0" />
@@ -20,15 +21,13 @@
       <Label id="muteOutCall" layoutX="51.0" layoutY="190.0" prefHeight="20.0" prefWidth="175.0" text="Mute when outgoing call" />
       <CheckBox id="incomingCallcheck" layoutX="288.0" layoutY="162.0" mnemonicParsing="false" />
       <CheckBox id="outgoingCallcheck" layoutX="288.0" layoutY="191.0" mnemonicParsing="false" />
-      <Label id="Jniport" layoutX="51.0" layoutY="222.0" prefHeight="20.0" prefWidth="115.0" text="ClipboardPort" />
-      <TextField id="jniportinput" layoutX="258.0" layoutY="219.0" prefHeight="26.0" prefWidth="84.0" />
-      <Label id="websocketPort" layoutX="51.0" layoutY="253.0" prefHeight="20.0" prefWidth="151.0" text="html5 control port" />
-      <TextField id="websocketportInput" layoutX="258.0" layoutY="250.0" prefHeight="26.0" prefWidth="84.0" />
-      <Label id="vlcPort" layoutX="51.0" layoutY="287.0" prefHeight="20.0" prefWidth="151.0" text="vlc Port (win only)" />
-      <TextField id="vlcportInput" layoutX="258.0" layoutY="284.0" prefHeight="26.0" prefWidth="84.0" />
-      <Label id="vlcPass" layoutX="51.0" layoutY="323.0" prefHeight="20.0" prefWidth="151.0" text="vlc Pass (win only)" />
-      <TextField id="vlcpassInput" layoutX="258.0" layoutY="320.0" prefHeight="26.0" prefWidth="84.0" />
-      <Button id="save" layoutX="278.0" layoutY="360.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="96.0" text="Save &amp; Exit" />
-      <Label layoutX="22.0" layoutY="363.0" prefHeight="18.0" prefWidth="239.0" text="You need restart app after changes" />
+      <Label id="vlcPort" layoutX="51.0" layoutY="233.0" prefHeight="20.0" prefWidth="151.0" text="vlc Port (win only)" />
+      <TextField id="vlcportInput" layoutX="258.0" layoutY="230.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="vlcPass" layoutX="51.0" layoutY="281.0" prefHeight="20.0" prefWidth="151.0" text="vlc Pass (win only)" />
+      <TextField id="vlcpassInput" layoutX="258.0" layoutY="278.0" prefHeight="26.0" prefWidth="84.0" />
+      <Button id="save" layoutX="368.0" layoutY="426.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="96.0" text="Save &amp; Exit" />
+      <Label layoutX="19.0" layoutY="430.0" prefHeight="18.0" prefWidth="239.0" text="You need restart app after changes" />
+      <Label id="lang" layoutX="51.0" layoutY="331.0" prefHeight="20.0" prefWidth="151.0" text="language" />
+      <ComboBox id="langBox" layoutX="258.0" layoutY="328.0" prefHeight="26.0" prefWidth="84.0" />
    </children>
 </AnchorPane>

@@ -1,2 +1,15 @@
 openTray=Open
+settingTray=Settings
 exitTray=Exit
+settingMainPort=Port
+settingMainPortTooltip=Both UDP and TCP, you need this port to be open,\n and other device must use same port's
+settingMainPortTooltipInput=Integers of course :)
+settingNotTime=Notification duration (sec)
+settingCallNotTime=Calling notification duration (sec)
+settingsMaxNot=Maximum notification's on screen
+settingsIncomeMute=Mute system when incoming call
+settingsIncomeMuteTooltip=And unmute after!
+settingsOutcomeMute=Mute when outcoming call
+settingsVlcPorts=Vlc port (only win)
+settingsVlcPass=Vlc pass (only win)
+settingsLang=Language

@@ -5,7 +5,9 @@ import com.push.lazyir.service.BackgroundService;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -76,6 +78,22 @@ public class LocalizationManager {
         } finally {
             lock.unlock();
         }
+    }
+
+    public Set<String> getLangs(){
+        Set<String> set = new HashSet<>();
+        String locPath =  System.getProperty("user.home") + File.separator + ".Jasech"
+                + File.separator + "localization";
+        File file = new File(locPath);
+        File[] files = file.listFiles();
+        if(files == null)
+            return set;
+        for (File file1 : files) {
+           if(file1.getName().matches("^loc_\\w{3}.ini")){
+               set.add(file1.getName().split(".ini")[0].substring(4));
+           }
+        }
+        return set;
     }
 
 
