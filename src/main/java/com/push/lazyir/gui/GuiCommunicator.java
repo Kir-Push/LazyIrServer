@@ -8,6 +8,7 @@ import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.memory.CRTEntity;
 import com.push.lazyir.modules.memory.Memory;
 import com.push.lazyir.modules.memory.MemoryEntity;
+import com.push.lazyir.modules.notifications.call.CallModule;
 import com.push.lazyir.modules.notifications.messengers.Messengers;
 import com.push.lazyir.modules.notifications.notifications.Notification;
 import com.push.lazyir.modules.notifications.notifications.ShowNotification;
@@ -176,23 +177,23 @@ public class GuiCommunicator {
     }
 
     public static void answerCall(NotificationDevice notificationDevice, String id) {
-        //todo
+        CallModule.answerCall(id);
     }
 
     public static void rejectCall(NotificationDevice notificationDevice, String id) {
-        //todo
+        CallModule.rejectCall(id);
     }
 
     public static void muteCall(NotificationDevice notificationDevice, String id){
-        //todo
+        CallModule.sendMute(id);
     }
 
     public static void recall(NotificationDevice item, String id) {
-        //todo
+       CallModule.recall(id,item.getTitle());
     }
 
     public static void rejectOutgoingcall(NotificationDevice notificationDevice, String id) {
-        //todo
+        CallModule.rejectOutgoingCall(id);
     }
 
     public static void dismissAllCalls(NotificationDevice notificationDevice, String id) {

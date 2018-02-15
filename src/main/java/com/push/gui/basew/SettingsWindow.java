@@ -32,6 +32,10 @@ public class SettingsWindow {
 
     public static void showWindow(String id,MainController mainController){
         try {
+            if(opened){
+                return;
+            }
+            opened = true;
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainWin.class.getClassLoader().getResource("fxml/settingsWindow.fxml"));
             AnchorPane rootLayout = (AnchorPane) loader.load();
@@ -110,6 +114,9 @@ public class SettingsWindow {
                 settingManager1.saveValue("Call-Notif-time",callNotifTimeInput.getText());
                 settingManager1.saveValue("Notif-time",notifTimeInput.getText());
                 settingManager1.saveValue("TCP-port",mainPortInput.getText());
+            });
+            stage.setOnCloseRequest(event -> {
+                opened = false;
             });
             stage.setScene(scene);
             stage.show();

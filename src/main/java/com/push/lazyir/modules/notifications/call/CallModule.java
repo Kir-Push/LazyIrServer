@@ -1,5 +1,6 @@
 package com.push.lazyir.modules.notifications.call;
 
+import com.push.gui.entity.NotificationDevice;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
@@ -16,6 +17,11 @@ public class CallModule extends Module {
     public static final String CALL = "com.android.call";
     public static final String ENDCALL = "com.android.endCall";
     public static final String ANSWER = "answer";
+    public static final String ANSWER_CALL = "asnwerCall";
+    public static final String DECLINE_CALL = "declineCall";
+    public static final String MUTE = "mute";
+    public static final String MUTE_NOVIBRO = "muteNoVibro";
+    public static final String RECALL = "call";
     private static volatile boolean CALLING = false;
     private static volatile int muteWhenCall = -1;
     private static volatile int muteWhenOutcomingCall = -1;
@@ -155,5 +161,31 @@ public class CallModule extends Module {
                 }
             }
         }
+    }
+
+    public static void sendMute(String id){
+        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), MUTE);
+        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    }
+
+    public static void rejectCall(String id) {
+        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL);
+        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    }
+
+    public static void answerCall(String id) {
+        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), ANSWER_CALL);
+        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    }
+
+    public static void rejectOutgoingCall(String id) {
+        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL); //?
+        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    }
+
+    public static void recall(String id, String num) {
+        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), RECALL);
+        orCreatePackage.setValue("number",num);
+        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 }
