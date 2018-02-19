@@ -72,9 +72,10 @@ public class Dialogs {
             ButtonBar btnBar = (ButtonBar) scene.lookup("#buttonBar");
             Button answerBtn = (Button) btnBar.getButtons().get(0);
         answerBtn.setOnAction(event -> {
-            if(notification.getType().equals("sms"))
+           if(notification.getType().equals("sms"))
                 GuiCommunicator.sendSmsAnswer(id,name,answerText.getText(),draggedFiles);
-            else if(notification.getType().equals("messenger"))
+             else
+             if(notification.getType().equals("messenger") )
             GuiCommunicator.sendMessengerAnswer(id,typName,answerText.getText(), draggedFiles);
             stage.hide();
         });

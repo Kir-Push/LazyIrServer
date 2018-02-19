@@ -153,7 +153,7 @@ public class MainController {
                         answer.setText("Answer");
                         PhoneDevice selectedDevice = personList.getSelectionModel().getSelectedItem();
                         if(item.getType().equals("sms")){
-                           answer.setOnAction(event -> openSmsDialog(item,selectedDevice.getId()));
+                           answer.setOnAction(event -> openMessengerDialog(item,selectedDevice.getId()));
                             }
                         else if(item.getType().equals("messenger"))
                             answer.setOnAction(event -> openMessengerDialog(item,selectedDevice.getId()));
@@ -251,6 +251,7 @@ public class MainController {
     }
 
     public void openMessengerDialog(NotificationDevice item, String deviceId) {
+        item.setType("messenger");
         dialogs.showAnswerMessenger(deviceId,item,this);
     }
 

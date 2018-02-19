@@ -73,7 +73,7 @@ public class CallModule extends Module {
                     boolToCheck = muteWhenOutcomingCall;
                 else if(callType.equalsIgnoreCase(callTypes.incoming.name()))
                     boolToCheck = muteWhenCall;
-                if(boolToCheck == 1)
+                if(boolToCheck == 1 || callType.equalsIgnoreCase(callTypes.missedIn.name()))
                     unMute(np);
                 GuiCommunicator.call_notif_end(np);
             }else if(ANSWER.equals(data)){
@@ -90,7 +90,6 @@ public class CallModule extends Module {
     }
 
     private void mute(NetworkPackage np) {
-        muted.clear();
         muteUnmute(true);
     }
 

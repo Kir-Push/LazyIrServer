@@ -55,7 +55,7 @@ public class Popup {
         // if you have many than maxNotifOnScreen notif on screen remove all oldest
         List<Notification> notifications = manager.getNotifications();
         if(notifications.size() >= maxNotifOnScreen){
-            for(int i = 4;i<notifications.size();i++) {
+            for(int i = (maxNotifOnScreen-1);i<notifications.size();i++) {
                 notifications.get(i).removeFromManager();
             }
         }
@@ -83,8 +83,10 @@ public class Popup {
     public static void callEnd(String id, String callerNumber) {
         if(callNotifs.containsKey(callerNumber)){
             CustomNotification customNotification = callNotifs.get(callerNumber);
-            customNotification.removeFromManager();
-            callNotifs.remove(callerNumber);
+            if(customNotification != null) {
+                customNotification.removeFromManager();
+                callNotifs.remove(callerNumber);
+            }
         }
     }
 }
