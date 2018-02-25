@@ -52,7 +52,6 @@ public class HtmlVid implements OsStrategy {
 
     @Override
     public void playPause(NetworkPackage np) {
-        System.out.println(np.getMessage());
         String playerValue = np.getValue(player);
         PopupEndpoint.sendStatus(playerValue.substring(10),playPause);
     }

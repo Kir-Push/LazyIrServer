@@ -289,6 +289,17 @@ public class MainController {
     public void setAllToDefault(PhoneDevice id) {
         getMainApp().getConnectedDevices().remove(id);
        getMainApp().getNotificationsList().clear();
-       //todo
+       setCpu(0);
+       setRam(0,0,false);
+       setMemoryText(0,0,0,0);
+        VBox rootLayout = getMainApp().getRootLayout();
+        ImageView batteryImg = (ImageView) rootLayout.lookup("#batteryImg");
+        batteryImg.setImage(GuiUtils.getImageByBattery(0,false));
+        Label batteryText = (Label) rootLayout.lookup("#batteryText");
+        batteryText.setText("");
+        Button pairedBtn = (Button) rootLayout.lookup("#pairBtn");
+        pairedBtn.setText("Pair");
+        Button mount = (Button) rootLayout.lookup("#mountBtn");
+        mount.setText("Mount");
     }
 }

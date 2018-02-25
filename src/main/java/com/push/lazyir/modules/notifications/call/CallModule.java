@@ -23,8 +23,8 @@ public class CallModule extends Module {
     public static final String MUTE_NOVIBRO = "muteNoVibro";
     public static final String RECALL = "call";
     private static volatile boolean CALLING = false;
-    private static volatile int muteWhenCall = -1;
-    private static volatile int muteWhenOutcomingCall = -1;
+    public static volatile int muteWhenCall = -1;
+    public static volatile int muteWhenOutcomingCall = -1;
     private static ConcurrentSkipListSet<String> muted = new ConcurrentSkipListSet<>();
 
     public CallModule() {
@@ -100,7 +100,7 @@ public class CallModule extends Module {
         }
     }
 
-    private static void muteUnmute(boolean mute){
+    public static void muteUnmute(boolean mute){
         Mixer.Info [] mixers = AudioSystem.getMixerInfo();
         for (Mixer.Info mixerInfo : mixers) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);

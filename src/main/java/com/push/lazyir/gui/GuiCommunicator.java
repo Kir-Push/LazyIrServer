@@ -116,7 +116,6 @@ public class GuiCommunicator {
 
 
 
-    //todo files add
     public static void sendMessengerAnswer(String id,String typeName, String text, List<File> dragImageurl) {
         Messengers.sendAnswer(typeName,text,id);
     }
@@ -141,11 +140,9 @@ public class GuiCommunicator {
     }
 
     public static void iamCrushedUdpListen() {
-        //todo
     }
 
     public static void iamCrushed(String message) {
-        //todo
     }
 
     public static void pairAnswer(String id, boolean answer, String data){
@@ -173,7 +170,6 @@ public class GuiCommunicator {
     }
 
     public static void tcpClosed() {
-        //todo
     }
 
     public static void answerCall(NotificationDevice notificationDevice, String id) {

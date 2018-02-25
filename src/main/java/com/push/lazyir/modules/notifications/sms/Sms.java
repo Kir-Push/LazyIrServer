@@ -11,7 +11,7 @@ public class Sms {
     private String icon;
     private String picture;
     private String type = "sms";
-    private long date; // todo add to server
+    private long date;
     private String id;
 
     public Sms() {

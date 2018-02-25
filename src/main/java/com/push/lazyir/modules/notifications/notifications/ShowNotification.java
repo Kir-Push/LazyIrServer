@@ -6,6 +6,8 @@ import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
+import com.push.lazyir.modules.notifications.call.CallModule;
+import com.push.lazyir.modules.notifications.messengers.Messengers;
 import com.push.lazyir.service.BackgroundService;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class ShowNotification extends Module {
     public static final String SHOW_NOTIFICATION = "ShowNotification";
     public static final String RECEIVE_NOTIFICATION = "receiveNotification";
     public static final String NOTIFICATION_CLASS = "notificationClass";
-    public static final String REMOVE_NOTIFICATION = "removeNotification";
+    public static final String REMOVE_NOTIFICATION = "deleteNotification";
     public static final String ALL_NOTIFS = "ALL NOTIFS";
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
 
@@ -27,6 +29,9 @@ public class ShowNotification extends Module {
         try {
                             if (RECEIVE_NOTIFICATION.equals(data)) {
                                 Notification not = np.getObject(NetworkPackage.N_OBJECT, Notification.class);
+                                if(Messengers.isCalling(not,device,np,true)){
+
+                                }else
                                 GuiCommunicator.show_notification(device.getId(),not);
                             }
                             else if(ALL_NOTIFS.equals(data))
@@ -43,6 +48,11 @@ public class ShowNotification extends Module {
                                 }
                                 else{
                                     GuiCommunicator.receive_notifications(device.getId(), new ArrayList<>());
+                                }
+                            }else if(REMOVE_NOTIFICATION.equalsIgnoreCase(data)){
+                                Notification not = np.getObject(NetworkPackage.N_OBJECT, Notification.class);
+                                if(Messengers.isCalling(not,device,np,false)){
+
                                 }
                             }
         } catch(NullPointerException e){

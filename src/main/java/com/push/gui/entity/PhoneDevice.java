@@ -13,7 +13,7 @@ public class PhoneDevice {
     private BooleanProperty charging;
     private BooleanProperty paired;
     private BooleanProperty mounted;
-    private LongProperty freeSpace; // todo
+    private LongProperty freeSpace;
     private LongProperty totalSpace;
     private LongProperty totalSpaceExt;
     private LongProperty freeSpaceExt;
