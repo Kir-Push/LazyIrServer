@@ -1,5 +1,6 @@
 package com.push.gui.systray;
 
+import com.push.gui.basew.About;
 import com.push.gui.basew.MainWin;
 import com.push.gui.basew.SettingsWindow;
 import com.push.gui.entity.PhoneDevice;
@@ -107,6 +108,9 @@ public class JavaFXTrayIconSample extends Application {
             java.awt.MenuItem openItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("openTray"));
             openItem.addActionListener(event -> Platform.runLater(this::showStage));
 
+
+            java.awt.MenuItem aboutItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("aboutTray"));
+            aboutItem.addActionListener(event -> Platform.runLater(()-> About.showWindow("id",null)));
             // the convention for tray icons seems to be to set the default icon for opening
             // the application stage in a bold font.
         //    java.awt.Font defaultFont = java.awt.Font.decode(null);
@@ -130,6 +134,8 @@ public class JavaFXTrayIconSample extends Application {
             popup.add(openItem);
             popup.addSeparator();
             popup.add(settingItem);
+            popup.addSeparator();
+            popup.add(aboutItem);
             popup.addSeparator();
             popup.add(exitItem);
             trayIcon.setPopupMenu(popup);

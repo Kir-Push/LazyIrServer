@@ -1,6 +1,7 @@
 openTray=Open
 settingTray=Settings
 exitTray=Exit
+aboutTray=About
 settingMainPort=Port
 settingMainPortTooltip=Both UDP and TCP, you need this port to be open,\n and other device must use same port's
 settingMainPortTooltipInput=Integers of course :)
@@ -13,3 +14,4 @@ settingsOutcomeMute=Mute when outcoming call
 settingsVlcPorts=Vlc port (only win)
 settingsVlcPass=Vlc pass (only win)
 settingsLang=Language
+aboutCredits=Credits to authors from flaticon.com

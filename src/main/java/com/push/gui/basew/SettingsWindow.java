@@ -1,6 +1,7 @@
 package com.push.gui.basew;
 
 import com.push.gui.controllers.MainController;
+import com.push.lazyir.Loggout;
 import com.push.lazyir.service.BackgroundService;
 import com.push.lazyir.service.settings.LocalizationManager;
 import com.push.lazyir.service.settings.SettingManager;
@@ -18,8 +19,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SettingsWindow {
-    private static boolean opened = false;
-    private Lock lock = new ReentrantLock();
+    private static volatile boolean opened = false;
 //    private static Stage stage;
 
     public boolean isOpened() {
@@ -122,7 +122,8 @@ public class SettingsWindow {
             stage.show();
 
         }catch (Exception e){
-            e.printStackTrace();
+            opened = false;
+            Loggout.e("SettingWindow","Exception ",e);
         }
     }
 }

@@ -38,7 +38,7 @@ public class Dialogs {
         textArea.setText(notification.getText());
         if(notification.getPicture() != null) {
             ImageView imageView = (ImageView) scene.lookup("#messageImg");
-            imageView.setImage(GuiUtils.pictureFromBase64(notification.getPicture()));
+            imageView.setImage(GuiUtils.pictureFromBase64(notification.getIcon()));
         }
         TextArea answerText = (TextArea) scene.lookup("#answerText");
         answerText.setOnDragOver(new EventHandler<DragEvent>() {
