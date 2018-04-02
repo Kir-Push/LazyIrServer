@@ -59,20 +59,20 @@ public class SettingManager implements Manager {
         if(!localization.exists()){
             localization.mkdir();
         }
-        if(!engLocF.exists() && !engLocF.isDirectory()){
+        if(!engLocF.exists() || !engLocF.isDirectory()){
             copyFromBackupToActual(engLoc,engLocF);
         }
-        if(!rusLocF.exists() && !rusLocF.isDirectory()){
+        if(!rusLocF.exists() || !rusLocF.isDirectory()){
             copyFromBackupToActual(rusLoc,rusLocF);
         }
-        if(!settings.exists() && !settings.isDirectory())
+        if(!settings.exists() || !settings.isDirectory())
         {
             copyFromBackupToActual(baseProp,settings);
         }
-        if(!modules.exists() && !modules.isDirectory()){
+        if(!modules.exists() || !modules.isDirectory()){
             copyFromBackupToActualXml("modules.xml",modules);
         }
-        if(!cache.exists() && !cache.isDirectory())
+        if(!cache.exists() || !cache.isDirectory())
         {
             try {
                 cache.createNewFile();
@@ -91,7 +91,7 @@ public class SettingManager implements Manager {
                 ClassLoader classLoader =getClass().getClassLoader();
                  reader = new BufferedReader(
                         new InputStreamReader(
-                                new FileInputStream(classLoader.getResource(s).getFile()),
+                                classLoader.getResourceAsStream(s),
                                 "UTF-8"
                         )
                 );
@@ -163,11 +163,11 @@ public class SettingManager implements Manager {
     }
 
     private synchronized void copyFromBackupToActual(String internalFile,File toWhoCopy) {
+        InputStream is = null;
         try {
             ClassLoader classLoader =getClass().getClassLoader();
-            String file = classLoader.getResource(internalFile).getFile();
-            fileInputStream = new FileInputStream(file);
-                    properties.load(fileInputStream);
+             is = classLoader.getResourceAsStream(internalFile);
+                    properties.load(is);
             if(toWhoCopy.createNewFile())
             {
                 fileOutputStream = new FileOutputStream(toWhoCopy);
@@ -177,7 +177,8 @@ public class SettingManager implements Manager {
             Loggout.e("SettingManager",e.toString());
         }finally {
             try {
-              fileInputStream.close();
+                if(is != null)
+              is.close();
               fileOutputStream.close();
             } catch (Exception e) {
                 Loggout.e("SettingManager",e.toString());

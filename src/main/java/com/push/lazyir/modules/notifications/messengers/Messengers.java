@@ -96,7 +96,7 @@ public class Messengers extends Module {
         return false;
     }
 
-    private static String getCallType(String pack,String id,String text){
+    private static String getCallType(String pack,String id,String text){ //todo
         switch (pack){
             case "com.skype.raider":
                 if(id.equalsIgnoreCase("16") || text.equalsIgnoreCase("Ongoing call"))
