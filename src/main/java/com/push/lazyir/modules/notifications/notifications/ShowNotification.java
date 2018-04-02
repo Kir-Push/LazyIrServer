@@ -16,12 +16,12 @@ import java.util.ArrayList;
  * Created by buhalo on 21.03.17.
  */
 public class ShowNotification extends Module {
-    public static final String SHOW_NOTIFICATION = "ShowNotification";
     public static final String RECEIVE_NOTIFICATION = "receiveNotification";
     public static final String NOTIFICATION_CLASS = "notificationClass";
-    public static final String REMOVE_NOTIFICATION = "deleteNotification";
     public static final String ALL_NOTIFS = "ALL NOTIFS";
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
+    public static final String SHOW_NOTIFICATION = "ShowNotification";
+    public static final String REMOVE_NOTIFICATION = "removeNotification";
 
     @Override
     public void execute(NetworkPackage np) {
@@ -73,6 +73,7 @@ public class ShowNotification extends Module {
     public static void sendRemoveNotification(String ownerId, String notificationId) {
         NetworkPackage np = NetworkPackage.Cacher.getOrCreatePackage(SHOW_NOTIFICATION, REMOVE_NOTIFICATION);
         np.setValue(NOTIFICATION_ID,notificationId);
+        System.out.println(ownerId + "  " + np.getMessage());
       BackgroundService.submitNewTask(()->{BackgroundService.sendToDevice(ownerId,np.getMessage());});
     }
 }

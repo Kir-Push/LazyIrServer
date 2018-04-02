@@ -6,209 +6,31 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f696011-2726-4df9-993f-c5deebd9f80a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.directory" afterPath="$PROJECT_DIR$/.directory" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/LazyIrServer_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/LazyIrServer_jar.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/buhalo.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/buhalo.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/findbugs-idea.xml" afterPath="$PROJECT_DIR$/.idea/findbugs-idea.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/JCommunique_2_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/JCommunique_2_0_0.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_2_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_2_3.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_core_1_2_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_core_1_2_3.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_8_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_8_6.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_8_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_8_6.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_8_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_8_6.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_profesorfalken_jPowerShell_1_9_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_profesorfalken_jPowerShell_1_9_1.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_6_14.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_6_14.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_agent_1_6_14.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_agent_1_6_14.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_controlsfx_controlsfx_9_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_controlsfx_controlsfx_9_0_0.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_framework_2_3_25.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_framework_2_3_25.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_http_2_3_25.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_http_2_3_25.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_http_server_2_3_25.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_grizzly_grizzly_http_server_2_3_25.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_javax_json_1_0_4.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_javax_json_1_0_4.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_client_1_13_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_client_1_13_1.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_container_grizzly_client_1_13_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_container_grizzly_client_1_13_1.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_container_grizzly_server_1_13_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_container_grizzly_server_1_13_1.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_core_1_13_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_core_1_13_1.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_server_1_13_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_server_1_13_1.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_spi_1_13_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_tyrus_tyrus_spi_1_13_1.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_core_2_8_47.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mockito_mockito_core_2_8_47.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_objenesis_objenesis_2_5.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_objenesis_objenesis_2_5.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_25.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_25.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/LazyIrServer.iml" afterPath="$PROJECT_DIR$/LazyIrServer.iml" />
-      <change beforePath="$PROJECT_DIR$/encodeir" afterPath="$PROJECT_DIR$/encodeir" />
-      <change beforePath="$PROJECT_DIR$/makehex" afterPath="$PROJECT_DIR$/makehex" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrGUI" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrGUI" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/encodeir" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/encodeir" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-annotations-2.8.6.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-annotations-2.8.6.jar" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-core-2.8.6.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-core-2.8.6.jar" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-databind-2.8.6.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-databind-2.8.6.jar" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/logback-classic-1.2.3.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/logback-classic-1.2.3.jar" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/logback-core-1.2.3.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/logback-core-1.2.3.jar" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/slf4j-api-1.7.25.jar" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/slf4j-api-1.7.25.jar" />
-      <change beforePath="$PROJECT_DIR$/out/production/LazyIrServer/baseProp" afterPath="$PROJECT_DIR$/out/production/LazyIrServer/baseProp" />
-      <change beforePath="$PROJECT_DIR$/out/production/LazyIrServer/basic" afterPath="$PROJECT_DIR$/out/production/LazyIrServer/basic" />
-      <change beforePath="$PROJECT_DIR$/out/production/LazyIrServer/commands" afterPath="$PROJECT_DIR$/out/production/LazyIrServer/commands" />
-      <change beforePath="$PROJECT_DIR$/out/production/LazyIrServer/commandsWin" afterPath="$PROJECT_DIR$/out/production/LazyIrServer/commandsWin" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/background.js" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/icon.png" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/icon.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/jquery.min.js" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/jquery.min.js" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/manifest.json" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/manifest.json" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.html" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.html" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.js" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/popup.js" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/socket.io.js" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/socket.io.js" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/socket.io.js.map" afterPath="$PROJECT_DIR$/src/main/java/com/push/browser/extension/chrome/socket.io.js.map" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/About.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/About.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/CommandsWindow.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/CommandsWindow.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Dialogs.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Dialogs.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/SettingsWindow.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/basew/SettingsWindow.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/ApiController.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/DialogController.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/DialogController.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/dialogs/messageAnswerDialog.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/dialogs/messageAnswerDialog.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/CommandGuiEntity.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/CommandGuiEntity.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/CustomNotification.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/CustomNotification.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/NotificationDevice.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/NotificationDevice.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/PhoneDevice.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/entity/PhoneDevice.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/systray/JavaFXTrayIconSample.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/systray/JavaFXTrayIconSample.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/Loggout.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/Loggout.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/Device.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/Device.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/ModuleSetting.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/ModuleSetting.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/ModuleSettingList.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/ModuleSettingList.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/devices/NetworkPackage.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/Module.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/Module.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ModuleFactory.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ModuleFactory.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/battery/Battery.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/battery/Battery.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipBoard.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipBoard.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipboardJni.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/ClipboardJni.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/Rmi/ClientRegister.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/Rmi/ClientRegister.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/Rmi/ClipboardChanger.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/Rmi/ClipboardChanger.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/Rmi/ClipboardRmiSeparateProcess.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/Rmi/ClipboardRmiSeparateProcess.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/Rmi/ClipboardRmiServer.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/clipboard/Rmi/ClipboardRmiServer.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/command/SendCommand.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/command/SendCommand.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/DbusCommandFabric.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/DbusCommandFabric.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Mpris.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Mpris.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Nix.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Nix.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/OsStrategy.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/OsStrategy.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Player.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Players.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Players.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Win.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Win.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Strategy.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Strategy.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Vlc.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/strategies/win/Vlc.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/BrowserServer.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/BrowserServer.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/websocket/PopupEndpoint.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ir/IrModule.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ir/IrModule.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/CRTEntity.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/CRTEntity.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/MemPair.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/MemPair.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/Memory.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/Memory.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/MemoryEntity.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/memory/MemoryEntity.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/CallModule.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/CallModule.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/callTypes.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/callTypes.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/messengers/Messengers.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/messengers/Messengers.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/Notification.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/Notification.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/Notifications.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/Notifications.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/Sms.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/Sms.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/SmsModule.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/SmsModule.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/SmsPack.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/SmsPack.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ping/Ping.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/ping/Ping.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/MessagesPack.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/MessagesPack.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/MissedCall.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/MissedCall.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/MissedCalls.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/MissedCalls.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/Reminder.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/Reminder.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/FileWrap.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/FileWrap.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/FileWraps.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/FileWraps.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/PathWrapper.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/PathWrapper.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcess.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcess.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcessNix.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcessNix.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcessWin.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcessWin.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/ShareModule.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/sync/SynchroModule.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/touch/TouchControl.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/touch/TouchControl.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/pojo/Command.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/pojo/Command.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/pojo/CommandsList.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/pojo/CommandsList.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundServiceCmds.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundServiceCmds.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/MainClass.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/MainClass.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/TcpConnectionManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/TcpConnectionManager.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/UdpBroadcastManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/UdpBroadcastManager.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/LocalizationManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/LocalizationManager.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/Manager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/Manager.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/SettingManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/SettingManager.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/portManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/portManager.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/tcp/ConnectionThread.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/tcp/ConnectionThread.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/CollectingFuture.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/CollectingFuture.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/ExtScheduledThreadPoolExecutor.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/ExtScheduledThreadPoolExecutor.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/FutureCollectionCantBeNull.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/FutureCollectionCantBeNull.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/SettableFuture.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/SettableFuture.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/exceptions/FutureCollectionAlreadySetted.java" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/utils/exceptions/FutureCollectionAlreadySetted.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/baseProp" afterPath="$PROJECT_DIR$/src/main/resources/baseProp" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/basic" afterPath="$PROJECT_DIR$/src/main/resources/basic" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/bimka" afterPath="$PROJECT_DIR$/src/main/resources/bimka" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/commands" afterPath="$PROJECT_DIR$/src/main/resources/commands" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/commandsWin" afterPath="$PROJECT_DIR$/src/main/resources/commandsWin" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/engLoc" afterPath="$PROJECT_DIR$/src/main/resources/engLoc" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/about.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fxml/about.fxml" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/answerWindow.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fxml/answerWindow.fxml" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/commandWindow.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fxml/commandWindow.fxml" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/settingsWindow.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fxml/settingsWindow.fxml" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/0battery.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/0battery.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/100battery.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/100battery.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/25battery.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/25battery.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/50battery.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/50battery.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/5battery.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/5battery.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/75battery.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/75battery.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/Connected.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/Connected.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/android-phone-128.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/android-phone-128.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/answerCall.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/answerCall.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/callPhone.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/callPhone.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/chargebattery.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/chargebattery.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/chat.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/chat.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/delete48.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/delete48.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/information.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/information.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/missed.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/missed.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/notPairedPhone.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/notPairedPhone.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/outgoing.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/outgoing.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/person.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/person.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/phone.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/phone.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/soundOff.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/soundOff.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/soundOn.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/soundOn.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/unreadMessages.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/unreadMessages.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/user.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/user.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/icons/wire-icon-1.png" afterPath="$PROJECT_DIR$/src/main/resources/icons/wire-icon-1.png" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/modules.xml" afterPath="$PROJECT_DIR$/src/main/resources/modules.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/russianLoc" afterPath="$PROJECT_DIR$/src/main/resources/russianLoc" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/styles/lisStyles.css" afterPath="$PROJECT_DIR$/src/main/resources/styles/lisStyles.css" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/push/lazyir/managers/ConnectionThreadTest.java" afterPath="$PROJECT_DIR$/src/test/java/com/push/lazyir/managers/ConnectionThreadTest.java" />
-      <change beforePath="$PROJECT_DIR$/target/LazyIrServer-0.1-SNAPSHOT.jar" afterPath="$PROJECT_DIR$/target/LazyIrServer-0.1-SNAPSHOT.jar" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" afterPath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" />
-      <change beforePath="$PROJECT_DIR$/target/classes/baseProp" afterPath="$PROJECT_DIR$/target/classes/baseProp" />
-      <change beforePath="$PROJECT_DIR$/target/classes/basic" afterPath="$PROJECT_DIR$/target/classes/basic" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/push/lazyir/devices/NetworkPackage.class" afterPath="$PROJECT_DIR$/target/classes/com/push/lazyir/devices/NetworkPackage.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/commands" afterPath="$PROJECT_DIR$/target/classes/commands" />
-      <change beforePath="$PROJECT_DIR$/target/classes/commandsWin" afterPath="$PROJECT_DIR$/target/classes/commandsWin" />
-      <change beforePath="$PROJECT_DIR$/target/classes/logback.xml" afterPath="$PROJECT_DIR$/target/classes/logback.xml" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" />
+    <list default="true" id="5f696011-2726-4df9-993f-c5deebd9f80a" name="Default" comment="for rebase with windows version">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrGUI" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrGUI" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/LazyIrServer.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/encodeir" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/encodeir" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-annotations-2.8.6.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-annotations-2.8.6.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-core-2.8.6.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-core-2.8.6.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-databind-2.8.6.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/jackson-databind-2.8.6.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/logback-classic-1.2.3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/logback-classic-1.2.3.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/logback-core-1.2.3.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/logback-core-1.2.3.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/slf4j-api-1.7.25.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/LazyIrServer_jar/libs/slf4j-api-1.7.25.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/LazyIrServer/baseProp" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/LazyIrServer/baseProp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/LazyIrServer/basic" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/LazyIrServer/basic" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/LazyIrServer/commands" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/LazyIrServer/commands" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/LazyIrServer/commandsWin" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/LazyIrServer/commandsWin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/LazyIrServer-0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/LazyIrServer-0.1-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/baseProp" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/baseProp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/basic" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/basic" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/push/lazyir/devices/NetworkPackage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/push/lazyir/devices/NetworkPackage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/commands" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/commands" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/commandsWin" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/commandsWin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/logback.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/logback.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -236,12 +58,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="PhoneDevice.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/entity/PhoneDevice.java">
+      <file leaf-file-name="MainWin.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="15" column="35" lean-forward="false" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
-              <folding />
+            <state relative-caret-position="71">
+              <caret line="58" column="28" selection-start-line="58" selection-start-column="28" selection-end-line="58" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -249,52 +70,26 @@
       <file leaf-file-name="GuiCommunicator.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1197">
-              <caret line="97" column="23" lean-forward="false" selection-start-line="97" selection-start-column="23" selection-end-line="97" selection-end-column="23" />
-              <folding />
+            <state relative-caret-position="378">
+              <caret line="56" column="29" lean-forward="true" selection-start-line="56" selection-start-column="29" selection-end-line="56" selection-end-column="29" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ShowNotification.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ShowNotification.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="903">
-              <caret line="53" column="51" lean-forward="false" selection-start-line="53" selection-start-column="51" selection-end-line="53" selection-end-column="51" />
-              <folding />
+            <state relative-caret-position="273">
+              <caret line="23" column="74" selection-start-line="23" selection-start-column="74" selection-end-line="23" selection-end-column="74" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Messengers.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/messengers/Messengers.java">
+      <file leaf-file-name="BackgroundService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1386">
-              <caret line="73" column="26" lean-forward="false" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SettingManager.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/SettingManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="21">
-              <caret line="93" column="67" lean-forward="false" selection-start-line="93" selection-start-column="67" selection-end-line="93" selection-end-column="67" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CallModule.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/CallModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="26" column="10" lean-forward="false" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
-              <folding>
-                <element signature="e#3804#3805#0" expanded="true" />
-                <element signature="e#3836#3837#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="504">
+              <caret line="114" column="23" selection-start-line="114" selection-start-column="23" selection-end-line="114" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -426,9 +221,9 @@
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/Sms.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/HtmlVid.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/CallModule.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/messengers/Messengers.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/SettingManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java" />
       </list>
     </option>
   </component>
@@ -476,10 +271,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1296" />
-    <option name="y" value="125" />
-    <option name="width" value="1254" />
-    <option name="height" value="1309" />
+    <option name="x" value="1290" />
+    <option name="y" value="95" />
+    <option name="width" value="1264" />
+    <option name="height" value="1339" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -501,22 +296,11 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
-      <flattenPackages />
-      <showMembers />
-      <showModules />
-      <showLibraryContents />
-      <hideEmptyPackages />
-      <abbreviatePackageNames />
-      <autoscrollToSource />
-      <autoscrollFromSource />
-      <sortByType />
-      <manualOrder />
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -585,7 +369,57 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+              <item name="controllers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+              <item name="entity" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+              <item name="systray" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
               <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LazyIrServer" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="push" type="462c0819:PsiDirectoryNode" />
+              <item name="lazyir" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="LazyIrServer" type="b2602c69:ProjectViewProjectNode" />
@@ -2132,85 +1966,86 @@
     <frame x="-1" y="33" width="2562" height="1408" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27855563" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31908154" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329296" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17892343" sideWeight="0.5055688" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16799048" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293944" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26524147" sideWeight="0.4944312" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32867646" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17290837" sideWeight="0.49409157" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24940334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24900715" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1621514" sideWeight="0.5059084" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28666174" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="FindBugs-IDEA" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27929255" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24980111" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294031" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24392042" sideWeight="0.49642006" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.27855563" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.3187946" />
+      <window_info id="Palette&#9;" order="7" />
+      <window_info anchor="bottom" id="Java Enterprise" order="14" weight="0.329296" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5055688" side_tool="true" weight="0.17892343" />
+      <window_info anchor="right" id="Maven Projects" order="10" weight="0.16799048" />
+      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4944312" visible="true" weight="0.26486915" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.3293944" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32867646" />
+      <window_info anchor="right" id="Designer" order="4" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49409157" visible="true" weight="0.17450199" />
+      <window_info anchor="right" id="Database" order="11" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49642006" weight="0.24345757" />
+      <window_info id="Learn" order="8" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.24940334" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.24900715" />
+      <window_info id="UI Designer" order="3" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.28666174" />
+      <window_info id="Favorites" order="4" sideWeight="0.5059084" side_tool="true" weight="0.1621514" />
+      <window_info anchor="bottom" id="Statistic" order="15" weight="0.3294031" />
+      <window_info id="Persistence" order="5" side_tool="true" />
+      <window_info id="Nl-Palette" order="8" />
+      <window_info id="Capture Tool" order="2" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="right" id="Bean Validation" order="6" />
+      <window_info anchor="right" id="Theme Preview" order="9" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info id="Image Layers" order="8" />
+      <window_info anchor="right" id="Properties" order="8" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" visible="true" weight="0.24980111" />
+      <window_info anchor="right" id="CDI" order="5" />
+      <window_info anchor="bottom" id="Application Servers" order="12" weight="0.32972974" />
+      <window_info anchor="bottom" id="Spring" order="13" weight="0.32972974" />
+      <window_info anchor="bottom" id="FindBugs-IDEA" order="7" weight="0.27929255" />
+      <window_info id="Web" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Capture Analysis" order="7" />
     </layout>
     <layout-to-restore>
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="FindBugs-IDEA" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27929255" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17892343" sideWeight="0.5055688" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16799048" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24980111" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294031" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24940334" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24900715" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28666174" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27855563" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31908622" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329296" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293944" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26602802" sideWeight="0.4944312" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32867646" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16441083" sideWeight="0.49409157" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24392042" sideWeight="0.49642006" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1621514" sideWeight="0.5059084" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Persistence" order="5" side_tool="true" />
+      <window_info anchor="bottom" id="FindBugs-IDEA" order="7" weight="0.27929255" />
+      <window_info anchor="bottom" id="Application Servers" order="12" weight="0.32972974" />
+      <window_info anchor="right" id="Designer" order="4" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4944312" visible="true" weight="0.26602802" />
+      <window_info anchor="bottom" id="Spring" order="13" weight="0.32972974" />
+      <window_info id="Image Layers" order="9" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.24900715" />
+      <window_info id="UI Designer" order="3" />
+      <window_info id="Web" order="6" side_tool="true" />
+      <window_info anchor="right" id="Properties" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32867646" />
+      <window_info id="Capture Tool" order="2" />
+      <window_info anchor="right" id="Capture Analysis" order="7" />
+      <window_info anchor="right" id="CDI" order="5" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5055688" side_tool="true" weight="0.17892343" />
+      <window_info anchor="bottom" id="Statistic" order="15" weight="0.3294031" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" visible="true" weight="0.24980111" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49409157" visible="true" weight="0.16441083" />
+      <window_info id="Favorites" order="4" sideWeight="0.5059084" side_tool="true" weight="0.1621514" />
+      <window_info anchor="bottom" id="Java Enterprise" order="14" weight="0.329296" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.3293944" />
+      <window_info id="Nl-Palette" order="8" />
+      <window_info anchor="right" id="Maven Projects" order="10" weight="0.16799048" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49642006" weight="0.24392042" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.31908622" />
+      <window_info anchor="right" id="Database" order="11" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.27855563" />
+      <window_info id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Theme Preview" order="9" />
+      <window_info id="Structure" order="1" weight="0.24940334" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.28666174" />
+      <window_info anchor="right" id="Bean Validation" order="6" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -2246,7 +2081,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="minor bug fix" />
     <MESSAGE value="too much notification try to fix(need test)" />
     <MESSAGE value="some todo's done" />
     <MESSAGE value="popupEWndpoint bug many players fixed" />
@@ -2271,7 +2105,8 @@
     <MESSAGE value="sms answer in notif menu" />
     <MESSAGE value="added about page" />
     <MESSAGE value="messenger calling work in progress" />
-    <option name="LAST_COMMIT_MESSAGE" value="messenger calling work in progress" />
+    <MESSAGE value="for rebase with windows version" />
+    <option name="LAST_COMMIT_MESSAGE" value="for rebase with windows version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2288,137 +2123,59 @@
       </breakpoints-dialog>
       <option name="time" value="326" />
     </breakpoint-manager>
-    <watches-manager />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="57" column="74" lean-forward="true" selection-start-line="57" selection-start-column="74" selection-end-line="57" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/callTypes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="8" lean-forward="false" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/Notification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="13" lean-forward="false" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Dialogs.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="40" column="77" lean-forward="false" selection-start-line="40" selection-start-column="77" selection-end-line="40" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="56" column="11" lean-forward="false" selection-start-line="56" selection-start-column="11" selection-end-line="56" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/entity/CustomNotification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3281">
-          <caret line="218" column="42" lean-forward="false" selection-start-line="218" selection-start-column="42" selection-end-line="218" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/25battery.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/user.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/soundOn.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/phone.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/person.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/unreadMessages.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/outgoing.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/notPairedPhone.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/missed.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/delete48.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/Connected.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/chat.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/chargebattery.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/callPhone.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/answerCall.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/android-phone-128.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/SettingsWindow.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -2429,47 +2186,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/engLoc">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="16" selection-end-column="49" />
+        <state>
+          <caret selection-end-line="16" selection-end-column="49" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/fxml/newGui.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
           <caret line="24" column="26" lean-forward="true" selection-start-line="24" selection-start-column="26" selection-end-line="24" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/wire-icon-1.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/fxml/answerWindow.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="22" column="23" lean-forward="true" selection-start-line="22" selection-start-column="23" selection-end-line="22" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/100battery.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/information.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/utils/GuiUtils.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -2479,82 +2224,69 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/fxml/about.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
-          <caret line="14" column="0" lean-forward="true" selection-start-line="11" selection-start-column="96" selection-end-line="11" selection-end-column="108" />
-          <folding />
+          <caret line="14" lean-forward="true" selection-start-line="11" selection-start-column="96" selection-end-line="11" selection-end-column="108" />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="jar:///usr/lib/jvm/java-9-oracle/lib/src.zip!/javafx.graphics/javafx/scene/Node.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
-          <caret line="2650" column="22" lean-forward="false" selection-start-line="2650" selection-start-column="22" selection-end-line="2650" selection-end-column="22" />
+          <caret line="2650" column="22" selection-start-line="2650" selection-start-column="22" selection-end-line="2650" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/About.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="646">
-          <caret line="38" column="61" lean-forward="false" selection-start-line="38" selection-start-column="61" selection-end-line="38" selection-end-column="61" />
+          <caret line="38" column="61" selection-start-line="38" selection-start-column="61" selection-end-line="38" selection-end-column="61" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/systray/JavaFXTrayIconSample.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="309">
-          <caret line="47" column="45" lean-forward="false" selection-start-line="47" selection-start-column="45" selection-end-line="47" selection-end-column="45" />
+          <caret line="47" column="45" selection-start-line="47" selection-start-column="45" selection-end-line="47" selection-end-column="45" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/icons/0battery.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1152">
-          <caret line="302" column="31" lean-forward="false" selection-start-line="302" selection-start-column="31" selection-end-line="302" selection-end-column="31" />
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/portManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/reminder/Reminder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="309">
-          <caret line="191" column="36" lean-forward="false" selection-start-line="191" selection-start-column="36" selection-end-line="191" selection-end-column="36" />
+          <caret line="191" column="36" selection-start-line="191" selection-start-column="36" selection-end-line="191" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/sms/Sms.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="13" column="22" lean-forward="false" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/OsStrategy.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
-          <caret line="14" column="9" lean-forward="false" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
+          <caret line="14" column="9" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Mpris.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="333">
-          <caret line="116" column="39" lean-forward="false" selection-start-line="116" selection-start-column="39" selection-end-line="116" selection-end-column="39" />
-          <folding />
+          <caret line="116" column="39" selection-start-line="116" selection-start-column="39" selection-end-line="116" selection-end-column="39" />
         </state>
       </provider>
     </entry>
@@ -2562,54 +2294,96 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="445">
           <caret line="70" column="48" lean-forward="true" selection-start-line="70" selection-start-column="48" selection-end-line="70" selection-end-column="48" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Nix.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="893">
-          <caret line="162" column="10" lean-forward="false" selection-start-line="162" selection-start-column="10" selection-end-line="162" selection-end-column="10" />
-          <folding />
+          <caret line="162" column="10" selection-start-line="162" selection-start-column="10" selection-end-line="162" selection-end-column="10" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/dbus/Win.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
-          <caret line="80" column="10" lean-forward="false" selection-start-line="80" selection-start-column="10" selection-end-line="80" selection-end-column="10" />
-          <folding />
+          <caret line="80" column="10" selection-start-line="80" selection-start-column="10" selection-end-line="80" selection-end-column="10" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/entity/PhoneDevice.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="15" column="35" lean-forward="false" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
-          <folding />
+        <state relative-caret-position="273">
+          <caret line="15" column="35" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/messengers/Messengers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1386">
+          <caret line="73" column="26" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/Note">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/share/SftpServerProcessWin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="573">
+          <caret line="133" column="28" selection-start-line="133" selection-start-column="28" selection-end-line="133" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/SettingManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="115" lean-forward="true" selection-start-line="115" selection-end-line="115" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Dialogs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="40" column="77" selection-start-line="40" selection-start-column="77" selection-end-line="40" selection-end-column="77" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/Popup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/basew/MainWin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="71">
+          <caret line="58" column="28" selection-start-line="58" selection-start-column="28" selection-end-line="58" selection-end-column="28" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/gui/GuiCommunicator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1197">
-          <caret line="97" column="23" lean-forward="false" selection-start-line="97" selection-start-column="23" selection-end-line="97" selection-end-column="23" />
-          <folding />
+        <state relative-caret-position="378">
+          <caret line="56" column="29" lean-forward="true" selection-start-line="56" selection-start-column="29" selection-end-line="56" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/gui/controllers/MainController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="903">
-          <caret line="53" column="51" lean-forward="false" selection-start-line="53" selection-start-column="51" selection-end-line="53" selection-end-column="51" />
-          <folding />
+        <state relative-caret-position="487">
+          <caret line="122" column="88" selection-start-line="122" selection-start-column="88" selection-end-line="122" selection-end-column="88" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/call/CallModule.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
-          <caret line="26" column="10" lean-forward="false" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
+          <caret line="26" column="10" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
           <folding>
             <element signature="e#3804#3805#0" expanded="true" />
             <element signature="e#3836#3837#0" expanded="true" />
@@ -2617,27 +2391,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/messengers/Messengers.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/BackgroundService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1386">
-          <caret line="73" column="26" lean-forward="false" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
-          <folding />
+        <state relative-caret-position="504">
+          <caret line="114" column="23" selection-start-line="114" selection-start-column="23" selection-end-line="114" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/Note">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/modules/notifications/notifications/ShowNotification.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/push/lazyir/service/settings/SettingManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="93" column="67" lean-forward="false" selection-start-line="93" selection-start-column="67" selection-end-line="93" selection-end-column="67" />
-          <folding />
+        <state relative-caret-position="273">
+          <caret line="23" column="74" selection-start-line="23" selection-start-column="74" selection-end-line="23" selection-end-column="74" />
         </state>
       </provider>
     </entry>

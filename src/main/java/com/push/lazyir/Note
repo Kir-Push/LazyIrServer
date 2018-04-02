@@ -1,0 +1,2 @@
+about:config -  network.websocket.allowInsecureFromHTTPS;true 
+firefox, to allow websocket work!
