@@ -35,7 +35,6 @@ public class ClipboardRmiServer implements ClientRegister {
 
 
     public void startListening(){
-
         try{
             if(listening){
                 return;

@@ -20,7 +20,7 @@ public class ClipboardJni {
 
     public ClipboardJni(String libend, ClientRegister server) {
         try {
-            System.load(new File(ClipboardRmiSeparateProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+"/libServerClipboard" + libend);
+            System.load(new File(ClipboardRmiSeparateProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+ File.separator + "libServerClipboard" + libend);
             ClipboardJni.server = server;
         } catch (URISyntaxException e) {
         }
