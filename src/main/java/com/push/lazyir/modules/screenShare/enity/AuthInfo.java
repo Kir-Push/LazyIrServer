@@ -4,20 +4,10 @@ import java.util.Objects;
 
 public class AuthInfo {
 
-    private int port;
     private String token;
 
-    public AuthInfo(int port, String token) {
-        this.port = port;
+    public AuthInfo(String token) {
         this.token = token;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public String getToken() {
