@@ -13,6 +13,7 @@ import com.push.lazyir.modules.notifications.sms.SmsModule;
 import com.push.lazyir.modules.command.SendCommand;
 import com.push.lazyir.modules.ping.Ping;
 import com.push.lazyir.modules.reminder.Reminder;
+import com.push.lazyir.modules.screenShare.ScreenShareModule;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.modules.sync.SynchroModule;
 import com.push.lazyir.modules.touch.TouchControl;
@@ -72,6 +73,7 @@ public class ModuleFactory {
         registeredModules.add(Memory.class);
         registeredModules.add(SynchroModule.class);
         registeredModules.add(Ping.class);
+        registeredModules.add(ScreenShareModule.class);
     }
 
     public static Module instantiateModuleByName(Device dv,String name)

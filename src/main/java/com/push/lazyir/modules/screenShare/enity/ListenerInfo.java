@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class ListenerInfo {
     BufferedReader in;
@@ -15,6 +16,7 @@ public class ListenerInfo {
     Socket socket;
     boolean firstFrame;
     BlockingQueue<Integer> queue;
+    private Future<?> future;
 
     public ListenerInfo(BufferedReader in, DataOutputStream out, Socket socket, boolean firstFrame, BlockingQueue<Integer> queue) {
         this.in = in;
@@ -64,5 +66,13 @@ public class ListenerInfo {
 
     public void setBlockingQueue(BlockingQueue<Integer> queue) {
         this.queue = queue;
+    }
+
+    public Future<?> getFuture() {
+        return future;
+    }
+
+    public void setFuture(Future<?> future) {
+        this.future = future;
     }
 }

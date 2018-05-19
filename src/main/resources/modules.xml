@@ -89,4 +89,10 @@
         <ignored>*</ignored>
         <workOnly>true</workOnly>
     </module>
+    <module>
+        <name>ScreenShareModule</name>
+        <enabled>true</enabled>
+        <ignored>*</ignored>
+        <workOnly>true</workOnly>
+    </module>
 </modules>

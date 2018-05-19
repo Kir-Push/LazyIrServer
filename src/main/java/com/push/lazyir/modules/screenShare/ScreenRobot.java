@@ -29,20 +29,24 @@ public class ScreenRobot implements Runnable {
 
     private static ScreenShotJNi screenShotJNi;
     private static final ReentrantLock lock = new ReentrantLock();
-    private List<ImgDiffEntity> diffList = new ArrayList<>();
+    // list of differences in current screenShot
+    private List<ImgDiffEntity> diffList = new CopyOnWriteArrayList<>();
     private byte[] lastImage;
     private byte[] currImage;
 
     private static volatile boolean serverWork = false;
+    // stores client's token, used in authorization
     private HashMap<String,AuthInfo> listenersAuthInfo = new HashMap<>();
     private HashMap<String,ListenerInfo> listeners = new HashMap<>();
-    private HashMap<String,Future<?>> listenersFutures = new HashMap<>();
+    // local executor pool, used mainly for listener's thread's
     private ExecutorService pool = Executors.newCachedThreadPool();
     private volatile int port = 5667;
     private ServerSocket serverSocket;
+    // future to control server task working
     private  Future<?> serverFuture;
     private  Future<?> loopFuture;
     private ScreenLoop screenLoop;
+    // does screenGetting loop work?
     private static boolean loopWork;
 
 
@@ -51,6 +55,9 @@ public class ScreenRobot implements Runnable {
       //  port = Integer.parseInt(BackgroundService.getSettingManager().get("ScreenPort")); //todo uncomment after testing
     }
 
+    /*
+    Singleton because used in many module instances
+    * */
     public static ScreenRobot getInstance()  {
         lock.lock();
         try {
@@ -63,7 +70,7 @@ public class ScreenRobot implements Runnable {
     }
 
     /*
-    Full screen capture
+    Full screen capture use jni class
     * */
     private byte[] getScreenShot(){
         byte[] screenShot = new byte[0];
@@ -77,12 +84,14 @@ public class ScreenRobot implements Runnable {
 
     /*
     Return number of differences
+    add dufferences in diffList
     * */
     private int getDiffs(int diffMin,byte[] currImage,int xSize,int ySize){
         int height = ySize;
         int width = xSize;
         byte[] currImgpixels = currImage;
         byte[] oldImgpixels =lastImage;
+        List<ImgDiffEntity> tempList = new ArrayList<>();
         // we have array of bytes, but pixel consist of 3 bytes, so we need
         // to iterate over each color of pixel.
         for(int i =0;i<3;i++) {
@@ -136,75 +145,15 @@ public class ScreenRobot implements Runnable {
                         // create entity with x and y coords start(absolute), square size and array of bytes
                         ImgDiffEntity imgDiffEntity = new ImgDiffEntity(currXtart, currYstart, diffMin, currChangeBytes);
                         // add it to list, to process from another place
-                        diffList.add(imgDiffEntity);
+                        tempList.add(imgDiffEntity);
                     }
                 }
             }
         }
+        // clear list of differences
+        diffList.clear();
+        diffList.addAll(tempList);
         return diffList.size();
-    }
-
-    /*
-    * recipient register, and start receive screenshots
-      until it will be unregistered
-    * */
-    public AuthInfo register(String dvId) throws ScreenCastException,IOException{
-        lock.lock();
-        try{
-            boolean isAllOkey = true;
-            unRegister(dvId); // first unregister listener if he already connected
-            if(!serverWork)
-                isAllOkey = startServer();
-            if(!isAllOkey)
-                throw new ScreenCastException("Cant start Server");
-            String token = generateToken();
-            AuthInfo authInfo = new AuthInfo(token);
-            listenersAuthInfo.put(dvId,authInfo);
-            return authInfo;
-        }finally {
-            lock.unlock();
-        }
-    }
-
-    /*
-        unregister client and stop server if he was last.
-        * */
-    public void unRegister(String dvId) throws IOException{
-        lock.lock();
-        try{
-            listenersAuthInfo.remove(dvId);
-            ListenerInfo listenerInfo = listeners.get(dvId);
-            try {
-                listenerInfo.getIn().close();
-                listenerInfo.getOut().close();
-            }catch (Exception e){
-
-            }
-            listeners.remove(dvId);
-            listenersFutures.get(dvId).cancel(true);
-            if(listenersAuthInfo.size() == 0 || listeners.size() == 0) {
-               stopServer();
-                stopLoop();
-            }
-        }finally {
-            lock.unlock();
-        }
-    }
-
-    private boolean startServer() throws IOException {
-        serverSocket = new ServerSocket(port);
-        serverFuture = BackgroundService.submitNewTask(this::run);
-        serverWork = true;
-        return serverWork;
-    }
-
-    private void stopServer() throws IOException {
-        serverFuture.cancel(true);
-        serverWork = false;
-        if(!serverFuture.isDone()) {
-           serverSocket.close();
-           serverSocket = null;
-        }
     }
 
     private String generateToken() {
@@ -213,9 +162,6 @@ public class ScreenRobot implements Runnable {
         new Random().nextBytes(array);
         return new String(array, Charset.forName("UTF-8"));
     }
-
-
-
     private   byte[] restoreImageTest(byte[] screenshot,int xSize,int ySize){
         byte[] bufferedImage = screenshot;
         for (ImgDiffEntity imgDiffEntity : diffList) {
@@ -238,46 +184,6 @@ public class ScreenRobot implements Runnable {
 
     }
 
-  static   ScreenRobot robot;
-    public static void main(String args[]) throws IOException {
-
-         robot = ScreenRobot.getInstance();
-      new Thread(new Runnable() {
-          @Override
-          public void run() {
-              robot.screenShotJNi.startListener(); // start
-          }
-      }).start();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        byte[] sc = robot.getScreenShot();
-        File outputfile = new File("/home/kirill/image.jpg");
-        ImageIO.write(robot.createImageFromBytes(sc), "jpg", outputfile);
-        robot.lastImage = sc;
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-                    byte[] screenShot = robot.getScreenShot();
-            int y =  robot.screenShotJNi.getSizeY();
-            int x =  robot.screenShotJNi.getSizeX();
-        System.out.println(    robot.getDiffs(10,screenShot,x,y));
-        outputfile = new File("/home/kirill/imageNewRestored.jpg");
-        ImageIO.write(robot.createImageFromBytes(robot.lastImage), "jpg", outputfile);
-        outputfile = new File("/home/kirill/imageNew.jpg");
-        ImageIO.write(robot.createImageFromBytes(screenShot), "jpg", outputfile);
-        byte[] bytes = robot.restoreImageTest(robot.lastImage, x, y);
-            for(int i = 0; i < screenShot.length;i++){
-                if(screenShot[i] != sc[i]){
-
-                }
-            }
-    }
-
     private BufferedImage createImageFromBytes(byte[] imageData) {
         ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
         try {
@@ -287,22 +193,104 @@ public class ScreenRobot implements Runnable {
         }
     }
 
+    /*
+    * recipient register, and start receive screenshots
+      until it will be unregistered
+    * */
+    public AuthInfo register(String dvId) throws ScreenCastException,IOException{
+        lock.lock();
+        try{
+            boolean isAllOkey = true;
+            unRegister(dvId); // first unregister listener if he already connected
+            // if server off - start it.
+            if(!serverWork)
+                isAllOkey = startServer();
+            if(!isAllOkey)
+                throw new ScreenCastException("Cant start Server");
+            String token = generateToken();
+            AuthInfo authInfo = new AuthInfo(token);
+            // add token in hashMap where key is clientId
+            listenersAuthInfo.put(dvId,authInfo);
+            return authInfo;
+        }finally {
+            lock.unlock();
+        }
+    }
 
+   /*
+    unregister client and stop server if he was last.
+   * */
+    public void unRegister(String dvId) throws IOException{
+        lock.lock();
+        try{
+            // remove token from store
+            listenersAuthInfo.remove(dvId);
+            // get Listener from listener store, and close it's input\output stream
+            ListenerInfo listenerInfo = listeners.get(dvId);
+            try {
+                listenerInfo.getIn().close();
+                listenerInfo.getOut().close();
+            }catch (Exception e){
+
+            }
+            // remove it from listener store
+            listeners.remove(dvId);
+            // use future to cancel it job.
+            Future<?> future = listenerInfo.getFuture();
+            if(future != null)
+                future.cancel(true);
+            // if stores empty, we have no client's and may stop server and loop
+            if(listenersAuthInfo.size() == 0 || listeners.size() == 0) {
+               stopServer();
+                stopLoop();
+            }
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    /*
+    Create serverSocket and submit task to ServiceExecutor
+    * */
+    private boolean startServer() throws IOException {
+        serverSocket = new ServerSocket(port);
+        serverFuture = BackgroundService.submitNewTask(this::run);
+        serverWork = true;
+        return serverWork;
+    }
+
+    /*
+    cancel serverFuture task,
+    and if all okay - close socket and set it null
+    * */
+    private void stopServer() throws IOException {
+        serverFuture.cancel(true);
+        serverWork = false;
+        if(!serverFuture.isDone()) {
+           serverSocket.close();
+           serverSocket = null;
+        }
+    }
+
+    /*
+    Actual server thread loop.
+    * */
     @Override
     public void run() {
         try {
+            //work while serverWork bool true(which set in start/stop server method
         while (serverWork){
             Socket  connection = serverSocket.accept();
             BufferedReader  inputStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             String id = getId(inputStream); // first client send id
             String token = getToken(inputStream); // after he send token
-            boolean isAuth = authorization(id,token);
-            if(!isAuth){
+            boolean isAuth = authorization(id,token); // check credentials
+            if(!isAuth){ // if false, stop all connection with that user
                 inputStream.close();
                 outputStream.close();
                 connection.close();
-            }else{
+            }else{ // else add it to stores
                 addToListeners(connection,inputStream,outputStream,id,token);
             }
         } }
@@ -314,42 +302,13 @@ public class ScreenRobot implements Runnable {
         }
     }
 
-    private void addToListeners(Socket connection, BufferedReader inputStream, DataOutputStream outputStream, String id, String token) {
-        ListenerInfo listenerInfo = new ListenerInfo(inputStream, outputStream, connection, true, new LinkedBlockingQueue<>());
-        ClientListener clientListener = new ClientListener(listenerInfo);
-        listeners.put(id,listenerInfo);
-        Future<?> submit = pool.submit(clientListener);
-        listenersFutures.put(id,submit);
-        if(!loopWork){ // if it first listener and getScreenLoop don't work, start it
-            startLoop();
-        }
-
-
-    }
-
-    private void startLoop() {
-        if(screenLoop == null)
-            screenLoop = new ScreenLoop();
-        loopFuture = BackgroundService.submitNewTask(screenLoop::run);
-        if(pool.isShutdown() || pool.isTerminated())
-            pool = Executors.newCachedThreadPool();
-        loopWork = true;
-    }
-
-    private void stopLoop(){
-        loopFuture.cancel(true);
-        pool.shutdownNow();
-        loopWork = false;
-        screenLoop = null;
-    }
-
     /*
-    Check if we know this user
-    first receive deviceId, then token
-    * */
+ Check if we know this user
+ first receive deviceId, then token
+ * */
     private boolean authorization(String id,String token) {
-            AuthInfo authInfo = listenersAuthInfo.get(id);
-            return  authInfo.getToken().equals(token);
+        AuthInfo authInfo = listenersAuthInfo.get(id);
+        return  authInfo.getToken().equals(token);
     }
 
     private String getId(BufferedReader inputStream) throws IOException{
@@ -360,44 +319,43 @@ public class ScreenRobot implements Runnable {
         return inputStream.readLine();
     }
 
-    class ScreenLoop implements Runnable{
+    private void addToListeners(Socket connection, BufferedReader inputStream, DataOutputStream outputStream, String id, String token) {
+        // listenerInfo represent listener connection, and it's message passing mechanism.
+        ListenerInfo listenerInfo = new ListenerInfo(inputStream, outputStream, connection, true, new LinkedBlockingQueue<>());
+        // each Listener, has own thread, in which he wait for message in blockingQueque, clientListener this class
+        ClientListener clientListener = new ClientListener(listenerInfo);
+        listeners.put(id,listenerInfo);
 
-        @Override
-        public void run() {
-            int x = screenShotJNi.getSizeX();
-            int y = screenShotJNi.getSizeY();
-            int diffMin = 20;
-            int countBaseFrame = 24; // how frequent send full frame
-            while (loopWork){
-                currImage = getScreenShot();
-                if(countBaseFrame <= 0){
-                    sendScreen(1);
-                    countBaseFrame = 24;
-                } else{
-                    int diffs = getDiffs(diffMin, currImage, x, y);
-                    sendScreen(2);
-                }
-                lastImage = currImage;
-                countBaseFrame--;
-            }
-        }
-
-
-        private void sendScreen(int code) {
-            listeners.values().stream().forEach(info ->{
-                try {
-                    int operation;
-                    if(info.isFirstFrame())
-                        operation = 1;
-                    else
-                        operation = code;
-                    info.getBlockingQueue().put(operation);
-                } catch (InterruptedException e) {
-                }
-            });
+        if(pool.isShutdown() || pool.isTerminated()) // if loop stopped start it
+            pool = Executors.newCachedThreadPool();
+        // start Listener thread, and store future in listenerInfo
+        Future<?> submit = pool.submit(clientListener);
+        listenerInfo.setFuture(submit);
+        if(!loopWork){ // if it first listener and getScreenLoop don't work, start it
+            startLoop();
         }
     }
 
+    /*
+    Start screen getting Loop
+    * */
+    private void startLoop() {
+        if(screenLoop == null)
+            screenLoop = new ScreenLoop();
+        loopFuture = BackgroundService.submitNewTask(screenLoop::run); // submit screenLoop thread in main ExecutorService
+        loopWork = true;
+    }
+
+    private void stopLoop(){
+        loopWork = false;
+        loopFuture.cancel(true); // stop loop thread
+        pool.shutdownNow(); // also if we stopped loop, we didn't need listeners, stoop their threads
+        screenLoop = null;
+    }
+
+    /*
+     each Listener, has own thread, in which he wait for message in blockingQueque, clientListener this class
+    * */
     class ClientListener implements Runnable{
 
         ListenerInfo client;
@@ -413,6 +371,7 @@ public class ScreenRobot implements Runnable {
             BlockingQueue<Integer> blockingQueue = client.getBlockingQueue();
             while (work){
                 try {
+                    // in thread we wait for command
                     Integer code = blockingQueue.poll(100,TimeUnit.MILLISECONDS);
                     switch (code){
                         case 1:
@@ -447,6 +406,95 @@ public class ScreenRobot implements Runnable {
             out.writeInt(currImage.length);
             out.write(currImage);
             out.flush();
+        }
+    }
+
+    /*
+    Screen loop class, get screenshot's\diffs and send to listener's
+    * */
+    class ScreenLoop implements Runnable{
+
+        @Override
+        public void run() {
+            int x = screenShotJNi.getSizeX();
+            int y = screenShotJNi.getSizeY();
+            int diffMin = 20;
+            int countBaseFrame = 24; // how frequent we send full frame
+            while (loopWork){
+                currImage = getScreenShot();
+                if(countBaseFrame == 24){
+                    lastImage = currImage;
+                    sendScreen(1);
+                } else{
+                    int diffs = getDiffs(diffMin, currImage, x, y);
+                    lastImage = currImage;
+                    sendScreen(2);
+                }
+                countBaseFrame--;
+                if(countBaseFrame < 0){
+                    countBaseFrame = 24;
+                }
+            }
+        }
+
+
+        private void sendScreen(int code) {
+            listeners.values().stream().forEach(info ->{
+                try {
+                    int operation;
+                    if(info.isFirstFrame()) { // if listener newbie send full image
+                        operation = 1;
+                        info.setFirstFrame(false);
+                    }
+                    else
+                        operation = code;
+                    info.getBlockingQueue().put(operation);
+                } catch (InterruptedException e) {
+                }
+            });
+        }
+    }
+
+
+
+
+    static   ScreenRobot robot;
+    public static void main(String args[]) throws IOException {
+
+        robot = ScreenRobot.getInstance();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                robot.screenShotJNi.startListener(); // start
+            }
+        }).start();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        byte[] sc = robot.getScreenShot();
+        File outputfile = new File("/home/kirill/image.jpg");
+        ImageIO.write(robot.createImageFromBytes(sc), "jpg", outputfile);
+        robot.lastImage = sc;
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        byte[] screenShot = robot.getScreenShot();
+        int y =  robot.screenShotJNi.getSizeY();
+        int x =  robot.screenShotJNi.getSizeX();
+        System.out.println(    robot.getDiffs(10,screenShot,x,y));
+        outputfile = new File("/home/kirill/imageNewRestored.jpg");
+        ImageIO.write(robot.createImageFromBytes(robot.lastImage), "jpg", outputfile);
+        outputfile = new File("/home/kirill/imageNew.jpg");
+        ImageIO.write(robot.createImageFromBytes(screenShot), "jpg", outputfile);
+        byte[] bytes = robot.restoreImageTest(robot.lastImage, x, y);
+        for(int i = 0; i < screenShot.length;i++){
+            if(screenShot[i] != sc[i]){
+
+            }
         }
     }
 
