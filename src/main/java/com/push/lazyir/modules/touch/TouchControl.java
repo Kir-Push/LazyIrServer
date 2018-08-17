@@ -25,11 +25,14 @@ public class TouchControl extends Module {
     private static final String LONGRELEASE = "lrelease";
     private static Lock staticLock = new ReentrantLock();
     private static Robot r;
+    private static volatile  int lastX;
+    private static volatile int lastY;
 
     public TouchControl() throws Exception {
         try {
             if(r == null)
             r = new Robot();
+//            r.setAutoDelay(1);
         } catch (AWTException e) {
             Loggout.e("TouchControl","robotCreate",e);
             throw new Exception("TouchControl constructor error");
@@ -117,8 +120,39 @@ public class TouchControl extends Module {
     public void moveMouse(int x,int y) {
         PointerInfo a = MouseInfo.getPointerInfo();
         Point pt = a.getLocation();
-        r.mouseMove((int)pt.getX()+x,(int)pt.getY()+y);
+        int currX = (int) (pt.getX() + x);
+        int currY = (int) (pt.getY() + y);
+        int xDiff = Math.abs(x);
+        int yDiff = Math.abs(y);
+        if(xDiff > 5 || yDiff > 5)
+            moveSmooth((int)pt.getX(),(int)pt.getY(),x,y,xDiff,yDiff);
+        else
+        move(currX,currY);
+
     }
+
+    private void move(int currX, int currY) {
+        try {
+            Thread.sleep(0,1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        r.mouseMove(currX, currY);
+    }
+
+    private void moveSmooth(int x, int y, int ptx, int pty, int xDiff, int yDiff) {
+//        int count = yDiff > xDiff ? yDiff : xDiff;
+//        count /= 5;
+//        double yWeight= xDiff < 5 ? ptx :
+//        double yAccum = y;
+//        double xWeight= yDiff == 0 ? 0 : (double)ptx/(double)count;
+//        double xAccum = x;
+//            for (int i = 0; i < count; i++) {
+//                xAccum += xWeight;
+//                yAccum += yWeight;
+//                move((int)xAccum,(int)yAccum);
+//            }
+        }
 
     public void mouseClick()
     {
@@ -131,7 +165,12 @@ public class TouchControl extends Module {
        int x= 100;
        int y = 200;
        while (true) {
-               r.mouseMove(x,y);
+           for(int i =0;i<100;i++) {
+               Thread.sleep(0,1);
+               x +=5;
+               y +=5;
+               r.mouseMove(x+5, y+5);
+           }
            Thread.sleep(10000);
        }
     }

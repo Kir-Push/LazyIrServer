@@ -1,6 +1,5 @@
 package com.push.lazyir.modules.reminder;
 
-import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
@@ -8,13 +7,12 @@ import com.push.lazyir.modules.notifications.notifications.Notification;
 import com.push.lazyir.modules.notifications.notifications.Notifications;
 import com.push.lazyir.modules.notifications.sms.Sms;
 import com.push.lazyir.modules.notifications.sms.SmsPack;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 

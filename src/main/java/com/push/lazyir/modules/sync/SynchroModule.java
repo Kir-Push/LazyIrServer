@@ -6,7 +6,7 @@ import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.pojo.Command;
 import com.push.lazyir.pojo.CommandsList;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 import java.util.ArrayList;
 import java.util.List;

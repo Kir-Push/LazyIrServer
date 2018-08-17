@@ -1,4 +1,4 @@
-package com.push.lazyir.managers;
+package com.push.lazyir.service.managers;
 
 import static org.mockito.Mockito.mock;
 

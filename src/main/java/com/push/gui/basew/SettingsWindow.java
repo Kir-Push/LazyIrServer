@@ -2,21 +2,18 @@ package com.push.gui.basew;
 
 import com.push.gui.controllers.MainController;
 import com.push.lazyir.Loggout;
-import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.service.settings.LocalizationManager;
-import com.push.lazyir.service.settings.SettingManager;
+import com.push.lazyir.service.main.BackgroundService;
+import com.push.lazyir.service.managers.settings.LocalizationManager;
+import com.push.lazyir.service.managers.settings.SettingManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class SettingsWindow {
     private static volatile boolean opened = false;

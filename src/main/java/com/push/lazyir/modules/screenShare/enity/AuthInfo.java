@@ -5,9 +5,11 @@ import java.util.Objects;
 public class AuthInfo {
 
     private String token;
+    private Integer port;
 
-    public AuthInfo(String token) {
+    public AuthInfo(String token, Integer port) {
         this.token = token;
+        this.port = port;
     }
 
     public String getToken() {
@@ -30,5 +32,13 @@ public class AuthInfo {
     public int hashCode() {
 
         return Objects.hash(token);
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 }

@@ -7,7 +7,7 @@ import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.modules.notifications.call.CallModule;
 import com.push.lazyir.modules.notifications.notifications.Notification;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 /**
  * Created by buhalo on 19.04.17.

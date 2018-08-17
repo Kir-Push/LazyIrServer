@@ -1,4 +1,4 @@
-package com.push.lazyir.service.settings;
+package com.push.lazyir.service.managers.settings;
 
 
 // get free ports, group by modules, services

@@ -17,7 +17,7 @@ import com.push.lazyir.modules.notifications.sms.SmsModule;
 import com.push.lazyir.modules.reminder.MessagesPack;
 import com.push.lazyir.modules.reminder.Reminder;
 import com.push.lazyir.pojo.CommandsList;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -25,8 +25,8 @@ import java.io.File;
 import java.util.List;
 
 import static com.push.lazyir.modules.notifications.sms.SmsModule.SMS_TYPE;
-import static com.push.lazyir.service.TcpConnectionManager.OK;
-import static com.push.lazyir.service.TcpConnectionManager.REFUSE;
+import static com.push.lazyir.service.main.TcpConnectionManager.OK;
+import static com.push.lazyir.service.main.TcpConnectionManager.REFUSE;
 
 // Class used to communicate between gui and backend
 public class GuiCommunicator {

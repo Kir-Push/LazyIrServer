@@ -1,8 +1,7 @@
-package com.push.lazyir.service.settings;
+package com.push.lazyir.service.managers.settings;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.ModuleSetting;
-import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.pojo.Command;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -14,8 +13,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.net.InetAddress;
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by buhalo on 12.03.17.

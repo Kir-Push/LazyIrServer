@@ -10,3 +10,4 @@ websocketPort=11520
 muteWhenCall=true
 muteWhenOutcomingCall=true
 maxNotifOnScreen=4
+log-level=info

@@ -37,10 +37,13 @@ public class ScreenShareModule extends Module {
     Register client in screenRobot, and send token in answer (authClass)
     * */
     private void register(NetworkPackage np) throws IOException, ScreenCastException {
+        unRegister(np);
         AuthInfo register = screenRobot.register(np.getId());
         NetworkPackage msg = NetworkPackage.Cacher.getOrCreatePackage(ScreenShareModule.class.getSimpleName(), TOKEN);
         msg.setObject(TOKEN,register);
-        sendMsg(msg.getMessage());
+        String message = msg.getMessage();
+        System.out.println(message);
+        sendMsg(message);
     }
 
 

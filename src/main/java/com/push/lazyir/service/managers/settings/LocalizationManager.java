@@ -1,14 +1,12 @@
-package com.push.lazyir.service.settings;
+package com.push.lazyir.service.managers.settings;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.service.BackgroundService;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 /*

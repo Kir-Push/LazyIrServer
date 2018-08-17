@@ -1,10 +1,7 @@
 package com.push.lazyir.modules.screenShare.rmi;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.modules.clipboard.Rmi.ClipboardChanger;
-import com.push.lazyir.modules.clipboard.Rmi.ClipboardRmiSeparateProcess;
-import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.service.MainClass;
+import com.push.lazyir.service.main.MainClass;
 
 import java.io.File;
 import java.rmi.AlreadyBoundException;

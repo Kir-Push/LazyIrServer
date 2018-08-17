@@ -4,7 +4,7 @@ package com.push.lazyir.modules.notifications.sms;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 /**
  * Created by buhalo on 26.03.17.

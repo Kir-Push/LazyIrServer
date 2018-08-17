@@ -7,7 +7,7 @@ import com.push.gui.controllers.MainController;
 import com.push.gui.entity.CustomNotification;
 import com.push.gui.entity.NotificationDevice;
 import com.push.lazyir.modules.notifications.call.callTypes;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 import com.theme.ThemePackagePresets;
 import com.utils.Time;
 import javafx.stage.Screen;

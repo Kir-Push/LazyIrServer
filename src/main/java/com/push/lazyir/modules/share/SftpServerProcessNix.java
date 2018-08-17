@@ -1,7 +1,7 @@
 package com.push.lazyir.modules.share;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.service.MainClass;
+import com.push.lazyir.service.main.MainClass;
 import com.push.lazyir.gui.GuiCommunicator;
 
 import java.io.*;

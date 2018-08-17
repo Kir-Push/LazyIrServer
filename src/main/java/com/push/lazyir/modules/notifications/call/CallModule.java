@@ -1,16 +1,14 @@
 package com.push.lazyir.modules.notifications.call;
 
-import com.push.gui.entity.NotificationDevice;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 import javax.sound.sampled.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class CallModule extends Module {

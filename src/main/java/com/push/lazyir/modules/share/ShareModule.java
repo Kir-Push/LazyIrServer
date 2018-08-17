@@ -6,8 +6,8 @@ import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.service.MainClass;
+import com.push.lazyir.service.main.BackgroundService;
+import com.push.lazyir.service.main.MainClass;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -15,7 +15,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.service.settings.SettingManager.currentUsersHomeDir;
+import static com.push.lazyir.service.managers.settings.SettingManager.currentUsersHomeDir;
 
 
 /**

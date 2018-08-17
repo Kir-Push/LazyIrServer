@@ -16,9 +16,9 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.push.lazyir.service.TcpConnectionManager.TCP_PING;
-import static com.push.lazyir.service.UdpBroadcastManager.BROADCAST_INTRODUCE;
-import static com.push.lazyir.service.UdpBroadcastManager.BROADCAST_INTRODUCE_MSG;
+import static com.push.lazyir.service.main.TcpConnectionManager.TCP_PING;
+import static com.push.lazyir.service.main.UdpBroadcastManager.BROADCAST_INTRODUCE;
+import static com.push.lazyir.service.main.UdpBroadcastManager.BROADCAST_INTRODUCE_MSG;
 import static com.push.lazyir.modules.dbus.Mpris.ALL_PLAYERS;
 
 /**
@@ -85,6 +85,10 @@ public class NetworkPackage {
         }
     }
 
+    public static NetworkPackage parseMessage(String msg){
+        return new NetworkPackage(msg);
+    }
+
     public void addStringArray(String key,List<String> list)
     {
         ArrayNode arrayNode = idNode.putArray(key);
@@ -124,6 +128,15 @@ public class NetworkPackage {
             return null;
         }
 
+    }
+
+    public int getIntValue(String key){
+        try {
+            return idNode.get(key).intValue();
+        }catch (NullPointerException e)
+        {
+          return 0;
+        }
     }
 
     public double getDouble(String key)

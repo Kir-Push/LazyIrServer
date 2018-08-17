@@ -1,2 +1,3 @@
 about:config -  network.websocket.allowInsecureFromHTTPS;true 
 firefox, to allow websocket work!
+vlc -I dummy screen:// :screen-fps=24 :screen-caching=300 --sout '#transcode{vcodec=VP80,vb=1056,width=1280,height=720​}:standard{access=http, mux=webm, dst=192.168.0.104:8080/da}'

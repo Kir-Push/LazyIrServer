@@ -1,13 +1,8 @@
 package com.push.lazyir.modules.clipboard.Rmi;
 
-import com.push.gui.basew.MainWin;
-import com.push.lazyir.Loggout;
 import com.push.lazyir.modules.clipboard.ClipboardJni;
-import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.service.MainClass;
+import com.push.lazyir.service.main.BackgroundService;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

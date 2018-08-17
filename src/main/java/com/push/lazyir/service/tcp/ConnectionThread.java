@@ -7,7 +7,7 @@ import com.push.lazyir.devices.ModuleSettingList;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 import javax.net.ssl.SSLSocket;
 import java.io.*;
@@ -16,16 +16,14 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Logger;
 
 import static com.push.lazyir.devices.NetworkPackage.N_OBJECT;
-import static com.push.lazyir.service.TcpConnectionManager.*;
+import static com.push.lazyir.service.main.TcpConnectionManager.*;
 
 /* class represent thread & tcp connection for device
  listen for device commands and execute it's

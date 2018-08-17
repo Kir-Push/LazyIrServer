@@ -1,14 +1,11 @@
 package com.push.lazyir.modules.notifications.notifications;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.modules.dbus.Mpris;
-import com.push.lazyir.modules.notifications.call.CallModule;
 import com.push.lazyir.modules.notifications.messengers.Messengers;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 import java.util.ArrayList;
 

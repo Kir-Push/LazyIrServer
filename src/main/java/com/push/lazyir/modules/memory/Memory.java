@@ -4,7 +4,7 @@ package com.push.lazyir.modules.memory;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;

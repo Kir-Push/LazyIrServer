@@ -3,7 +3,7 @@ package com.push.lazyir.modules;
 
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

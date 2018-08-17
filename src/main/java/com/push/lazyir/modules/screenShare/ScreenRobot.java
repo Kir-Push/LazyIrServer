@@ -3,7 +3,7 @@ package com.push.lazyir.modules.screenShare;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.modules.screenShare.enity.AuthInfo;
 import com.push.lazyir.modules.screenShare.enity.ListenerInfo;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.service.main.BackgroundService;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -40,12 +40,13 @@ public class ScreenRobot implements Runnable {
     private HashMap<String,ListenerInfo> listeners = new HashMap<>();
     // local executor pool, used mainly for listener's thread's
     private ExecutorService pool = Executors.newCachedThreadPool();
-    private volatile int port = 5667;
+    private volatile int port = 9667;
     private ServerSocket serverSocket;
     // future to control server task working
     private  Future<?> serverFuture;
     private  Future<?> loopFuture;
     private ScreenLoop screenLoop;
+    private boolean lastOperationcomplete;
     // does screenGetting loop work?
     private static boolean loopWork;
 
@@ -86,7 +87,7 @@ public class ScreenRobot implements Runnable {
     Return number of differences
     add dufferences in diffList
     * */
-    private int getDiffs(int diffMin,byte[] currImage,int xSize,int ySize){
+    private int getDiffs(int diffMin,byte[] currImage,byte[] lastImage,int xSize,int ySize){
         int height = ySize;
         int width = xSize;
         byte[] currImgpixels = currImage;
@@ -201,14 +202,14 @@ public class ScreenRobot implements Runnable {
         lock.lock();
         try{
             boolean isAllOkey = true;
-            unRegister(dvId); // first unregister listener if he already connected
+       //     unRegister(dvId); // first unregister listener if he already connected
             // if server off - start it.
             if(!serverWork)
                 isAllOkey = startServer();
             if(!isAllOkey)
                 throw new ScreenCastException("Cant start Server");
             String token = generateToken();
-            AuthInfo authInfo = new AuthInfo(token);
+            AuthInfo authInfo = new AuthInfo(token, port);
             // add token in hashMap where key is clientId
             listenersAuthInfo.put(dvId,authInfo);
             return authInfo;
@@ -233,12 +234,14 @@ public class ScreenRobot implements Runnable {
             }catch (Exception e){
 
             }
+            // use future to cancel it job.
+            if(listenerInfo != null) {
+                Future<?> future = listenerInfo.getFuture();
+                if (future != null)
+                    future.cancel(true);
+            }
             // remove it from listener store
             listeners.remove(dvId);
-            // use future to cancel it job.
-            Future<?> future = listenerInfo.getFuture();
-            if(future != null)
-                future.cancel(true);
             // if stores empty, we have no client's and may stop server and loop
             if(listenersAuthInfo.size() == 0 || listeners.size() == 0) {
                stopServer();
@@ -253,9 +256,10 @@ public class ScreenRobot implements Runnable {
     Create serverSocket and submit task to ServiceExecutor
     * */
     private boolean startServer() throws IOException {
+
         serverSocket = new ServerSocket(port);
-        serverFuture = BackgroundService.submitNewTask(this::run);
         serverWork = true;
+        serverFuture = BackgroundService.submitNewTask(this::run);
         return serverWork;
     }
 
@@ -264,11 +268,12 @@ public class ScreenRobot implements Runnable {
     and if all okay - close socket and set it null
     * */
     private void stopServer() throws IOException {
-        serverFuture.cancel(true);
-        serverWork = false;
-        if(!serverFuture.isDone()) {
-           serverSocket.close();
-           serverSocket = null;
+        if(serverFuture != null) {
+            serverFuture.cancel(true);
+            serverWork = false;
+            if(serverSocket != null)
+            serverSocket.close();
+            serverSocket = null;
         }
     }
 
@@ -281,6 +286,7 @@ public class ScreenRobot implements Runnable {
             //work while serverWork bool true(which set in start/stop server method
         while (serverWork){
             Socket  connection = serverSocket.accept();
+            System.out.println("CONNECION ACCEPTED");
             BufferedReader  inputStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             String id = getId(inputStream); // first client send id
@@ -340,6 +346,13 @@ public class ScreenRobot implements Runnable {
     Start screen getting Loop
     * */
     private void startLoop() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                robot.screenShotJNi.startListener(); // start
+            }
+        }).start();
+
         if(screenLoop == null)
             screenLoop = new ScreenLoop();
         loopFuture = BackgroundService.submitNewTask(screenLoop::run); // submit screenLoop thread in main ExecutorService
@@ -348,6 +361,8 @@ public class ScreenRobot implements Runnable {
 
     private void stopLoop(){
         loopWork = false;
+        robot.screenShotJNi.stopListener();
+        if(loopFuture != null)
         loopFuture.cancel(true); // stop loop thread
         pool.shutdownNow(); // also if we stopped loop, we didn't need listeners, stoop their threads
         screenLoop = null;
@@ -372,7 +387,9 @@ public class ScreenRobot implements Runnable {
             while (work){
                 try {
                     // in thread we wait for command
-                    Integer code = blockingQueue.poll(100,TimeUnit.MILLISECONDS);
+                    Integer code = blockingQueue.poll(5,TimeUnit.MILLISECONDS);
+                    if(code == null)
+                        continue;
                     switch (code){
                         case 1:
                             sendScreen();
@@ -382,30 +399,51 @@ public class ScreenRobot implements Runnable {
                             break;
                     }
                 } catch (InterruptedException | IOException e) {
-                    work = false;
+                   work = false;
                 }
             }
         }
 
         private void sendDiff() throws IOException {
+            long time = System.currentTimeMillis();
+            int size = diffList.size();
+            if(size == 0)
+                return;
             DataOutputStream out = client.getOut();
+            out.writeInt(2);
+            out.flush();
+            out.writeInt(size);
+            out.flush();
             for (ImgDiffEntity diff : diffList) {
                 byte[] bytes = diff.getBytes();
                 out.writeInt(diff.getLongXY());
+                out.flush();
                 out.writeInt(diff.getStartX());
+                out.flush();
                 out.writeInt(diff.getStartY());
+                out.flush();
                 out.writeInt(bytes.length);
+                out.flush();
                 out.write(bytes);
+                out.flush();
             }
-            out.flush();
+            long l = System.currentTimeMillis();
+            System.out.println("TIme passed 2@@@@ " +(l - time) + "        " + size);
+            lastOperationcomplete = true;
         }
 
         private void sendScreen() throws IOException {
+            long time = System.currentTimeMillis();
             DataOutputStream out = client.getOut();
             out.writeInt(1);
-            out.writeInt(currImage.length);
-            out.write(currImage);
             out.flush();
+            out.writeInt(currImage.length);
+            out.flush();
+            out.write(currImage,0,currImage.length);
+            out.flush();
+            long l = System.currentTimeMillis();
+            System.out.println("TIme passed " +(l - time));
+            lastOperationcomplete = true;
         }
     }
 
@@ -416,23 +454,40 @@ public class ScreenRobot implements Runnable {
 
         @Override
         public void run() {
-            int x = screenShotJNi.getSizeX();
-            int y = screenShotJNi.getSizeY();
-            int diffMin = 20;
-            int countBaseFrame = 24; // how frequent we send full frame
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            int diffMin = 100;
+            int countBaseFrame = 512; // how frequent we send full frame
+            byte[] lastImg = new byte[1];
+            lastOperationcomplete = true;
             while (loopWork){
+                if(!lastOperationcomplete) {
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
                 currImage = getScreenShot();
-                if(countBaseFrame == 24){
+                int x = screenShotJNi.getSizeX();
+                int y = screenShotJNi.getSizeY();
+                if(lastImg.length == 1)
+                    lastImg = currImage;
+                if(countBaseFrame == 512){
                     lastImage = currImage;
                     sendScreen(1);
                 } else{
-                    int diffs = getDiffs(diffMin, currImage, x, y);
-                    lastImage = currImage;
-                    sendScreen(2);
+                        int diffs = getDiffs(diffMin, currImage,lastImg, x, y);
+                        sendScreen(2);
                 }
+                lastImg = currImage;
                 countBaseFrame--;
                 if(countBaseFrame < 0){
-                    countBaseFrame = 24;
+                    countBaseFrame = 512;
                 }
             }
         }
@@ -448,7 +503,7 @@ public class ScreenRobot implements Runnable {
                     }
                     else
                         operation = code;
-                    info.getBlockingQueue().put(operation);
+                    info.getBlockingQueue().offer(operation,5,TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {
                 }
             });
@@ -485,7 +540,7 @@ public class ScreenRobot implements Runnable {
         byte[] screenShot = robot.getScreenShot();
         int y =  robot.screenShotJNi.getSizeY();
         int x =  robot.screenShotJNi.getSizeX();
-        System.out.println(    robot.getDiffs(10,screenShot,x,y));
+        System.out.println(    robot.getDiffs(10,screenShot,  robot.lastImage,x,y));
         outputfile = new File("/home/kirill/imageNewRestored.jpg");
         ImageIO.write(robot.createImageFromBytes(robot.lastImage), "jpg", outputfile);
         outputfile = new File("/home/kirill/imageNew.jpg");

@@ -1,19 +1,15 @@
 package com.push.lazyir.modules.screenShare.rmi;
 
-import com.push.lazyir.Loggout;
 import com.push.lazyir.modules.screenShare.ScreenShotJNi;
-import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.service.MainClass;
 
-import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-import static com.push.lazyir.service.MainClass.isUnix;
-import static com.push.lazyir.service.MainClass.isWindows;
+import static com.push.lazyir.service.main.MainClass.isUnix;
+import static com.push.lazyir.service.main.MainClass.isWindows;
 
 public class ScreenShareRmiSeparateProcess implements  ServerRegister {
     private ScreenShotJNi screenShotJNi;

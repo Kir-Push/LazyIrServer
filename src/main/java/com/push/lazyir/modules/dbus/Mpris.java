@@ -4,14 +4,14 @@ import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.modules.dbus.websocket.BrowserServer;
-import com.push.lazyir.service.BackgroundService;
+import com.push.lazyir.modules.dbus.websocket.ServerController;
+import com.push.lazyir.service.main.BackgroundService;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.service.MainClass.*;
+import static com.push.lazyir.service.main.MainClass.*;
 
 /**
  * Created by buhalo on 22.07.17.
@@ -30,7 +30,6 @@ public class Mpris extends Module {
 
      static final String[] getAllMpris = {"/bin/sh", "-c", DbusCommandFabric.getGetAll()};
 
-    private volatile static BrowserServer browserServer;
     private static Lock lock = new ReentrantLock();
     private volatile static int callersCount = 0;
 
@@ -41,12 +40,7 @@ public class Mpris extends Module {
         super();
         lock.lock();
         try {
-            browserServer = BrowserServer.getINSTANCE();
-            try {
-                browserServer.start();
-            } catch (Exception e) {
-                Loggout.e("Mpris", "Constructor-BrowserServer Start",e);
-            }
+            ServerController.startServer();
             if (strategy == null && isUnix()) {
                 strategy = new Nix();
             } else if ( strategy == null && isWindows()) {
@@ -66,9 +60,7 @@ public class Mpris extends Module {
        lock.lock();
        try{
             if( Device.getConnectedDevices().size() == 0) {
-                if (browserServer != null) {
-                    browserServer.stop();
-                }
+               ServerController.stopServer();
                 strategy.endWork();
                 browserStrategy.endWork();
             }}finally {

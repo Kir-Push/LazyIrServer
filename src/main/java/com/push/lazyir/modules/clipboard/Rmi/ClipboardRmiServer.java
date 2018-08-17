@@ -2,12 +2,10 @@ package com.push.lazyir.modules.clipboard.Rmi;
 
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.clipboard.ClipBoard;
-import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.service.MainClass;
+import com.push.lazyir.service.main.BackgroundService;
+import com.push.lazyir.service.main.MainClass;
 
-import java.awt.datatransfer.Clipboard;
 import java.io.File;
-import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

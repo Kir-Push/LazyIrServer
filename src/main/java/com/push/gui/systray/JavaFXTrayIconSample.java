@@ -4,8 +4,8 @@ import com.push.gui.basew.About;
 import com.push.gui.basew.MainWin;
 import com.push.gui.basew.SettingsWindow;
 import com.push.gui.entity.PhoneDevice;
-import com.push.lazyir.service.BackgroundService;
-import com.push.lazyir.service.MainClass;
+import com.push.lazyir.service.main.BackgroundService;
+import com.push.lazyir.service.main.MainClass;
 import com.push.lazyir.gui.GuiCommunicator;
 import javafx.application.*;
 import javafx.stage.*;
@@ -13,7 +13,6 @@ import javafx.stage.*;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.text.*;
-import java.util.*;
 
 import static java.awt.Image.SCALE_AREA_AVERAGING;
 
@@ -55,7 +54,6 @@ public class JavaFXTrayIconSample extends Application {
         // sets up the tray icon (using awt code run on the swing thread).
       //  javax.swing.SwingUtilities.invokeLater(this::addAppToTray);
         addAppToTray();
-
         mainWin = new MainWin();
         try {
             mainWin.start(stage);
@@ -93,9 +91,6 @@ public class JavaFXTrayIconSample extends Application {
 
             // set up a system tray icon.
             java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
-//            URL imageLoc = new URL(
-//                    iconImageLoc
-//            );
             java.awt.Image image = ImageIO.read(JavaFXTrayIconSample.class.getClassLoader().getResource("icons/phone.png"));
             java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image.getScaledInstance(27,27,SCALE_AREA_AVERAGING));
             trayIcon.setImageAutoSize(true);
@@ -103,7 +98,7 @@ public class JavaFXTrayIconSample extends Application {
             // if the user double-clicks on the tray icon, show the main app stage.
             trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
 
-            // if the user selects the default menu item (which includes the app name), 
+            // if the user selects the default menu item (which includes the app name),
             // show the main app stage.
             java.awt.MenuItem openItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("openTray"));
             openItem.addActionListener(event -> Platform.runLater(this::showStage));
@@ -166,12 +161,14 @@ public class JavaFXTrayIconSample extends Application {
         }
     }
 
+    /*
+    Main entry in application
+    * */
     public static void main(String[] args) throws IOException, java.awt.AWTException {
         // Just launches the JavaFX application.
         // Due to way the application is coded, the application will remain running
         // until the user selects the Exit menu option from the tray icon.
-        BackgroundService.getInstance(); // initialize BackgroundService and in it - localizationManager
-        BackgroundService.getInstance().configServices();
+        BackgroundService.getInstance().configServices(); // initialize BackgroundService and in it - localizationManager
         launch(args);
 
     }
