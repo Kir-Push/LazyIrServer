@@ -37,8 +37,9 @@ public class SftpServerProcessNix implements SftpServerProcess {
     private volatile boolean running;
     private  int i = 1;
     private Lock lock = new ReentrantLock();
+    private GuiCommunicator guiCommunicator;
 
-    public SftpServerProcessNix(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id,String currentUsersHomeDir) {
+    public SftpServerProcessNix(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id, String currentUsersHomeDir, GuiCommunicator guiCommunicator) {
         this.port = port;
         this.ip = ip;
         this.pass = pass;
@@ -47,6 +48,7 @@ public class SftpServerProcessNix implements SftpServerProcess {
         this.externalMountPoint = externalMountPoint;
         this.id = id;
         this.currentUsersHomeDir = currentUsersHomeDir;
+        this.guiCommunicator = guiCommunicator;
         File dir = new File(currentUsersHomeDir);
         if(!dir.exists())
          dir.mkdir();
@@ -158,7 +160,7 @@ public class SftpServerProcessNix implements SftpServerProcess {
             Loggout.e("sftp", "connect", e);
         }
 
-        GuiCommunicator.sftpConnectResult(running, id);
+        guiCommunicator.sftpConnectResult(running, id);
     }
 
     @Override

@@ -38,11 +38,13 @@ public class Vlc implements Strategy {
     private volatile boolean instantiate = false;
     private AtomicInteger countInit = new AtomicInteger(0);
     private ReentrantLock lock = new ReentrantLock();
+    private SettingManager settingManager;
 
 
 
-    public Vlc() {
+    public Vlc(SettingManager settingManager) {
         try {
+            this.settingManager = settingManager;
             initParameted();
             saxParser =   SAXParserFactory.newInstance().newSAXParser();
             handler = new PlayerHandler();
@@ -233,7 +235,6 @@ public class Vlc implements Strategy {
 
     private void initParameted()
     {
-        SettingManager settingManager = BackgroundService.getSettingManager();
        String vlcPass = settingManager.get("Vlc-pass");
         port = Integer.parseInt(settingManager.get("Vlc-port"));
         passEncoded =  (Base64.getUrlEncoder().encodeToString((":" + vlcPass).getBytes()));

@@ -16,30 +16,35 @@ import static com.push.lazyir.modules.dbus.Mpris.*;
     // work though websocket
 public class HtmlVid implements OsStrategy {
     private ConcurrentHashMap<String,String> pausedPlayersBrowser = new ConcurrentHashMap<>();
+    private ServerController serverController;
+
+    public HtmlVid(ServerController serverController) {
+        this.serverController = serverController;
+    }
 
     @Override
     public void seek(NetworkPackage np) {
         String playerValue = np.getValue(player);
         String seekValue = np.getValue(seek);
-        ServerController.sendTime(playerValue.substring(10), seekValue);
+        serverController.sendTime(playerValue.substring(10), seekValue);
     }
 
     @Override
     public void stop(NetworkPackage np) {
         String playerValue = np.getValue(player);
-        ServerController.sendStatus(playerValue.substring(10),"pause");
+        serverController.sendStatus(playerValue.substring(10),"pause");
     }
 
     @Override
     public void next(NetworkPackage np) {
         String playerValue = np.getValue(player);
-        ServerController.sendStatus(playerValue.substring(10),"next");
+        serverController.sendStatus(playerValue.substring(10),"next");
     }
 
     @Override
     public void previous(NetworkPackage np) {
         String playerValue = np.getValue(player);
-        ServerController.sendStatus(playerValue.substring(10),"previous");
+        serverController.sendStatus(playerValue.substring(10),"previous");
     }
 
 
@@ -47,7 +52,7 @@ public class HtmlVid implements OsStrategy {
     @Override
     public void playPause(NetworkPackage np) {
         String playerValue = np.getValue(player);
-        ServerController.sendStatus(playerValue.substring(10),playPause);
+        serverController.sendStatus(playerValue.substring(10),playPause);
     }
 
     @Override
@@ -62,26 +67,26 @@ public class HtmlVid implements OsStrategy {
         String playerValue = np.getValue(player);
         String pos = np.getValue("position");
       //  String path = np.getValue("path");
-        ServerController.sendTime(playerValue,pos);
+        serverController.sendTime(playerValue,pos);
     }
 
     @Override
     public void setVolume(NetworkPackage np) {
         String playerValue = np.getValue(player);
         String volumeVal = np.getValue(volume);
-        ServerController.sendVolume(playerValue.substring(10),volumeVal);
+        serverController.sendVolume(playerValue.substring(10),volumeVal);
     }
 
     @Override
     public List<Player> getAllPlayers() {
-        ServerController.sendGetInfo();
-       return ServerController.getAll();
+        serverController.sendGetInfo();
+       return serverController.getAll();
     }
 
     @Override
     public void playAll(String id) {
         for (String s : pausedPlayersBrowser.keySet()) {
-            ServerController.sendStatus(s,"play");
+            serverController.sendStatus(s,"play");
             pausedPlayersBrowser.clear();
         }
     }
@@ -89,11 +94,11 @@ public class HtmlVid implements OsStrategy {
     @Override
     public void pauseAll(String id) {
         try {
-            List<Player> playerList = ServerController.getAll();
+            List<Player> playerList = serverController.getAll();
             for (Player pl : playerList) {
                 if (pl.getPlaybackStatus().equalsIgnoreCase("playing")) {
                     String substring = pl.getName().substring(10);
-                    ServerController.sendStatus(substring, "pause");
+                    serverController.sendStatus(substring, "pause");
                     pausedPlayersBrowser.put(substring, pl.getPlaybackStatus());
                 }
             }
@@ -111,6 +116,6 @@ public class HtmlVid implements OsStrategy {
     @Override
     public void loop(NetworkPackage np) {
         String playerValue = np.getValue(player);
-        ServerController.sendStatus(playerValue.substring(10),"loop");
+        serverController.sendStatus(playerValue.substring(10),"loop");
     }
 }

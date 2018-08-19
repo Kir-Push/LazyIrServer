@@ -1,6 +1,7 @@
 package com.push.lazyir.modules;
 
 
+import com.push.lazyir.devices.Cacher;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.service.main.BackgroundService;
@@ -15,12 +16,16 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class Module {
 
     protected Device device;
-
     protected Lock lock = new ReentrantLock();
-    protected volatile boolean working = true;
+    protected BackgroundService backgroundService;
+    protected Cacher cacher;
 
+    public Module(BackgroundService backgroundService, Cacher cacher) {
+        this.backgroundService = backgroundService;
+        this.cacher = cacher;
+    }
 
-  public   void setDevice(Device dv)
+    public void setDevice(Device dv)
     {
         this.device = dv;
     }
@@ -28,19 +33,14 @@ public abstract class Module {
 
     public abstract void execute(NetworkPackage np);
 
-  public  void endWork(){
-      lock.lock();
-      try {
-          working = false;
-      }finally {
-          lock.unlock();
-      }
+  public  void endWork(){ //todo made abstract
+
   }
 
     public void sendMsg(String msg) {
-        BackgroundService.sendToDevice(device.getId(),msg);
+        backgroundService.sendToDevice(device.getId(),msg);
     }
 
 
-    public void sendToAll(String msg) {BackgroundService.sendToAllDevices(msg);}
+    public void sendToAll(String msg) {backgroundService.sendToAllDevices(msg);}
 }

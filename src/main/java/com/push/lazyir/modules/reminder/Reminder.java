@@ -1,5 +1,6 @@
 package com.push.lazyir.modules.reminder;
 
+import com.push.lazyir.devices.Cacher;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
@@ -9,6 +10,7 @@ import com.push.lazyir.modules.notifications.sms.Sms;
 import com.push.lazyir.modules.notifications.sms.SmsPack;
 import com.push.lazyir.service.main.BackgroundService;
 
+import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -23,6 +25,13 @@ public class Reminder extends Module {
     private final static String UNREAD_MESSAGES = "UnreadMessages";
     private final static String DISSMIS_ALL_CALLS = "dismissAllCalls";
     private final static String DISSMIS_ALL_MESSAGES = "dismissAllMessages";
+    private GuiCommunicator guiCommunicator;
+
+    @Inject
+    public Reminder(BackgroundService backgroundService, Cacher cacher, GuiCommunicator guiCommunicator) {
+        super(backgroundService, cacher);
+        this.guiCommunicator = guiCommunicator;
+    }
 
     @Override
     public void execute(NetworkPackage np) {
@@ -45,7 +54,7 @@ public class Reminder extends Module {
             Notifications notifications = object.getNotifications();
             SmsPack smsPack = object.getSmsPack();
             Notification notification = createNotification(notifications,smsPack);
-            GuiCommunicator.show_notification(device.getId(),notification,object);
+            guiCommunicator.show_notification(device.getId(),notification,object);
         }
     }
 
@@ -123,7 +132,7 @@ public class Reminder extends Module {
             if(missedCalls != null){
             HashMap<String,List<MissedCall>> missedCallMap = collectByNumber(missedCalls);
             Notification missedNotification = createNotification(missedCallMap,missedCalls.size());
-            GuiCommunicator.show_notification(device.getId(),missedNotification);
+            guiCommunicator.show_notification(device.getId(),missedNotification);
             }
         }
 
@@ -207,13 +216,13 @@ public class Reminder extends Module {
         return result;
     }
 
-    public static void sendDissmisAllCalls(String id,String msg){
-        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(Reminder.class.getSimpleName(), DISSMIS_ALL_CALLS);
+    public void sendDissmisAllCalls(String id,String msg){
+        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(Reminder.class.getSimpleName(), DISSMIS_ALL_CALLS);
         orCreatePackage.setValue(MISSED_CALLS,msg);
-        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
-    public static void sendDissmisAllMessages(String id, MessagesPack mspack) {
+    public void sendDissmisAllMessages(String id, MessagesPack mspack) {
         Notifications notifications = mspack.getNotifications();
         SmsPack smsPack = mspack.getSmsPack();
         for (Notification notification : notifications.getNotifications()) { // this info don't need anymore
@@ -226,8 +235,8 @@ public class Reminder extends Module {
             sms.setPicture(null);
             sms.setText(null);
         }
-        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(Reminder.class.getSimpleName(), DISSMIS_ALL_MESSAGES);
+        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(Reminder.class.getSimpleName(), DISSMIS_ALL_MESSAGES);
         orCreatePackage.setObject(NetworkPackage.N_OBJECT,mspack);
-        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 }

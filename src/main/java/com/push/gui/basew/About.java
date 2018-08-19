@@ -1,9 +1,6 @@
 package com.push.gui.basew;
 
-import com.push.gui.controllers.MainController;
 import com.push.gui.utils.GuiUtils;
-import com.push.lazyir.Loggout;
-import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,25 +8,30 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
+import java.io.IOException;
 
+@Slf4j
 public class About {
-    private static volatile boolean  opened = false;
+    private boolean  opened;
+    private final LocalizationManager localizationMng;
+    @Inject
+    public About(final LocalizationManager localizationMng) {
+        this.localizationMng = localizationMng;
+    }
 
-    public static void showWindow(String id,MainController mainController){
-        if(opened){
+    public void showWindow(){
+        if(opened) {
             return;
         }
         opened = true;
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainWin.class.getClassLoader().getResource("fxml/about.fxml"));
-            AnchorPane rootLayout = (AnchorPane) loader.load();
+            loader.setLocation(Thread.currentThread().getContextClassLoader().getResource("fxml/about.fxml"));
+            AnchorPane rootLayout = loader.load();
             Scene scene = new Scene(rootLayout);
-            Stage stage = new Stage();
-
-            LocalizationManager localizationManager = BackgroundService.getLocalizationManager();
-
             ImageView imageView = (ImageView) scene.lookup("#imgAbout");
             imageView.setImage(GuiUtils.getImage("information",128,128));
 
@@ -37,7 +39,7 @@ public class About {
             appName.setText("LazyDroid 1.0");
 
             Label credits = (Label) scene.lookup("#credits");
-            String creditsText = localizationManager.get("aboutCredits");
+            String creditsText = localizationMng.get("aboutCredits");
             credits.setText(creditsText + ": " + "\n" +
             "Icon \"flaticon.com/free-icon/user_149071\" made by  smashicons.com \n"+
                             "Icon \"flaticon.com/free-icon/chat_437654\" made by  iconfinder.com/vasabii \n" +
@@ -49,14 +51,14 @@ public class About {
             );
             Label contact = (Label) scene.lookup("#contacts");
             contact.setText("Email: Ashparenij2@gmail.com");
-            stage.setOnCloseRequest(event -> {
-                opened = false;
-            });
+
+            Stage stage = new Stage();
+            stage.setOnCloseRequest(event -> opened = false);
             stage.setScene(scene);
             stage.show();
-        }catch (Exception e){
+        } catch (IOException e) {
             opened = false;
-            Loggout.e("AboutWindow","Exception ",e);
+            log.error("ShowWindow",e);
         }
     }
 }

@@ -10,6 +10,7 @@ import com.push.lazyir.pojo.Command;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,23 +19,21 @@ import java.util.Optional;
 // Class wich actually update gui
 public class ApiController {
 
-    private static MainController mainController;
-    private static ApiController apiController;
+    private MainController mainController;
+    private Popup popup;
 
-    private ApiController(){}
 
-    public static MainController getMainController() {
+    @Inject
+    public ApiController(Popup popup) {
+        this.popup = popup;
+    }
+
+    public MainController getMainController() {
         return mainController;
     }
 
-    public static void setMainController(MainController mainController) {
-        ApiController.mainController = mainController;
-    }
-
-    public static ApiController getInstance() {
-        if(apiController == null)
-            apiController = new ApiController();
-        return apiController;
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     public void newDeviceConnected(PhoneDevice phoneDevice) {
@@ -92,11 +91,11 @@ public class ApiController {
     }
 
     public void showNotification(String id, NotificationDevice notification,Object... arg) {
-        Popup.show(id,notification,mainController,arg);
+        popup.show(id,notification,mainController,arg);
     }
 
     public void removeNotificationCallEnd(String id, String callerNumber){
-        Popup.callEnd(id,callerNumber);
+        popup.callEnd(id,callerNumber);
     }
 
     public void requestPair(String id,NotificationDevice notificationDevice) {

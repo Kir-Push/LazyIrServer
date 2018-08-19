@@ -6,30 +6,42 @@ import com.notification.manager.QueueManager;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.CustomNotification;
 import com.push.gui.entity.NotificationDevice;
+import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.modules.notifications.call.callTypes;
 import com.push.lazyir.service.main.BackgroundService;
+import com.push.lazyir.service.managers.settings.SettingManager;
 import com.theme.ThemePackagePresets;
 import com.utils.Time;
 import javafx.stage.Screen;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 
 
 public class Popup {
 
-     private volatile static boolean initialized;
-     private static NotificationFactory factory;
-     private static QueueManager manager;
-     private static double notTime;
-     private static double callNotTime;
-     private static int maxNotifOnScreen;
+     private volatile boolean initialized;
+     private NotificationFactory factory;
+     private QueueManager manager;
+     private SettingManager settingManager;
+     private GuiUtils guiUtils;
+     private BackgroundService backgroundService;
+     private double notTime;
+     private double callNotTime;
+     private int maxNotifOnScreen;
 
-     private static HashMap<String,CustomNotification> callNotifs = new HashMap<>();
-     private static int countScreens;
+     private HashMap<String,CustomNotification> callNotifs = new HashMap<>();
+     private int countScreens;
 
+     @Inject
+    public Popup(SettingManager settingManager,BackgroundService backgroundService,GuiUtils guiUtils) {
+        this.settingManager = settingManager;
+        this.backgroundService = backgroundService;
+        this.guiUtils = guiUtils;
+    }
 
-    public static void show(String id, NotificationDevice notification, MainController mainController,Object... arg) {
+    public void show(String id, NotificationDevice notification, MainController mainController, Object... arg) {
 
 
         int numberOfMonitors = Screen.getScreens().size();
@@ -41,16 +53,16 @@ public class Popup {
         if(!initialized){
             // register the custom builder with the factory
             factory = new NotificationFactory(ThemePackagePresets.cleanLight());
-            factory.addBuilder(CustomNotification.class, new CustomNotification.CustomBuilder());
+            factory.addBuilder(CustomNotification.class, new CustomNotification.CustomBuilder(backgroundService,guiUtils));
             if(manager != null)
                 manager.stop();
             manager = new QueueManager(NotificationFactory.Location.SOUTHEAST);
             // add the Notification
             manager.setScrollDirection(QueueManager.ScrollDirection.NORTH);
             initialized = true;
-            notTime = Double.parseDouble(BackgroundService.getSettingManager().get("Notif-time"));
-            callNotTime = Double.parseDouble(BackgroundService.getSettingManager().get("Call-Notif-time"));
-            maxNotifOnScreen = Integer.parseInt(BackgroundService.getSettingManager().get("maxNotifOnScreen"));
+            notTime = Double.parseDouble(settingManager.get("Notif-time"));
+            callNotTime = Double.parseDouble(settingManager.get("Call-Notif-time"));
+            maxNotifOnScreen = Integer.parseInt(settingManager.get("maxNotifOnScreen"));
         }
         // if you have many than maxNotifOnScreen notif on screen remove all oldest
         List<Notification> notifications = manager.getNotifications();
@@ -80,7 +92,7 @@ public class Popup {
 
     }
 
-    public static void callEnd(String id, String callerNumber) {
+    public void callEnd(String id, String callerNumber) {
         if(callNotifs.containsKey(callerNumber)){
             CustomNotification customNotification = callNotifs.get(callerNumber);
             if(customNotification != null) {

@@ -1,13 +1,16 @@
 package com.push.lazyir.modules.notifications.call;
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.devices.Cacher;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.service.main.BackgroundService;
+import com.push.lazyir.service.managers.settings.SettingManager;
 
+import javax.inject.Inject;
 import javax.sound.sampled.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -24,12 +27,19 @@ public class CallModule extends Module {
     public static volatile int muteWhenCall = -1;
     public static volatile int muteWhenOutcomingCall = -1;
     private static ConcurrentSkipListSet<String> muted = new ConcurrentSkipListSet<>();
+    private GuiCommunicator guiCommunicator;
+    private SettingManager settingManager;
 
-    public CallModule() {
+
+    @Inject
+    public CallModule(BackgroundService backgroundService, Cacher cacher, GuiCommunicator guiCommunicator, SettingManager settingManager) {
+        super(backgroundService, cacher);
+        this.guiCommunicator = guiCommunicator;
+        this.settingManager = settingManager;
         if(muteWhenCall == -1)
-            muteWhenCall = Boolean.parseBoolean(BackgroundService.getSettingManager().get("muteWhenCall")) ? 1 : 0;
+            muteWhenCall = Boolean.parseBoolean(settingManager.get("muteWhenCall")) ? 1 : 0;
         if(muteWhenOutcomingCall == -1)
-            muteWhenOutcomingCall = Boolean.parseBoolean(BackgroundService.getSettingManager().get("muteWhenOutcomingCall")) ? 1 : 0;
+            muteWhenOutcomingCall = Boolean.parseBoolean(settingManager.get("muteWhenOutcomingCall")) ? 1 : 0;
     }
 
     @Override
@@ -55,7 +65,7 @@ public class CallModule extends Module {
                         mute(np);
                     CALLING = true;
                 }
-                GuiCommunicator.call_Notif(np);
+                guiCommunicator.call_Notif(np);
             }
             else if(CALLING && ENDCALL.equals(data))
             {
@@ -73,9 +83,9 @@ public class CallModule extends Module {
                     boolToCheck = muteWhenCall;
                 if(boolToCheck == 1 || callType.equalsIgnoreCase(callTypes.missedIn.name()))
                     unMute(np);
-                GuiCommunicator.call_notif_end(np);
+                guiCommunicator.call_notif_end(np);
             }else if(ANSWER.equals(data)){
-                GuiCommunicator.call_notif_end(np);
+                guiCommunicator.call_notif_end(np);
             }
         }catch (Exception e){
             Loggout.e("CallModule", "execute ",e);
@@ -93,7 +103,7 @@ public class CallModule extends Module {
 
     @Override
     public void endWork() {
-        if( Device.getConnectedDevices().size() == 0) {
+        if( backgroundService.getConnectedDevices().size() == 0) {
             CALLING = false;
         }
     }
@@ -160,29 +170,29 @@ public class CallModule extends Module {
         }
     }
 
-    public static void sendMute(String id){
-        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), MUTE);
-        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void sendMute(String id){
+        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), MUTE);
+        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
-    public static void rejectCall(String id) {
-        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL);
-        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void rejectCall(String id) {
+        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL);
+        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
-    public static void answerCall(String id) {
-        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), ANSWER_CALL);
-        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void answerCall(String id) {
+        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), ANSWER_CALL);
+        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
-    public static void rejectOutgoingCall(String id) {
-        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL); //?
-        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void rejectOutgoingCall(String id) {
+        NetworkPackage orCreatePackage =cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL); //?
+        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
-    public static void recall(String id, String num) {
-        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(CallModule.class.getSimpleName(), RECALL);
+    public void recall(String id, String num) {
+        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), RECALL);
         orCreatePackage.setValue("number",num);
-        BackgroundService.sendToDevice(id,orCreatePackage.getMessage());
+        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 }

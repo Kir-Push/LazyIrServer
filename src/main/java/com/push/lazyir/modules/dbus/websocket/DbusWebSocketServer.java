@@ -3,10 +3,10 @@ package com.push.lazyir.modules.dbus.websocket;
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.dbus.Player;
-import lombok.extern.java.Log;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.slf4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Log
 public class DbusWebSocketServer extends WebSocketServer {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DbusWebSocketServer.class);
 
     public ConcurrentHashMap<InetSocketAddress, List<Player>> getPlayersHashMap() {
         return playersHashMap;
@@ -69,7 +70,7 @@ public class DbusWebSocketServer extends WebSocketServer {
 
 
     private void parseMessage(InetSocketAddress conn, String message) {
-        List<Player> players = createPlayers(NetworkPackage.parseMessage(message),conn);
+        List<Player> players = createPlayers(new NetworkPackage(message),conn);
         if(players != null && players.size() > 0)
         playersHashMap.put(conn,players);
         else

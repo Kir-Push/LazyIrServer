@@ -4,7 +4,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="359.0" prefWidth="636.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.MainController">
+<AnchorPane prefHeight="359.0" prefWidth="636.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
    <children>
       <Label id="appName" layoutX="136.0" layoutY="44.0" prefHeight="23.0" prefWidth="344.0" text="Label" />
       <Label id="contacts" layoutX="35.0" layoutY="281.0" prefHeight="23.0" prefWidth="492.0" text="Label" />

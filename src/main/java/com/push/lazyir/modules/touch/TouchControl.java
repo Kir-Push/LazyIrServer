@@ -1,9 +1,12 @@
 package com.push.lazyir.modules.touch;
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.devices.Cacher;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.Module;
+import com.push.lazyir.service.main.BackgroundService;
 
+import javax.inject.Inject;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.util.concurrent.locks.Lock;
@@ -28,14 +31,16 @@ public class TouchControl extends Module {
     private static volatile  int lastX;
     private static volatile int lastY;
 
-    public TouchControl() throws Exception {
+    @Inject
+    public TouchControl(BackgroundService backgroundService, Cacher cacher)  {
+        super(backgroundService, cacher);
         try {
             if(r == null)
-            r = new Robot();
+                r = new Robot();
 //            r.setAutoDelay(1);
         } catch (AWTException e) {
             Loggout.e("TouchControl","robotCreate",e);
-            throw new Exception("TouchControl constructor error");
+         //   throw new Exception("TouchControl constructor error");
         }
     }
 

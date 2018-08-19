@@ -21,6 +21,7 @@ import com.push.lazyir.service.main.BackgroundService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.List;
 
@@ -30,58 +31,68 @@ import static com.push.lazyir.service.main.TcpConnectionManager.REFUSE;
 
 // Class used to communicate between gui and backend
 public class GuiCommunicator {
-    public static void unPair(String id) {
-        BackgroundService.sendRequestUnPair(id);
+
+    private ApiController apiController;
+    private BackgroundService backgroundService;
+
+    @Inject
+    public GuiCommunicator(ApiController apiController,BackgroundService backgroundService) {
+        this.apiController = apiController;
+        this.backgroundService = backgroundService;
     }
 
-    public static void pair(String id) {
-        BackgroundService.sendRequestPair(id);
+    public void unPair(String id) {
+        backgroundService.sendRequestUnPair(id);
     }
 
-    public static void reconnect(String id) {
-        BackgroundService.reconnect(id);
+    public void pair(String id) {
+        backgroundService.sendRequestPair(id);
     }
 
-    public static void unMount(String id) {
-        BackgroundService.unMount(id);
+    public void reconnect(String id) {
+        backgroundService.reconnect(id);
     }
 
-    public static void mount(String id) {
-        BackgroundService.mount(id);
+    public void unMount(String id) {
+        backgroundService.unMount(id);
     }
 
-    public static void ping(String id) {
-        BackgroundService.sendPing(id);
+    public void mount(String id) {
+        backgroundService.mount(id);
     }
 
-    public static void removeNotification(String ownerId, String notificationId) {
-        BackgroundService.submitNewTask(()->{
-            ShowNotification.sendRemoveNotification(ownerId,notificationId);
+    public void ping(String id) {
+        backgroundService.sendPing(id);
+    }
+
+    public void removeNotification(String ownerId, String notificationId) {
+        backgroundService.submitNewTask(()->{
+            backgroundService.getModuleById(ownerId,ShowNotification.class).sendRemoveNotification(ownerId,notificationId);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            GuiCommunicator.sendToGetAllNotif(ownerId);
+            backgroundService.getModuleById(ownerId,ShowNotification.class).requestNotificationsFromDevice(ownerId);
         });
     }
 
-    public static void sendToGetAllNotif(String id) {
-      ShowNotification.requestNotificationsFromDevice(id);
+    public void sendToGetAllNotif(String id) {
+        backgroundService.getModuleById(id,ShowNotification.class).requestNotificationsFromDevice(id);
     }
 
-    public static void newDeviceConnected(Device device){
+    public void newDeviceConnected(Device device){
         PhoneDevice phoneDevice = new PhoneDevice(device.getId(), device.getName(), device.getDeviceType(), 0, false, device.isPaired(), false);
-        ApiController.getInstance().newDeviceConnected(phoneDevice);
+        apiController.newDeviceConnected(phoneDevice);
     }
 
-    public static void devicePaired(String deviceId, boolean b) {
-        ApiController.getInstance().setDevicePaired(deviceId,b);
+    public void devicePaired(String deviceId, boolean b) {
+        apiController.setDevicePaired(deviceId,b);
     }
 
 
 
-    public static void receive_notifications(String id,List<Notification> notifications){
+    public void receive_notifications(String id,List<Notification> notifications){
         ObservableList<NotificationDevice> notificationDevices = FXCollections.observableArrayList();
                 for (Notification notification : notifications) {
                     if(notification == null)
@@ -92,22 +103,22 @@ public class GuiCommunicator {
                     notificationDevice.setOwnerName(id);
                     notificationDevices.add(notificationDevice);
         }
-        ApiController.getInstance().setDeviceNotifications(id,notificationDevices);
+        apiController.setDeviceNotifications(id,notificationDevices);
     }
 
-    public static void show_notification(String id,Notification notification,Object... arg){
+    public void show_notification(String id,Notification notification,Object... arg){
         NotificationDevice notificationDevice = new NotificationDevice(notification.getText(), notification.getType(),
                 notification.getTitle(), notification.getPack(), notification.getTicker(),
                 notification.getId(), notification.getIcon(), notification.getPicture());
-        notificationDevice.setOwnerName(Device.getConnectedDevices().get(id).getName());
-        ApiController.getInstance().showNotification(id,notificationDevice,arg);
+        notificationDevice.setOwnerName(backgroundService.getConnectedDevices().get(id).getName());
+        apiController.showNotification(id,notificationDevice,arg);
     }
 
-    public static void show_sms(String id, Sms sms) {
+    public void show_sms(String id, Sms sms) {
         try {
             NotificationDevice notification = new NotificationDevice(sms.getText(), "sms", sms.getName(), SMS_TYPE, sms.getNumber(), sms.getNumber(), sms.getIcon(), sms.getPicture());
-            notification.setOwnerName(Device.getConnectedDevices().get(id).getName());
-            ApiController.getInstance().showNotification(id, notification);
+            notification.setOwnerName(backgroundService.getConnectedDevices().get(id).getName());
+            apiController.showNotification(id, notification);
         }catch (Throwable e){
             e.printStackTrace();
         }
@@ -116,108 +127,108 @@ public class GuiCommunicator {
 
 
 
-    public static void sendMessengerAnswer(String id,String typeName, String text, List<File> dragImageurl) {
-        Messengers.sendAnswer(typeName,text,id);
+    public void sendMessengerAnswer(String id,String typeName, String text) {
+        backgroundService.getModuleById(id,Messengers.class).sendAnswer(typeName,text,id);
     }
 
-    public static void sendSmsAnswer(String id, String name, String text, List<File> draggedFiles) {
-        SmsModule.send_sms(name,text,id);
+    public void sendSmsAnswer(String id, String name, String text) {
+        backgroundService.getModuleById(id,SmsModule.class).send_sms(name,text,id);
     }
 
-    public static void deviceLost(String deviceId) {
-        ApiController.getInstance().deviceDisconnected(deviceId);
+    public void deviceLost(String deviceId) {
+        apiController.deviceDisconnected(deviceId);
     }
 
-    public static void batteryStatus(String percenstage, String status, Device device) {
+    public void batteryStatus(String percenstage, String status, Device device) {
         boolean charging;
         if (status.equalsIgnoreCase("true")) charging = true;
         else charging = false;
-        ApiController.getInstance().setBatteryStatus(device.getId(),Integer.parseInt(percenstage),charging);
+        apiController.setBatteryStatus(device.getId(),Integer.parseInt(percenstage),charging);
     }
 
-    public static void sftpConnectResult(boolean running, String id) {
-        ApiController.getInstance().setDeviceMounted(id,running);
+    public void sftpConnectResult(boolean running, String id) {
+        apiController.setDeviceMounted(id,running);
     }
 
-    public static void iamCrushedUdpListen() {
+    public void iamCrushedUdpListen() {
     }
 
-    public static void iamCrushed(String message) {
+    public void iamCrushed(String message) {
     }
 
-    public static void pairAnswer(String id, boolean answer, String data){
-        BackgroundService.pairResultFromGui(id,answer ? OK : REFUSE,data);
+    public void pairAnswer(String id, boolean answer, String data){
+        backgroundService.pairResultFromGui(id,answer ? OK : REFUSE,data);
     }
 
-    public static void requestPair(NetworkPackage np) {
+    public void requestPair(NetworkPackage np) {
         String name = np.getName();
         NotificationDevice notificationDevice = new NotificationDevice("Request Pair" ,"pair", name,np.getType(),np.getData(),np.getId(),np.getValue("icon"),null);
         notificationDevice.setOwnerName(name);
-        ApiController.getInstance().requestPair(np.getId(),notificationDevice);
+        apiController.requestPair(np.getId(),notificationDevice);
     }
 
-    public static void call_Notif(NetworkPackage np) {
+    public void call_Notif(NetworkPackage np) {
         String callType = np.getValue("callType");
            NotificationDevice notificationDevice = new NotificationDevice(np.getValue("text"),callType,np.getValue("number"),callType,callType,np.getId(),np.getValue("icon"),null);
            notificationDevice.setOwnerName(np.getName());
-           ApiController.getInstance().showNotification(np.getId(),notificationDevice);
+           apiController.showNotification(np.getId(),notificationDevice);
 
     }
 
 
-    public static void call_notif_end(NetworkPackage np) {
-        ApiController.getInstance().removeNotificationCallEnd(np.getId(),np.getValue("number"));
+    public void call_notif_end(NetworkPackage np) {
+        apiController.removeNotificationCallEnd(np.getId(),np.getValue("number"));
     }
 
-    public static void tcpClosed() {
+    public void tcpClosed() {
     }
 
-    public static void answerCall(NotificationDevice notificationDevice, String id) {
-        CallModule.answerCall(id);
+    public void answerCall(NotificationDevice notificationDevice, String id) {
+        backgroundService.getModuleById(id,CallModule.class).answerCall(id);
     }
 
-    public static void rejectCall(NotificationDevice notificationDevice, String id) {
-        CallModule.rejectCall(id);
+    public void rejectCall(NotificationDevice notificationDevice, String id) {
+        backgroundService.getModuleById(id,CallModule.class).rejectCall(id);
     }
 
-    public static void muteCall(NotificationDevice notificationDevice, String id){
-        CallModule.sendMute(id);
+    public void muteCall(NotificationDevice notificationDevice, String id){
+        backgroundService.getModuleById(id,CallModule.class).sendMute(id);
     }
 
-    public static void recall(NotificationDevice item, String id) {
-       CallModule.recall(id,item.getTitle());
+    public void recall(NotificationDevice item, String id) {
+        backgroundService.getModuleById(id,CallModule.class).recall(id,item.getTitle());
     }
 
-    public static void rejectOutgoingcall(NotificationDevice notificationDevice, String id) {
-        CallModule.rejectOutgoingCall(id);
+    public void rejectOutgoingcall(NotificationDevice notificationDevice, String id) {
+        backgroundService.getModuleById(id,CallModule.class).rejectOutgoingCall(id);
     }
 
-    public static void dismissAllCalls(NotificationDevice notificationDevice, String id) {
-        Reminder.sendDissmisAllCalls(id,notificationDevice.getId());
+    public void dismissAllCalls(NotificationDevice notificationDevice, String id) {
+        backgroundService.getModuleById(id,Reminder.class).sendDissmisAllCalls(id,notificationDevice.getId());
     }
 
 
-    public static void dissMissAllMessages(NotificationDevice notificationDevice, String id, MessagesPack msg) {
-        Reminder.sendDissmisAllMessages(id,msg);
+    public void dissMissAllMessages(NotificationDevice notificationDevice, String id, MessagesPack msg) {
+        backgroundService.getModuleById(id,Reminder.class).sendDissmisAllMessages(id,msg);
     }
 
-    public static void setDeviceCRT(CRTEntity crt,String id){
-        ApiController.getInstance().setDeviceCRT(crt,id);
+    public void setDeviceCRT(CRTEntity crt,String id){
+        apiController.setDeviceCRT(crt,id);
     }
 
-    public static void setDeviceMemory(MemoryEntity memory,String id){
-        ApiController.getInstance().setDeviceMemory(memory,id);
+    public void setDeviceMemory(MemoryEntity memory,String id){
+        apiController.setDeviceMemory(memory,id);
     }
 
-    public static void setGetRequestTimer(String id, int time) {
-        Memory.setGetRequestTimer(time,id);
+    public void setGetRequestTimer(String id, int time) {
+        backgroundService.getModuleById(id,Memory.class).setGetRequestTimer(time,id);
     }
 
-    public static void clearGetRequestTimer(){
+    public void clearGetRequestTimer(){
         Memory.clearTimer();
     }
 
-    public static void receiveCommands(CommandsList cmds, String id) {
-        ApiController.getInstance().receiveCommands(cmds.getCommands(),id);
+    public void receiveCommands(CommandsList cmds, String id) {
+        apiController.receiveCommands(cmds.getCommands(),id);
     }
 }

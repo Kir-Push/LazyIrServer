@@ -1,12 +1,14 @@
 package com.push.lazyir.modules.dbus;
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.devices.Cacher;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.websocket.ServerController;
 import com.push.lazyir.service.main.BackgroundService;
 
+import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -35,32 +37,34 @@ public class Mpris extends Module {
 
     private volatile static OsStrategy strategy;
     private volatile static OsStrategy browserStrategy;
+    private ServerController serverController;
 
-    public Mpris() {
-        super();
+    @Inject
+    public Mpris(BackgroundService backgroundService, Cacher cacher, ServerController serverController) {
+        super(backgroundService, cacher);
+        this.serverController = serverController;
         lock.lock();
         try {
-            ServerController.startServer();
+            serverController.startServer();
             if (strategy == null && isUnix()) {
                 strategy = new Nix();
             } else if ( strategy == null && isWindows()) {
-                strategy = new Win();
+                strategy = new Win(backgroundService.getSettingManager());
             }
             if (browserStrategy == null) {
-                browserStrategy = new HtmlVid();
+                browserStrategy = new HtmlVid(serverController);
             }
         }finally {
             lock.unlock();
         }
     }
 
-
     @Override
     public void endWork() {
        lock.lock();
        try{
-            if( Device.getConnectedDevices().size() == 0) {
-               ServerController.stopServer();
+            if( backgroundService.getConnectedDevices().size() == 0) {
+               serverController.stopServer();
                 strategy.endWork();
                 browserStrategy.endWork();
             }}finally {
@@ -127,8 +131,8 @@ public class Mpris extends Module {
 
 
     private void getAllPlayers() {
-        BackgroundService.submitNewTask(()->{
-            NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(Mpris.class.getSimpleName(), ALL_PLAYERS);
+        backgroundService.submitNewTask(()->{
+            NetworkPackage np =  cacher.getOrCreatePackage(Mpris.class.getSimpleName(), ALL_PLAYERS);
             List<Player> playerList = new ArrayList<>();
             playerList.addAll(strategy.getAllPlayers());
             playerList.addAll(browserStrategy.getAllPlayers());
@@ -147,7 +151,7 @@ public class Mpris extends Module {
     }
 
     private void sendAnswer(String message) {
-        BackgroundService.sendToDevice(device.getId(),message);
+        backgroundService.sendToDevice(device.getId(),message);
     }
 
     public void pauseAll(String id) {

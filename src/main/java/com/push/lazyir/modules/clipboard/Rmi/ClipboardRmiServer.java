@@ -1,10 +1,12 @@
 package com.push.lazyir.modules.clipboard.Rmi;
 
+import com.push.lazyir.devices.Cacher;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.clipboard.ClipBoard;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.main.MainClass;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -18,6 +20,14 @@ public class ClipboardRmiServer implements ClientRegister {
 
     private ClipboardChanger changer;
     private boolean listening;
+    private Cacher cacher;
+    private BackgroundService backgroundService;
+
+    @Inject
+    public ClipboardRmiServer(Cacher cacher,BackgroundService backgroundService) {
+        this.cacher = cacher;
+        this.backgroundService = backgroundService;
+    }
 
     @Override
     public void register(ClipboardChanger changer) throws RemoteException {
@@ -26,9 +36,9 @@ public class ClipboardRmiServer implements ClientRegister {
 
     @Override
     public void receiveClipboard(String text) throws RemoteException {
-        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(ClipBoard.class.getSimpleName(),RECEIVE);
+        NetworkPackage np =  cacher.getOrCreatePackage(ClipBoard.class.getSimpleName(),RECEIVE);
         np.setValue("text",text);
-        BackgroundService.sendToAllDevices(np.getMessage());
+        backgroundService.sendToAllDevices(np.getMessage());
     }
 
 
@@ -40,7 +50,7 @@ public class ClipboardRmiServer implements ClientRegister {
             listening = true;
             ClientRegister stub = (ClientRegister) UnicastRemoteObject.exportObject(this,0);
 
-            Registry registry = LocateRegistry.createRegistry(Integer.parseInt(BackgroundService.getSettingManager().get("jniPort")));
+            Registry registry = LocateRegistry.createRegistry(Integer.parseInt(backgroundService.getSettingManager().get("jniPort")));
             registry.bind("ClientRegister",stub);
 
             startSepateProcessWithClient();
@@ -59,7 +69,7 @@ public class ClipboardRmiServer implements ClientRegister {
         String className = ClipboardRmiSeparateProcess.class.getCanonicalName();
 
         ProcessBuilder builder = new ProcessBuilder(
-                javaBin, "-cp", classpath, className);
+                javaBin, "-cp", classpath, className); //todo here maybe add port from setting manager
 
         Process process = null;
         try {

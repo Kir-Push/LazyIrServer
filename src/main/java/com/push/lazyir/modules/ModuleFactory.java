@@ -17,13 +17,12 @@ import com.push.lazyir.modules.screenShare.ScreenShareModule;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.modules.sync.SynchroModule;
 import com.push.lazyir.modules.touch.TouchControl;
+import com.push.lazyir.service.main.ModuleComponent;
 
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -34,31 +33,45 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ModuleFactory {
 
 
-    private static List<Class> registeredModules = new CopyOnWriteArrayList<>();
-    static {
-       registerModulesInit();
-    }
-    private static Lock lock = new ReentrantLock();
+    private List<Class> registeredModules = new CopyOnWriteArrayList<>();
+    private ModuleComponent moduleComponent;
+    private Method[] methods;
+    private Lock lock = new ReentrantLock();
 
-    public static Module instantiateModule(Device dv, Class registeredModule)
+    public Module instantiateModule(Device dv, Class registeredModule)
     {
         lock.lock();
         try {
             Module module = null;
-            try {
-                module = (Module) registeredModule.newInstance();
-                module.setDevice(dv);
-            } catch (IllegalAccessException | InstantiationException e) {
-                Loggout.e("ModuleFactory", e.toString());
-
-            }
+            Method method = getMethod(registeredModule);
+            if(method == null)
+                throw new NullPointerException("Such method doesn't exist  " + registeredModule.getSimpleName());
+           method.setAccessible(true);
+            module =(Module) method.invoke(moduleComponent);
+            module.setDevice(dv);
             return module;
-        }finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             lock.unlock();
         }
+        return null;
     }
 
-    private static void registerModulesInit() {
+    private Method getMethod(Class registeredModule) {
+        if (methods == null)
+            methods = moduleComponent.getClass().getDeclaredMethods();
+        Method method = null;
+        for (Method mt : methods) {
+            if(mt.getName().equals("provide"+registeredModule.getSimpleName())){
+               method = mt;
+               break;
+            }
+        }
+        return method;
+    }
+
+    public void registerModulesInit() {
         registeredModules.add(SendCommand.class);
         registeredModules.add(ShareModule.class);
         registeredModules.add(ShowNotification.class);
@@ -76,7 +89,7 @@ public class ModuleFactory {
         registeredModules.add(ScreenShareModule.class);
     }
 
-    public static Module instantiateModuleByName(Device dv,String name)
+    public Module instantiateModuleByName(Device dv,String name)
     {
         for (Class registeredModule : registeredModules) {
             if(registeredModule.getSimpleName().equals(name))
@@ -88,19 +101,8 @@ public class ModuleFactory {
 
     }
 
-    public static List<Class> getRegisteredModules() {
-        lock.lock();
-        try {
-            return registeredModules;
-        }finally {
-            lock.unlock();
-        }
-    }
 
-    public static void setRegisteredModules(List<Class> registeredModules) {
-        lock.lock();
-        ModuleFactory.registeredModules = registeredModules;
-        lock.unlock();
+    public void setModuleComponent(ModuleComponent moduleComponent) {
+        this.moduleComponent = moduleComponent;
     }
-
 }

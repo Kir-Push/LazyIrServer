@@ -9,10 +9,12 @@ import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.sync.SynchroModule;
 import com.push.lazyir.pojo.Command;
+import com.push.lazyir.service.main.BackgroundService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,28 +24,34 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import javax.inject.Inject;
 import java.util.List;
 
 
 public class MainController {
 
 
-    @FXML
     private ListView<PhoneDevice> personList;
-    @FXML
     private ListView<NotificationDevice> notifTList;
-
     // Ссылка на главное приложение.
     private MainWin mainApp;
-
-    private Dialogs dialogs = new Dialogs();
-    private CommandsWindow commandsWindow = new CommandsWindow();
+    private Dialogs dialogs;
+    private CommandsWindow commandsWindow;
+    private GuiCommunicator guiCommunicator;
+    private BackgroundService backgroundService;
 
     /**
      * Конструктор.
      * Конструктор вызывается раньше метода initialize().
      */
-    public MainController() {
+    @Inject
+    public MainController(GuiCommunicator guiCommunicator, Dialogs dialogs, CommandsWindow commandsWindow,BackgroundService backgroundService) {
+        this.guiCommunicator = guiCommunicator;
+        this.dialogs = dialogs;
+        this.commandsWindow = commandsWindow;
+        this.backgroundService = backgroundService;
+        personList = new ListView<>();
+        notifTList = new ListView<>();
     }
 
     public void setMainApp(MainWin mainApp) {
@@ -60,7 +68,8 @@ public class MainController {
      * Инициализация списков и присвоение им Listner'ов
      */
     private void initLists(){
-
+        personList = (ListView<PhoneDevice>) mainApp.getRootLayout().lookup("#personList");
+        notifTList = (ListView<NotificationDevice>) mainApp.getRootLayout().lookup("#notifTList");
         personList.setStyle("-fx-control-inner-color: white;");
         personList.setCellFactory(personList -> new ListCell<>(){
             private final ImageView imageView = new ImageView();
@@ -92,8 +101,8 @@ public class MainController {
         personList.setOnMouseClicked(event -> {
             PhoneDevice selectedItem = personList.getSelectionModel().getSelectedItem();
             if(selectedItem != null) {
-                GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
-                GuiCommunicator.setGetRequestTimer(selectedItem.getId(),5000);
+                guiCommunicator.sendToGetAllNotif(selectedItem.getId());
+                guiCommunicator.setGetRequestTimer(selectedItem.getId(),5000);
             }
         });
 
@@ -120,7 +129,7 @@ public class MainController {
                     ImageView delete48 = new ImageView( GuiUtils.getImage("delete48",15,15));
                     delete48.setPreserveRatio(true);
                     button.setGraphic(delete48);
-                    button.setOnAction(event -> GuiCommunicator.removeNotification(personList.getSelectionModel().getSelectedItem().getId(), item.getId()));
+                    button.setOnAction(event -> guiCommunicator.removeNotification(personList.getSelectionModel().getSelectedItem().getId(), item.getId()));
 
                     // https://stackoverflow.com/questions/32553658/about-javafx-need-to-align-a-node-that-is-inside-a-listview-to-the-far-right
                     GridPane listCellContents = new GridPane();
@@ -185,35 +194,35 @@ public class MainController {
         Button pairedBtn = (Button) rootLayout.lookup("#pairBtn");
         if(newSelection.isPaired()){
             pairedBtn.setText("Unpair");
-            pairedBtn.setOnAction(event -> GuiCommunicator.unPair(newSelection.getId()));
+            pairedBtn.setOnAction(event -> guiCommunicator.unPair(newSelection.getId()));
         }else{
             pairedBtn.setText("Pair");
-            pairedBtn.setOnAction(event -> GuiCommunicator.pair(newSelection.getId()));
+            pairedBtn.setOnAction(event -> guiCommunicator.pair(newSelection.getId()));
         }
 
 
         Button reconnect = (Button) rootLayout.lookup("#reconnectBtn");
-        reconnect.setOnAction(event -> GuiCommunicator.reconnect(newSelection.getId()));
+        reconnect.setOnAction(event -> guiCommunicator.reconnect(newSelection.getId()));
 
 
         Button mount = (Button) rootLayout.lookup("#mountBtn");
         if(newSelection.isMounted()){
             mount.setText("Unmount");
-            mount.setOnAction(event -> GuiCommunicator.unMount(newSelection.getId()));
+            mount.setOnAction(event -> guiCommunicator.unMount(newSelection.getId()));
         }else{
             mount.setText("Mount");
-            mount.setOnAction(event -> GuiCommunicator.mount(newSelection.getId()));
+            mount.setOnAction(event -> guiCommunicator.mount(newSelection.getId()));
         }
 
         Button commandsButtn = (Button) rootLayout.lookup("#CommandsBtn");
         commandsButtn.setOnAction(event -> {
-            SynchroModule.sendGetAllCommands(newSelection.getId());
-            commandsWindow.showWindow(newSelection.getId(),this);
+            backgroundService.getModuleById(newSelection.getId(),SynchroModule.class).sendGetAllCommands(newSelection.getId());
+            commandsWindow.showWindow(newSelection.getId());
         });
 
 
         Button ping = (Button) rootLayout.lookup("#pingBtn");
-        ping.setOnAction(event -> GuiCommunicator.ping(newSelection.getId()));
+        ping.setOnAction(event -> guiCommunicator.ping(newSelection.getId()));
 
         setMemoryText(newSelection.getFreeSpace(),newSelection.getTotalSpace(),newSelection.getFreeSpaceExt(),newSelection.getTotalSpaceExt());
 
@@ -247,16 +256,16 @@ public class MainController {
     }
 
     private void recall(NotificationDevice item, String id) {
-        GuiCommunicator.recall(item,id);
+        guiCommunicator.recall(item,id);
     }
 
     public void openMessengerDialog(NotificationDevice item, String deviceId) {
         item.setType("messenger");
-        dialogs.showAnswerMessenger(deviceId,item,this);
+        dialogs.showAnswerMessenger(deviceId,item);
     }
 
     public void openSmsDialog(NotificationDevice item, String deviceId) {
-        dialogs.showAnswerMessenger(deviceId,item,this);
+        dialogs.showAnswerMessenger(deviceId,item);
     }
 
     @FXML

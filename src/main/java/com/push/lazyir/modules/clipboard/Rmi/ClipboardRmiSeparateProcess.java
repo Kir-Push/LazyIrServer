@@ -21,7 +21,7 @@ public class ClipboardRmiSeparateProcess  implements ClipboardChanger{
     public static void main(String[] args) {
         ClipboardRmiSeparateProcess client = new ClipboardRmiSeparateProcess();
         try {
-            Registry registry = LocateRegistry.getRegistry(null, Integer.parseInt(BackgroundService.getSettingManager().get("jniPort")));
+            Registry registry = LocateRegistry.getRegistry(null, Integer.parseInt("7010")); //todo think about getting config from settings manager
 
             ClientRegister server = (ClientRegister) registry.lookup("ClientRegister");
 

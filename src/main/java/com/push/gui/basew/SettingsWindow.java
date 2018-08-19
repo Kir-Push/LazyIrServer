@@ -13,10 +13,19 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import javax.inject.Inject;
 import java.util.Set;
 
 public class SettingsWindow {
     private static volatile boolean opened = false;
+    private SettingManager settingManager;
+    private LocalizationManager localizationManager;
+
+    @Inject
+    public SettingsWindow(SettingManager settingManager, LocalizationManager localizationManager) {
+        this.settingManager = settingManager;
+        this.localizationManager = localizationManager;
+    }
 //    private static Stage stage;
 
     public boolean isOpened() {
@@ -27,7 +36,7 @@ public class SettingsWindow {
         this.opened = opened;
     }
 
-    public static void showWindow(String id,MainController mainController){
+    public void showWindow(String id,MainController mainController){
         try {
             if(opened){
                 return;
@@ -38,9 +47,6 @@ public class SettingsWindow {
             AnchorPane rootLayout = (AnchorPane) loader.load();
             Scene scene = new Scene(rootLayout);
             Stage stage = new Stage();
-
-            LocalizationManager localizationManager = BackgroundService.getLocalizationManager();
-            SettingManager settingManager = BackgroundService.getSettingManager();
 
             Label mainPort =(Label) scene.lookup("#mainPort");
             mainPort.setText(localizationManager.get("settingMainPort"));
@@ -99,18 +105,17 @@ public class SettingsWindow {
 
             Button save = (Button) scene.lookup("#save");
             save.setOnAction(event -> {
-                SettingManager settingManager1 = BackgroundService.getSettingManager();
                 String value = langs.getValue();
                 if(value != null)
-                settingManager1.saveValue("LANG", value);
-                settingManager1.saveValue("Vlc-port",vlcPortInput.getText());
-                settingManager1.saveValue("Vlc-pass",vlcPassInput.getText());
-                settingManager1.saveValue("muteWhenCall",muteInCheck.isSelected() ? "true" : "false");
-                settingManager1.saveValue("muteWhenOutcomingCall",muteOutCheck.isSelected() ? "true" : "false");
-                settingManager1.saveValue("maxNotifOnScreen",maxNotifsInput.getText());
-                settingManager1.saveValue("Call-Notif-time",callNotifTimeInput.getText());
-                settingManager1.saveValue("Notif-time",notifTimeInput.getText());
-                settingManager1.saveValue("TCP-port",mainPortInput.getText());
+                settingManager.saveValue("LANG", value);
+                settingManager.saveValue("Vlc-port",vlcPortInput.getText());
+                settingManager.saveValue("Vlc-pass",vlcPassInput.getText());
+                settingManager.saveValue("muteWhenCall",muteInCheck.isSelected() ? "true" : "false");
+                settingManager.saveValue("muteWhenOutcomingCall",muteOutCheck.isSelected() ? "true" : "false");
+                settingManager.saveValue("maxNotifOnScreen",maxNotifsInput.getText());
+                settingManager.saveValue("Call-Notif-time",callNotifTimeInput.getText());
+                settingManager.saveValue("Notif-time",notifTimeInput.getText());
+                settingManager.saveValue("TCP-port",mainPortInput.getText());
             });
             stage.setOnCloseRequest(event -> {
                 opened = false;

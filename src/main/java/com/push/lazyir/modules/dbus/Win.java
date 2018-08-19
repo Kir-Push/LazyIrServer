@@ -3,6 +3,7 @@ package com.push.lazyir.modules.dbus;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.dbus.strategies.win.Strategy;
 import com.push.lazyir.modules.dbus.strategies.win.Vlc;
+import com.push.lazyir.service.managers.settings.SettingManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,12 @@ import static com.push.lazyir.modules.dbus.Mpris.*;
 public class Win implements OsStrategy {
     private ConcurrentHashMap<String,Strategy> strategies;
     private ConcurrentHashMap<String,String> pausedPlayersWin = new ConcurrentHashMap<>();
+    private SettingManager settingManager;
 
-    public Win() {
+    public Win(SettingManager settingManager) {
+        this.settingManager = settingManager;
             strategies = new ConcurrentHashMap<>();
-            strategies.put("vlc",new Vlc());
+            strategies.put("vlc",new Vlc(settingManager));
     }
 
     @Override

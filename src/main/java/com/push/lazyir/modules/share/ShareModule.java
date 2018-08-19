@@ -2,6 +2,7 @@ package com.push.lazyir.modules.share;
 
 
 
+import com.push.lazyir.devices.Cacher;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
@@ -9,6 +10,7 @@ import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.main.MainClass;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.net.InetAddress;
 import java.util.concurrent.Future;
@@ -36,7 +38,14 @@ public class ShareModule extends Module {
     private PathWrapper externalMountPoint;
     private Future futuresftp;
     private SftpServerProcess sftpServerProcess;
-    private static Lock staticLock = new ReentrantLock();
+    private Lock staticLock = new ReentrantLock();
+    private GuiCommunicator guiCommunicator;
+
+    @Inject
+    public ShareModule(BackgroundService backgroundService, Cacher cacher, GuiCommunicator guiCommunicator) {
+        super(backgroundService, cacher);
+        this.guiCommunicator = guiCommunicator;
+    }
 
     @Override
     public void execute(NetworkPackage np) {
@@ -64,8 +73,8 @@ public class ShareModule extends Module {
     private void clearFolders() {
         staticLock.lock();
         try{
-            int size = Device.getConnectedDevices().size();
-            if(size == 0 || (Device.getConnectedDevices().containsKey(device.getId()) && size == 1)) {
+            int size = backgroundService.getConnectedDevices().size();
+            if(size == 0 || (backgroundService.getConnectedDevices().containsKey(device.getId()) && size == 1)) {
                 File file = new File(currentUsersHomeDir);
                 if(file.exists()){
                    file.delete();
@@ -87,12 +96,12 @@ public class ShareModule extends Module {
             mountPoint = np.getValue("mainDir");
             externalMountPoint = np.getObject("externalPath",PathWrapper.class);
             if(userName == null || pass == null) {
-                NetworkPackage tryMore =  NetworkPackage.Cacher.getOrCreatePackage(SHARE_T,RECCONECT);
-                BackgroundService.sendToDevice(device.getId(),tryMore.getMessage());
+                NetworkPackage tryMore =  cacher.getOrCreatePackage(SHARE_T,RECCONECT);
+                backgroundService.sendToDevice(device.getId(),tryMore.getMessage());
                 return;
             }
             sftpServerProcess = instantiateSftpServerProcess(port, device.getIp(),mountPoint,externalMountPoint, userName, pass,device.getId());
-            futuresftp = BackgroundService.submitNewTask(sftpServerProcess);
+            futuresftp = backgroundService.submitNewTask(sftpServerProcess);
         }finally {
           lock.unlock();
         }
@@ -119,20 +128,20 @@ public class ShareModule extends Module {
                 sftpServerProcess.stopProcess();
             lock.unlock();
         }
-        GuiCommunicator.sftpConnectResult(false,device.getId());
+        guiCommunicator.sftpConnectResult(false,device.getId());
     }
 
     private SftpServerProcess instantiateSftpServerProcess(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id){
         if(MainClass.isUnix())
-            return new SftpServerProcessNix(port, ip,mountPoint,externalMountPoint, userName, pass,id,currentUsersHomeDir);
+            return new SftpServerProcessNix(port, ip,mountPoint,externalMountPoint, userName, pass,id,currentUsersHomeDir, guiCommunicator);
         else if(MainClass.isWindows())
             return new SftpServerProcessWin(port, ip,mountPoint,externalMountPoint, userName, pass,id,currentUsersHomeDir);
         return null;
     }
 
-    public static void sendSetupServerCommand(String dvID)
+    public static void sendSetupServerCommand(String dvID,Cacher cacher,BackgroundService backgroundService)
     {
-        NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(SHARE_T,SETUP_SERVER_AND_SEND_ME_PORT);
+        NetworkPackage np =  cacher.getOrCreatePackage(SHARE_T,SETUP_SERVER_AND_SEND_ME_PORT);
         String os;
         if(MainClass.isWindows())
             os = "win";
@@ -141,7 +150,12 @@ public class ShareModule extends Module {
         else
             os = "hz";
         np.setValue("os",os);
-        BackgroundService.sendToDevice(dvID,np.getMessage());
+        backgroundService.sendToDevice(dvID,np.getMessage());
+    }
+
+    public void sendSetupServerCommand(String dvID)
+    {
+        sendSetupServerCommand(dvID,cacher,backgroundService);
     }
 
 }

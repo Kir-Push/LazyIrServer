@@ -1,13 +1,12 @@
 package com.push.lazyir.service.tcp;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.ModuleSetting;
-import com.push.lazyir.devices.ModuleSettingList;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.*;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
+import com.push.lazyir.modules.ModuleFactory;
 import com.push.lazyir.service.main.BackgroundService;
+import com.push.lazyir.service.managers.settings.SettingManager;
 
 import javax.net.ssl.SSLSocket;
 import java.io.*;
@@ -38,9 +37,19 @@ public class ConnectionThread implements Runnable {
         private volatile PrintWriter out = null;
         private ScheduledFuture<?> timerFuture;
         private Lock lock = new ReentrantLock();
+        private BackgroundService backgroundService;
+        private SettingManager settingManager;
+        private GuiCommunicator guiCommunicator;
+        private ModuleFactory moduleFactory;
+        private Cacher cacher;
 
-        public ConnectionThread(Socket socket) throws SocketException {
+        public ConnectionThread(Socket socket,BackgroundService backgroundService,SettingManager settingManager,GuiCommunicator guiCommunicator,Cacher cacher,ModuleFactory moduleFactory) throws SocketException {
             this.connection = socket;
+            this.backgroundService = backgroundService;
+            this.settingManager = settingManager;
+            this.guiCommunicator = guiCommunicator;
+            this.cacher = cacher;
+            this.moduleFactory = moduleFactory;
             connection.setKeepAlive(true);
             connection.setSoTimeout(60000);
         }
@@ -55,16 +64,16 @@ public class ConnectionThread implements Runnable {
                         new OutputStreamWriter(connection.getOutputStream()));
                 connectionRun = true;
                 sendIntroduce(); // send tcp introduce, which initiate on remote device newDevice method
-                BackgroundService.getSettingManager().saveCache(connection.getInetAddress()); // save address to cache. Cache used when app start, to sending udp invitation's
+                backgroundService.getSettingManager().saveCache(connection.getInetAddress()); // save address to cache. Cache used when app start, to sending udp invitation's
                 while (connectionRun)
                 {
                     String clientCommand = in.readLine();
                     Loggout.d("",clientCommand);
-                    if(!BackgroundService.isServerOn() || clientCommand == null) { // if server off, exit from read loop
+                    if(!backgroundService.isServerOn() || clientCommand == null) { // if server off, exit from read loop
                         connectionRun = false;
                         continue;
                     }
-                    NetworkPackage np =  NetworkPackage.Cacher.getOrCreatePackage(clientCommand); // create netwrokPackge from income message, actually it's parsing json
+                    NetworkPackage np =  cacher.getOrCreatePackage(clientCommand); // create netwrokPackge from income message, actually it's parsing json
                     determineWhatTodo(np); // the name speaks for itself
                 }
             }catch (IOException e)
@@ -73,7 +82,7 @@ public class ConnectionThread implements Runnable {
                 Loggout.e("ConnectionThread " + deviceId,"Error in tcp out ",e);
             }
             finally {
-                Device.getConnectedDevices().get(deviceId).closeConnection();  // clear resources, end modules and delete device from connected list
+                backgroundService.getConnectedDevices().get(deviceId).closeConnection();  // clear resources, end modules and delete device from connected list
             }
         }
 
@@ -89,7 +98,7 @@ public class ConnectionThread implements Runnable {
     public void receivePairResult(NetworkPackage np)
     {
         receivePairResult( np.getId(),np.getValue("answer").equals("paired") ? OK : REFUSE,np.getData());
-        BackgroundService.pairResultFromGui(np.getId(),OK,np.getData());
+        backgroundService.pairResultFromGui(np.getId(),OK,np.getData());
     }
 
     /* set device paired or not based on second arg
@@ -98,17 +107,17 @@ public class ConnectionThread implements Runnable {
     public void receivePairResult(String id,String result,String data){
         lock.lock();
         try {
-            Device device = Device.getConnectedDevices().get(id);
+            Device device = backgroundService.getConnectedDevices().get(id);
             if (result.equals(OK)) {
-                BackgroundService.getSettingManager().saveValue(id, data);
+                backgroundService.getSettingManager().saveValue(id, data);
                 if (device != null)
                     device.setPaired(true);
-                GuiCommunicator.devicePaired(id, true);
+                guiCommunicator.devicePaired(id, true);
             } else {
                 if (device != null)
                     device.setPaired(false);
-                BackgroundService.getSettingManager().delete(id);
-                GuiCommunicator.devicePaired(id, false);
+                backgroundService.getSettingManager().delete(id);
+                guiCommunicator.devicePaired(id, false);
             }
         }finally {
             lock.unlock();
@@ -166,7 +175,7 @@ public class ConnectionThread implements Runnable {
         ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
         lock.lock();
         try {
-        Device device = Device.getConnectedDevices().get(np.getId());
+        Device device = backgroundService.getConnectedDevices().get(np.getId());
         if(device != null){
             device.refreshEnabledModules(object.getModuleSettingList());
         }
@@ -178,7 +187,7 @@ public class ConnectionThread implements Runnable {
     private void setDevicePing(String deviceId,boolean answer){
             lock.lock();
             try {
-                Device device = Device.getConnectedDevices().get(deviceId);
+                Device device = backgroundService.getConnectedDevices().get(deviceId);
                 if (device != null)
                     device.setAnswer(answer);
             }finally {
@@ -189,10 +198,10 @@ public class ConnectionThread implements Runnable {
     private void sendIntroduce() {
         try {
             String temp =String.valueOf(InetAddress.getLocalHost().getHostName().hashCode());
-            NetworkPackage networkPackage =  NetworkPackage.Cacher.getOrCreatePackage(TCP_INTRODUCE,temp);
+            NetworkPackage networkPackage =  cacher.getOrCreatePackage(TCP_INTRODUCE,temp);
 
             ModuleSettingList moduleSettingList = new ModuleSettingList();
-            moduleSettingList.setModuleSettingList(new ArrayList<>(BackgroundService.getMyEnabledModules().values()));
+            moduleSettingList.setModuleSettingList(new ArrayList<>(backgroundService.getMyEnabledModules().values()));
             networkPackage.setObject(N_OBJECT,moduleSettingList);  // set myModuleConfig's to introduce package, android do the same
 
             printToOut(networkPackage.getMessage());
@@ -209,27 +218,27 @@ public class ConnectionThread implements Runnable {
                     return;
 
                 deviceId = np.getId();
-                if (Device.getConnectedDevices().containsKey(deviceId) && Device.getConnectedDevices().get(deviceId).isConnected()) {
+                if (backgroundService.getConnectedDevices().containsKey(deviceId) && backgroundService.getConnectedDevices().get(deviceId).isConnected()) {
                   //  closeConnection();
                     return;
                 }
                 ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
-                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList());
-                Device.getConnectedDevices().put(deviceId, device);
+                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList(),moduleFactory);
+                backgroundService.getConnectedDevices().put(deviceId, device);
                 String data = np.getData();
-                String pair = BackgroundService.getSettingManager().get(deviceId);
+                String pair = backgroundService.getSettingManager().get(deviceId);
                 if (data != null && !data.equalsIgnoreCase("null") && data.equals(pair)) {
                     device.setPaired(true);
-                    BackgroundService.pairResultFromGui(deviceId, OK, data);
+                    backgroundService.pairResultFromGui(deviceId, OK, data);
                 }else if(data == null || data.equals("nonPaired") || !data.equals(pair)){
                     unpair();
-                    BackgroundService.pairResultFromGui(deviceId, REFUSE, data);
+                    backgroundService.pairResultFromGui(deviceId, REFUSE, data);
                 }
                 ping();
                 pingCheck();
-                GuiCommunicator.newDeviceConnected(device);
+                guiCommunicator.newDeviceConnected(device);
                 if (device.isPaired()) {
-                    GuiCommunicator.devicePaired(deviceId, true);
+                    guiCommunicator.devicePaired(deviceId, true);
                 }
             }finally {
                 lock.unlock();
@@ -240,11 +249,11 @@ public class ConnectionThread implements Runnable {
         public  void unpair() {
         lock.lock();
         try {
-            Device device = Device.getConnectedDevices().get(deviceId);
+            Device device = backgroundService.getConnectedDevices().get(deviceId);
             if(device != null)
             device.setPaired(false);
-            BackgroundService.getSettingManager().delete(deviceId);
-            GuiCommunicator.devicePaired(deviceId, false);
+            backgroundService.getSettingManager().delete(deviceId);
+            guiCommunicator.devicePaired(deviceId, false);
         }finally {
             lock.unlock();
         }
@@ -255,15 +264,15 @@ public class ConnectionThread implements Runnable {
         }
 
       private void reguestPair(NetworkPackage np) {
-        GuiCommunicator.requestPair(np);
+        guiCommunicator.requestPair(np);
     }
 
         private void pingCheck() {
             if(timerFuture != null && (!timerFuture.isDone() || !timerFuture.isCancelled())){
                 timerFuture.cancel(true);
             }
-            timerFuture = BackgroundService.getTimerService().scheduleWithFixedDelay(()->{
-                    Device device = Device.getConnectedDevices().get(deviceId);
+            timerFuture = backgroundService.getTimerService().scheduleWithFixedDelay(()->{
+                    Device device = backgroundService.getConnectedDevices().get(deviceId);
                     if(device != null) {
                         device.setAnswer(false);
                         ping();
@@ -272,7 +281,7 @@ public class ConnectionThread implements Runnable {
         }
 
         private void ping() {
-            String message = NetworkPackage.Cacher.getOrCreatePackage(TCP_PING, TCP_PING).getMessage();
+            String message = cacher.getOrCreatePackage(TCP_PING, TCP_PING).getMessage();
             printToOut(message);
         //    BackgroundService.sendUdpPing(Device.getConnectedDevices().get(deviceId).getIp(),BackgroundService.getPort(),message);
         }
@@ -281,14 +290,14 @@ public class ConnectionThread implements Runnable {
         {
             lock.lock();
             try {
-                Device device = Device.getConnectedDevices().get(np.getId());
+                Device device = backgroundService.getConnectedDevices().get(np.getId());
                 if(device == null)
                     return;
                 if (!device.isPaired()) {
                     return;
                 }
                 String moduleType = np.getType();
-                ModuleSetting myModuleSetting = BackgroundService.getMyEnabledModules().get(moduleType);
+                ModuleSetting myModuleSetting = backgroundService.getMyEnabledModules().get(moduleType);
                 if(myModuleSetting == null || !myModuleSetting.isEnabled() || deviceInIgnore(device.getId(),myModuleSetting)){
                     return;
                 }
@@ -344,8 +353,8 @@ public class ConnectionThread implements Runnable {
                 if(enabledModules != null)
                 enabledModules.values().forEach(Module::endWork);
             }
-            Device.getConnectedDevices().remove(deviceId);
-            GuiCommunicator.deviceLost(deviceId);
+            backgroundService.getConnectedDevices().remove(deviceId);
+            guiCommunicator.deviceLost(deviceId);
             // calling after because can throw exception and remove from hashmap won't be done
             in.close();
             out.close();

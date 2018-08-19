@@ -19,7 +19,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 
 public class Device {
-    private final static ConcurrentHashMap<String,Device> connectedDevices = new ConcurrentHashMap<>();
     private ConnectionThread thread;
     private String id;
     private String name;
@@ -30,10 +29,11 @@ public class Device {
     private volatile boolean pinging;
     private volatile boolean answer;
     private ConcurrentHashMap<String, Module> enabledMdules = new ConcurrentHashMap<>();
+    private ModuleFactory moduleFactory;
     private List<ModuleSetting> enabledModulesConfig;
     private Lock lock = new ReentrantLock();
 
-    public Device(String id, String name, InetAddress ip, ConnectionThread runnableThread, List<ModuleSetting> enabledModules) {
+    public Device(String id, String name, InetAddress ip, ConnectionThread runnableThread, List<ModuleSetting> enabledModules,ModuleFactory moduleFactory) {
         this.id = id;
         this.name = name;
         this.ip = ip;
@@ -44,9 +44,10 @@ public class Device {
         this.answer = false;
         this.deviceType = "phone";
         this.enabledModulesConfig = enabledModules;
+        this.moduleFactory = moduleFactory;
         for (ModuleSetting registeredModule : enabledModules) {
             if(registeredModule.isEnabled()){
-                System.out.println(registeredModule.getName());
+                System.out.println(id + "     "  + registeredModule.getName());
                 enableModule(registeredModule.getName());
             } }
     }
@@ -65,10 +66,6 @@ public class Device {
         }finally {
             lock.unlock();
         }
-    }
-
-    public static Map<String, Device> getConnectedDevices() {
-        return connectedDevices;
     }
 
     public String getId() {
@@ -138,7 +135,7 @@ public class Device {
 
     private void enableModule(String name)
     {
-        Module module = ModuleFactory.instantiateModuleByName(this, name);
+        Module module = moduleFactory.instantiateModuleByName(this, name);
         if(module != null)
         enabledMdules.put(name, module);
     }

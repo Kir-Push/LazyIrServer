@@ -3,11 +3,15 @@ package com.push.lazyir.modules.command;
 
 
 import com.push.lazyir.Loggout;
+import com.push.lazyir.devices.Cacher;
+import com.push.lazyir.devices.Device;
 import com.push.lazyir.pojo.Command;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.pojo.CommandsList;
+import com.push.lazyir.service.main.BackgroundService;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,6 +24,11 @@ public class SendCommand extends Module {
     public static final String RECEIVED_COMMAND = "receivedCommand";
     public static final String EXECUTE = "execute";
     public static final String COMMAND = "command";
+
+    @Inject
+    public SendCommand(BackgroundService backgroundService, Cacher cacher) {
+        super(backgroundService, cacher);
+    }
 
 
     @Override

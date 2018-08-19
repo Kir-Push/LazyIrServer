@@ -3,16 +3,19 @@ package com.push.gui.systray;
 import com.push.gui.basew.About;
 import com.push.gui.basew.MainWin;
 import com.push.gui.basew.SettingsWindow;
+import com.push.gui.controllers.MainController;
 import com.push.gui.entity.PhoneDevice;
 import com.push.lazyir.service.main.BackgroundService;
+import com.push.lazyir.service.main.DaggerServiceComponent;
 import com.push.lazyir.service.main.MainClass;
 import com.push.lazyir.gui.GuiCommunicator;
+import com.push.lazyir.service.main.ServiceComponent;
+import com.push.lazyir.service.managers.settings.LocalizationManager;
 import javafx.application.*;
 import javafx.stage.*;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.text.*;
 
 import static java.awt.Image.SCALE_AREA_AVERAGING;
 
@@ -24,28 +27,28 @@ public class JavaFXTrayIconSample extends Application {
     private static final String iconImageLoc = null;
 
     private static JavaFXTrayIconSample instance;
-
-    // application stage is stored so that it can be shown and hidden based on system tray icon operations.
-    private Stage stage;
-
-    private  MainWin mainWin;
-
-
-    // format used to display the current time in a tray icon notification.
-    private DateFormat timeFormat = SimpleDateFormat.getTimeInstance();
-
     public static JavaFXTrayIconSample getInstance() {
         return instance;
     }
+
+    // application stage is stored so that it can be shown and hidden based on system tray icon operations.
+    private Stage stage;
+    private  MainWin mainWin;
+    private BackgroundService backgroundService;
+    private About about;
+    private SettingsWindow settingsWindow;
+    private LocalizationManager localizationManager;
+    private GuiCommunicator guiCommunicator;
 
     // sets up the javafx application.
     // a tray icon is setup for the icon, but the main stage remains invisible until the user
     // interacts with the tray icon.
     @Override public void start(final Stage stage) {
+        dependenciesInit();
         // stores a reference to the stage.
         this.stage = stage;
         this.stage.setOnHidden((event)->{ // todo check work or no
-            GuiCommunicator.clearGetRequestTimer();
+           guiCommunicator.clearGetRequestTimer();
         });
         instance = this;
         // instructs the javafx system not to exit implicitly when the last application window is shut.
@@ -54,7 +57,6 @@ public class JavaFXTrayIconSample extends Application {
         // sets up the tray icon (using awt code run on the swing thread).
       //  javax.swing.SwingUtilities.invokeLater(this::addAppToTray);
         addAppToTray();
-        mainWin = new MainWin();
         try {
             mainWin.start(stage);
         } catch (Exception e) {
@@ -62,7 +64,7 @@ public class JavaFXTrayIconSample extends Application {
         }
         new Thread(() -> {
             try {
-                MainClass.main(null);
+                MainClass.main(backgroundService);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -70,10 +72,6 @@ public class JavaFXTrayIconSample extends Application {
 
        // stage.setScene(scene);
     }
-
-
-
-
 
     /**
      * Sets up a system tray icon for the application.
@@ -100,24 +98,24 @@ public class JavaFXTrayIconSample extends Application {
 
             // if the user selects the default menu item (which includes the app name),
             // show the main app stage.
-            java.awt.MenuItem openItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("openTray"));
+            java.awt.MenuItem openItem = new java.awt.MenuItem(localizationManager.get("openTray"));
             openItem.addActionListener(event -> Platform.runLater(this::showStage));
 
 
-            java.awt.MenuItem aboutItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("aboutTray"));
-            aboutItem.addActionListener(event -> Platform.runLater(()-> About.showWindow("id",null)));
+            java.awt.MenuItem aboutItem = new java.awt.MenuItem(localizationManager.get("aboutTray"));
+            aboutItem.addActionListener(event -> Platform.runLater(()-> about.showWindow()));
             // the convention for tray icons seems to be to set the default icon for opening
             // the application stage in a bold font.
         //    java.awt.Font defaultFont = java.awt.Font.decode(null);
          //   java.awt.Font boldFont = defaultFont.deriveFont(java.awt.Font.BOLD);
          //   openItem.setFont(boldFont);
-            java.awt.MenuItem settingItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("settingTray"));
-            settingItem.addActionListener(event ->  Platform.runLater(()->SettingsWindow.showWindow("id",null)));
+            java.awt.MenuItem settingItem = new java.awt.MenuItem(localizationManager.get("settingTray"));
+            settingItem.addActionListener(event ->  Platform.runLater(()->settingsWindow.showWindow("id",null)));
 
             // to really exit the application, the user must go to the system tray icon
             // and select the exit option, this will shutdown JavaFX and remove the
             // tray icon (removing the tray icon will also shut down AWT).
-            java.awt.MenuItem exitItem = new java.awt.MenuItem(BackgroundService.getLocalizationManager().get("exitTray"));
+            java.awt.MenuItem exitItem = new java.awt.MenuItem(localizationManager.get("exitTray"));
             exitItem.addActionListener(event -> {
                 Platform.exit();
                 System.exit(0);
@@ -150,26 +148,40 @@ public class JavaFXTrayIconSample extends Application {
         if (stage != null) {
             stage.show();
             stage.toFront();
-            int selectedIndex = mainWin.getController().getPersonList().getSelectionModel().getSelectedIndex();
+            MainController controller = mainWin.getController();
+            System.out.println("Controller null? " + controller);
+            int selectedIndex = controller.getPersonList().getSelectionModel().getSelectedIndex();
             if(mainWin.getConnectedDevices().size() <= selectedIndex || selectedIndex == -1)
-            mainWin.getController().getPersonList().getSelectionModel().select(0);
-            PhoneDevice selectedItem = mainWin.getController().getPersonList().getSelectionModel().getSelectedItem();
+            controller.getPersonList().getSelectionModel().select(0);
+            PhoneDevice selectedItem = controller.getPersonList().getSelectionModel().getSelectedItem();
             if(selectedItem != null) {
-                GuiCommunicator.sendToGetAllNotif(selectedItem.getId());
-                GuiCommunicator.setGetRequestTimer(selectedItem.getId(),5000);
+                guiCommunicator.sendToGetAllNotif(selectedItem.getId());
+                guiCommunicator.setGetRequestTimer(selectedItem.getId(),5000);
             }
         }
+    }
+
+
+
+    private void dependenciesInit() {
+        ServiceComponent serviceComponent = DaggerServiceComponent.builder().build();
+        backgroundService = serviceComponent.provideBackGroundService();
+        about = serviceComponent.provideAbout();
+        localizationManager = serviceComponent.provideLocalizationManager();
+        guiCommunicator = serviceComponent.provideGuiCommunicator();
+        mainWin = serviceComponent.provideMainWin();
+        settingsWindow = serviceComponent.provideSettingsWindow();
+        // because recursive dependency set it apart
+        backgroundService.setGuiCommunicator(guiCommunicator);
+        backgroundService.setServiceComponent(serviceComponent);
+        backgroundService.init();
+        backgroundService.configServices();
     }
 
     /*
     Main entry in application
     * */
-    public static void main(String[] args) throws IOException, java.awt.AWTException {
-        // Just launches the JavaFX application.
-        // Due to way the application is coded, the application will remain running
-        // until the user selects the Exit menu option from the tray icon.
-        BackgroundService.getInstance().configServices(); // initialize BackgroundService and in it - localizationManager
+    public static void main(String[] args) {
         launch(args);
-
     }
 }

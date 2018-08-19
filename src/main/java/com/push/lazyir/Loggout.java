@@ -3,6 +3,7 @@ package com.push.lazyir;
 import com.push.lazyir.service.main.BackgroundService;
 import lombok.NonNull;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,7 @@ import java.util.logging.Level;
 /**
  * Created by buhalo on 12.03.17.
  */
-@Log
+@Slf4j
 public class Loggout {
 
     private Loggout() {
@@ -23,20 +24,20 @@ public class Loggout {
 
     private static Level logLevel = Level.INFO;
 
-    public static void logInfo(java.util.logging.Logger logger,String msg,Exception e){
-        logger.log(Level.INFO,msg,e);
+    public static void logInfo(Logger logger,String msg,Exception e){
+        logger.info(msg,e);
     }
 
-    public static void logInfo(java.util.logging.Logger logger,String msg){
-        logger.log(Level.INFO,msg);
+    public static void logInfo(Logger logger,String msg){
+        logger.info(msg);
     }
 
-    public static void logDebug(java.util.logging.Logger logger,String msg){
-        logger.log(Level.SEVERE,msg);
+    public static void logDebug(Logger logger,String msg){
+        logger.debug(msg);
     }
 
-    public static void logDebug(java.util.logging.Logger logger,String msg,Exception e){
-        logger.log(Level.SEVERE,msg,e);
+    public static void logDebug(Logger logger,String msg,Exception e){
+        logger.debug(msg,e);
     }
 
     public static void refresh(String level){
@@ -85,7 +86,7 @@ public class Loggout {
           Calendar cal = Calendar.getInstance();
            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
        //     Communicator.getInstance().sendToOut(sdf.format(cal.getTime()) + ": " + s + " " + s2);
-//       log.severe( s2);
+       log.info( s2);
 //
     }
 }
