@@ -2,7 +2,6 @@ package com.push.lazyir.modules.notifications.call;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
@@ -57,9 +56,9 @@ public class CallModule extends Module {
 
                     int boolToCheck = 0;
                     String callType = np.getValue("callType");
-                    if(callType.equalsIgnoreCase(callTypes.outgoing.name()))
+                    if(callType.equalsIgnoreCase(NotificationTypes.outgoing.name()))
                         boolToCheck = muteWhenOutcomingCall;
-                    else if(callType.equalsIgnoreCase(callTypes.incoming.name()))
+                    else if(callType.equalsIgnoreCase(NotificationTypes.incoming.name()))
                         boolToCheck = muteWhenCall;
                     if(boolToCheck == 1)
                         mute(np);
@@ -77,11 +76,11 @@ public class CallModule extends Module {
                 }
                 int boolToCheck = 0;
                 String callType = np.getValue("callType");
-                if(callType.equalsIgnoreCase(callTypes.outgoing.name()))
+                if(callType.equalsIgnoreCase(NotificationTypes.outgoing.name()))
                     boolToCheck = muteWhenOutcomingCall;
-                else if(callType.equalsIgnoreCase(callTypes.incoming.name()))
+                else if(callType.equalsIgnoreCase(NotificationTypes.incoming.name()))
                     boolToCheck = muteWhenCall;
-                if(boolToCheck == 1 || callType.equalsIgnoreCase(callTypes.missedIn.name()))
+                if(boolToCheck == 1 || callType.equalsIgnoreCase(NotificationTypes.missedIn.name()))
                     unMute(np);
                 guiCommunicator.call_notif_end(np);
             }else if(ANSWER.equals(data)){

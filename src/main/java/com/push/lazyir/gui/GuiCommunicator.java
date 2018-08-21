@@ -177,7 +177,7 @@ public class GuiCommunicator {
 
 
     public void call_notif_end(NetworkPackage np) {
-        apiController.removeNotificationCallEnd(np.getId(),np.getValue("number"));
+        apiController.removeNotificationCallEnd(np.getValue("number"));
     }
 
     public void tcpClosed() {

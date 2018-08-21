@@ -11,12 +11,14 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-// Class wich actually update gui
+/**
+ * Wire non-gui with gui classes,
+ * To control interface
+ */
 public class ApiController {
 
     private MainController mainController;
@@ -26,10 +28,6 @@ public class ApiController {
     @Inject
     public ApiController(Popup popup) {
         this.popup = popup;
-    }
-
-    public MainController getMainController() {
-        return mainController;
     }
 
     public void setMainController(MainController mainController) {
@@ -51,7 +49,7 @@ public class ApiController {
            PhoneDevice deviceById = getDeviceById(id);
            deviceById.setBattery(battery);
            deviceById.setCharging(charging);
-           refreshSelection(id);
+           refreshSelection();
        });
     }
 
@@ -59,7 +57,7 @@ public class ApiController {
         Platform.runLater(()->{
             PhoneDevice deviceById = getDeviceById(id);
             deviceById.setPaired(paired);
-            refreshSelection(id);
+            refreshSelection();
         });
     }
 
@@ -67,7 +65,7 @@ public class ApiController {
         Platform.runLater(()->{
             PhoneDevice deviceById = getDeviceById(id);
             deviceById.setMounted(mounted);
-            refreshSelection(id);
+            refreshSelection();
         });
     }
 
@@ -75,11 +73,11 @@ public class ApiController {
         Platform.runLater(()->{
             PhoneDevice deviceById = getDeviceById(id);
             deviceById.setNotifications(FXCollections.observableArrayList(notifications));
-            refreshSelection(id);
+            refreshSelection();
         });
     }
 
-    private void refreshSelection(String id){
+    private void refreshSelection(){
         int selectedIndex = mainController.getPersonList().getSelectionModel().getSelectedIndex();
         mainController.getPersonList().getSelectionModel().select(-1);
         mainController.getPersonList().getSelectionModel().select(selectedIndex);
@@ -94,8 +92,8 @@ public class ApiController {
         popup.show(id,notification,mainController,arg);
     }
 
-    public void removeNotificationCallEnd(String id, String callerNumber){
-        popup.callEnd(id,callerNumber);
+    public void removeNotificationCallEnd(String callerNumber){
+        popup.callEnd(callerNumber);
     }
 
     public void requestPair(String id,NotificationDevice notificationDevice) {
@@ -112,15 +110,7 @@ public class ApiController {
             deviceById.setTemp(crt.getTempC());
             mainController.setCpu(crt.getCpuLoad());
             mainController.setRam(crt.getFreeRam()/1024/1024,crt.getFreeRamAll()/1024/1024,crt.isLowMem());
-          //  refreshSelection(id);
         });
-    }
-
-    public void simpleRefresh(String id){
-        Platform.runLater(()->{
-            refreshSelection(id);
-        });
-
     }
 
     public void setDeviceMemory(MemoryEntity entity,String id){
@@ -142,7 +132,6 @@ public class ApiController {
             deviceById.setTotalSpace(mainMem);
             deviceById.setTotalSpaceExt(finalExtTotal);
             mainController.setMemoryText(mainMemFree,mainMem,finalExtFree,finalExtTotal);
-       //     refreshSelection(id);
         });
     }
 

@@ -11,10 +11,8 @@ import com.push.lazyir.modules.sync.SynchroModule;
 import com.push.lazyir.pojo.Command;
 import com.push.lazyir.service.main.BackgroundService;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -31,13 +29,13 @@ import java.util.List;
 public class MainController {
 
 
-    private ListView<PhoneDevice> personList;
-    private ListView<NotificationDevice> notifTList;
+    ListView<PhoneDevice> personList;
+    ListView<NotificationDevice> notifTList;
     // Ссылка на главное приложение.
     private MainWin mainApp;
     private Dialogs dialogs;
     private CommandsWindow commandsWindow;
-    private GuiCommunicator guiCommunicator;
+    GuiCommunicator guiCommunicator;
     private BackgroundService backgroundService;
 
     /**
@@ -60,7 +58,7 @@ public class MainController {
     }
 
 
-    public MainWin getMainApp() {
+     MainWin getMainApp() {
         return mainApp;
     }
 
@@ -71,7 +69,25 @@ public class MainController {
         personList = (ListView<PhoneDevice>) mainApp.getRootLayout().lookup("#personList");
         notifTList = (ListView<NotificationDevice>) mainApp.getRootLayout().lookup("#notifTList");
         personList.setStyle("-fx-control-inner-color: white;");
-        personList.setCellFactory(personList -> new ListCell<>(){
+        setPersonListCellFactory(personList);
+
+        personList.setOnMouseClicked(event -> {
+            PhoneDevice selectedItem = personList.getSelectionModel().getSelectedItem();
+            if(selectedItem != null) {
+                guiCommunicator.sendToGetAllNotif(selectedItem.getId());
+                guiCommunicator.setGetRequestTimer(selectedItem.getId(),5000);
+            }
+        });
+
+
+        setNotifListCellFactory(notifTList);
+        // Добавление в таблицу данных из наблюдаемого списка
+        personList.setItems(mainApp.getConnectedDevices());
+        notifTList.setItems(mainApp.getNotificationsList());
+    }
+
+    private void setPersonListCellFactory(ListView<PhoneDevice> persList){
+        persList.setCellFactory(list -> new ListCell<>(){
             private final ImageView imageView = new ImageView();
 
             @Override
@@ -88,8 +104,8 @@ public class MainController {
                     VBox vBox = new VBox();
                     vBox.setId(item.getId());
                     vBox.getChildren().addAll(imageView,text);
-                   setGraphic(vBox);
-                    PhoneDevice selectedItem = personList.getSelectionModel().getSelectedItem();
+                    setGraphic(vBox);
+                    PhoneDevice selectedItem = list.getSelectionModel().getSelectedItem();
 
                     if(selectedItem != null && item.getId().equals(selectedItem.getId())) {
                         onSelectDevice(selectedItem);
@@ -97,17 +113,10 @@ public class MainController {
                 }
             }
         });
+    }
 
-        personList.setOnMouseClicked(event -> {
-            PhoneDevice selectedItem = personList.getSelectionModel().getSelectedItem();
-            if(selectedItem != null) {
-                guiCommunicator.sendToGetAllNotif(selectedItem.getId());
-                guiCommunicator.setGetRequestTimer(selectedItem.getId(),5000);
-            }
-        });
-
-
-        notifTList.setCellFactory(notifTList -> new ListCell<>(){
+    private void setNotifListCellFactory(ListView<NotificationDevice> notList){
+        notList.setCellFactory(list -> new ListCell<>(){
 
             @Override
             protected void updateItem(NotificationDevice item, boolean empty){
@@ -156,40 +165,43 @@ public class MainController {
                     centerCol.setHalignment(HPos.CENTER);
                     centerCol.setHgrow(Priority.ALWAYS);
                     listCellContents.getColumnConstraints().addAll(leftCol,rightCol,centerCol);
-                    if(item.getType().equals("notification")) { }
-                    else{
-                        Button answer = new Button();
-                        answer.setText("Answer");
-                        PhoneDevice selectedDevice = personList.getSelectionModel().getSelectedItem();
-                        if(item.getType().equals("sms")){
-                           answer.setOnAction(event -> openMessengerDialog(item,selectedDevice.getId()));
-                            }
-                        else if(item.getType().equals("messenger"))
-                            answer.setOnAction(event -> openMessengerDialog(item,selectedDevice.getId()));
-                        else if(item.getType().equals("call"))
-                            answer.setOnAction(event -> recall(item,selectedDevice.getId()));
-                        listCellContents.add(answer,3,0);
-                    }
+                    setAnswerAction(listCellContents,item);
                     listCellContents.add(button,4,0);
                     setGraphic(listCellContents);
                 }
             }
         });
-
-
-        // Добавление в таблицу данных из наблюдаемого списка
-        personList.setItems(mainApp.getConnectedDevices());
-        notifTList.setItems(mainApp.getNotificationsList());
     }
 
-    private void onSelectDevice(PhoneDevice newSelection){
+    void setAnswerAction(GridPane listCellContents, NotificationDevice item) {
+        if(!item.getType().equals("notification")) {
+            Button answer = new Button();
+            answer.setText("Answer");
+            PhoneDevice selectedDevice = personList.getSelectionModel().getSelectedItem();
+            switch (item.getType()) {
+                case "sms":
+                    answer.setOnAction(event -> openMessengerDialog(item, selectedDevice.getId()));
+                    break;
+                case "messenger":
+                    answer.setOnAction(event -> openMessengerDialog(item, selectedDevice.getId()));
+                    break;
+                case "call":
+                    answer.setOnAction(event -> recall(item, selectedDevice.getId()));
+                    break;
+                default:
+                    break;
+            }
+            listCellContents.add(answer,3,0);
+        }
+    }
+
+    void onSelectDevice(PhoneDevice newSelection){
         VBox rootLayout = mainApp.getRootLayout();
 
         ImageView batteryImg = (ImageView) rootLayout.lookup("#batteryImg");
         batteryImg.setImage(GuiUtils.getImageByBattery(newSelection.getBattery(),newSelection.isCharging()));
         Label batteryText = (Label) rootLayout.lookup("#batteryText");
         batteryText.setText(newSelection.getBattery() + " %");
-
 
         Button pairedBtn = (Button) rootLayout.lookup("#pairBtn");
         if(newSelection.isPaired()){
@@ -235,21 +247,22 @@ public class MainController {
         mainApp.getNotificationsList().addAll(newSelection.getNotifications());
     }
 
-    public void setMemoryText(long freeMem,long allMem,long freeExt,long allExt){
+    void setMemoryText(long freeMem,long allMem,long freeExt,long allExt){
         Label memory = (Label) mainApp.getRootLayout().lookup("#memoryLbl");
         memory.setText("Main Storage(MB): " + freeMem + "/" + allMem + ";  External Storage(s): " + freeExt + "/"+allExt);
         memory.setFont(Font.font(11));
     }
 
-    public void setRam(long freeRam,long totalRam,boolean lowMemory){
+    void setRam(long freeRam,long totalRam,boolean lowMemory){
         Label ram = (Label) mainApp.getRootLayout().lookup("#ramLbl");
         ram.setText("Ram usage(MB): " + freeRam+"/"+totalRam);
         ram.setFont(Font.font(11));
-        if(lowMemory)
+        if(lowMemory) {
             ram.setTextFill(Color.RED);
+        }
     }
 
-    public void setCpu(int cpuLoad){
+    void setCpu(int cpuLoad){
         Label cpu = (Label) mainApp.getRootLayout().lookup("#cpuLoad");
         cpu.setText("Cpu load: " + cpuLoad + "%");
         cpu.setFont(Font.font(11));
@@ -268,34 +281,20 @@ public class MainController {
         dialogs.showAnswerMessenger(deviceId,item);
     }
 
-    @FXML
-    private void initialize() {
-        // Инициализация таблицы адресатов с двумя столбцами.
-    }
 
     public ListView<PhoneDevice> getPersonList() {
         return personList;
-    }
-
-    public void setPersonList(ListView<PhoneDevice> personList) {
-        this.personList = personList;
     }
 
     public ListView<NotificationDevice> getNotifTList() {
         return notifTList;
     }
 
-    public void setNotifTList(ListView<NotificationDevice> notifTList) {
-        this.notifTList = notifTList;
-    }
-
-    public void setCommands(List<Command> commands, String id) {
-//        if(!commandsWindow.isOpened() || !commandsWindow.usedId().equals(id))
-//            return;
+    void setCommands(List<Command> commands, String id) {
         commandsWindow.receiveCommands(commands,id);
     }
 
-    public void setAllToDefault(PhoneDevice id) {
+    void setAllToDefault(PhoneDevice id) {
         getMainApp().getConnectedDevices().remove(id);
        getMainApp().getNotificationsList().clear();
        setCpu(0);

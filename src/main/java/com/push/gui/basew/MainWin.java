@@ -11,11 +11,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
 
+@Slf4j
 public class MainWin  {
 
     private Stage primaryStage;
@@ -38,12 +40,12 @@ public class MainWin  {
         initRootLayout();
     }
 
-    private Stage initRootLayout() {
+    private void initRootLayout() {
         try {
             // Загружаем корневой макет из fxml файла.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Thread.currentThread().getContextClassLoader().getResource("fxml/newGui.fxml"));
-            rootLayout = (VBox) loader.load();
+            rootLayout = loader.load();
 
             // Отображаем сцену, содержащую корневой макет.
             scene = new Scene(rootLayout);
@@ -54,9 +56,8 @@ public class MainWin  {
             apiController.setMainController(controller);
             // Тут не вызывает show stage потомучто мы будем вызывать из systray класса.
         } catch (IOException e) {
-            Loggout.e("MainWin","initRootLayout",e);
+            log.error("initRootLayout",e);
         }
-        return primaryStage;
     }
 
     public MainController getController(){
@@ -67,16 +68,8 @@ public class MainWin  {
         return connectedDevices;
     }
 
-    public void setConnectedDevices(ObservableList<PhoneDevice> connectedDevices) {
-        this.connectedDevices = connectedDevices;
-    }
-
     public ObservableList<NotificationDevice> getNotificationsList() {
         return notificationsList;
-    }
-
-    public void setNotificationsList(ObservableList<NotificationDevice> notificationsList) {
-        this.notificationsList = notificationsList;
     }
 
     public VBox getRootLayout() {

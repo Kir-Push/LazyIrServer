@@ -6,8 +6,9 @@ import com.notification.manager.QueueManager;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.CustomNotification;
 import com.push.gui.entity.NotificationDevice;
+import com.push.gui.utils.CustomBuilder;
 import com.push.gui.utils.GuiUtils;
-import com.push.lazyir.modules.notifications.call.callTypes;
+import com.push.lazyir.modules.notifications.call.NotificationTypes;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.managers.settings.SettingManager;
 import com.theme.ThemePackagePresets;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class Popup {
 
-     private volatile boolean initialized;
+     private boolean initialized;
      private NotificationFactory factory;
      private QueueManager manager;
      private SettingManager settingManager;
@@ -42,18 +43,15 @@ public class Popup {
     }
 
     public void show(String id, NotificationDevice notification, MainController mainController, Object... arg) {
-
-
         int numberOfMonitors = Screen.getScreens().size();
         if(numberOfMonitors != countScreens){
             countScreens = numberOfMonitors;
             initialized = false;
         }
-
         if(!initialized){
             // register the custom builder with the factory
             factory = new NotificationFactory(ThemePackagePresets.cleanLight());
-            factory.addBuilder(CustomNotification.class, new CustomNotification.CustomBuilder(backgroundService,guiUtils));
+            factory.addBuilder(CustomNotification.class, new CustomBuilder(backgroundService,guiUtils));
             if(manager != null)
                 manager.stop();
             manager = new QueueManager(NotificationFactory.Location.SOUTHEAST);
@@ -72,10 +70,9 @@ public class Popup {
             }
         }
         CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController,(arg == null || arg.length == 0) ? null : arg[0]);
-        boolean incoming = notification.getType().equalsIgnoreCase(callTypes.incoming.name());
-        boolean missed = notification.getType().equalsIgnoreCase(callTypes.missedIn.name());
-        boolean outgoing = notification.getType().equalsIgnoreCase(callTypes.outgoing.name());
-        boolean answer = notification.getType().equalsIgnoreCase(callTypes.answer.name());
+        boolean incoming = notification.getType().equalsIgnoreCase(NotificationTypes.incoming.name());
+        boolean missed = notification.getType().equalsIgnoreCase(NotificationTypes.missedIn.name());
+        boolean outgoing = notification.getType().equalsIgnoreCase(NotificationTypes.outgoing.name());
         if(incoming || missed || outgoing){
             callNotifs.put(notification.getTitle(),build);
         }
@@ -92,7 +89,7 @@ public class Popup {
 
     }
 
-    public void callEnd(String id, String callerNumber) {
+    public void callEnd(String callerNumber) {
         if(callNotifs.containsKey(callerNumber)){
             CustomNotification customNotification = callNotifs.get(callerNumber);
             if(customNotification != null) {

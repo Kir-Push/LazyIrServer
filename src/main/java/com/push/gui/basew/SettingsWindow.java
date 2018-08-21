@@ -1,8 +1,5 @@
 package com.push.gui.basew;
 
-import com.push.gui.controllers.MainController;
-import com.push.lazyir.Loggout;
-import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
 import com.push.lazyir.service.managers.settings.SettingManager;
 import javafx.collections.FXCollections;
@@ -12,12 +9,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.Set;
 
+@Slf4j
 public class SettingsWindow {
-    private static volatile boolean opened = false;
+    private boolean opened;
     private SettingManager settingManager;
     private LocalizationManager localizationManager;
 
@@ -26,25 +26,23 @@ public class SettingsWindow {
         this.settingManager = settingManager;
         this.localizationManager = localizationManager;
     }
-//    private static Stage stage;
-
-    public boolean isOpened() {
+    private boolean isOpened() {
         return opened;
     }
 
-    public void setOpened(boolean opened) {
+    private void setOpened(boolean opened) {
         this.opened = opened;
     }
 
-    public void showWindow(String id,MainController mainController){
+    public void showWindow(){
         try {
-            if(opened){
+            if(isOpened()){
                 return;
             }
-            opened = true;
+            setOpened(true);
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainWin.class.getClassLoader().getResource("fxml/settingsWindow.fxml"));
-            AnchorPane rootLayout = (AnchorPane) loader.load();
+            loader.setLocation(Thread.currentThread().getContextClassLoader().getResource("fxml/settingsWindow.fxml"));
+            AnchorPane rootLayout = loader.load();
             Scene scene = new Scene(rootLayout);
             Stage stage = new Stage();
 
@@ -106,8 +104,9 @@ public class SettingsWindow {
             Button save = (Button) scene.lookup("#save");
             save.setOnAction(event -> {
                 String value = langs.getValue();
-                if(value != null)
-                settingManager.saveValue("LANG", value);
+                if(value != null) {
+                    settingManager.saveValue("LANG", value);
+                }
                 settingManager.saveValue("Vlc-port",vlcPortInput.getText());
                 settingManager.saveValue("Vlc-pass",vlcPassInput.getText());
                 settingManager.saveValue("muteWhenCall",muteInCheck.isSelected() ? "true" : "false");
@@ -117,15 +116,13 @@ public class SettingsWindow {
                 settingManager.saveValue("Notif-time",notifTimeInput.getText());
                 settingManager.saveValue("TCP-port",mainPortInput.getText());
             });
-            stage.setOnCloseRequest(event -> {
-                opened = false;
-            });
+            stage.setOnCloseRequest(event -> setOpened(false));
             stage.setScene(scene);
             stage.show();
 
-        }catch (Exception e){
-            opened = false;
-            Loggout.e("SettingWindow","Exception ",e);
+        }catch (IOException e){
+           setOpened(false);
+           log.error("ShowMessage",e);
         }
     }
 }

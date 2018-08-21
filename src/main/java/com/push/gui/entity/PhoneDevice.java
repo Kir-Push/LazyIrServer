@@ -3,7 +3,9 @@ package com.push.gui.entity;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import lombok.Data;
 
+@Data
 public class PhoneDevice {
 
     private final StringProperty id;
@@ -22,7 +24,6 @@ public class PhoneDevice {
     private LongProperty freeRam;
     private BooleanProperty lowMemory;
     private DoubleProperty temp;
-    private ListProperty<String> enabledModules;
     private ListProperty<NotificationDevice> notifications;
 
     public PhoneDevice(String id, String name, String type, int battery, boolean charging, boolean paired, boolean mounted) {
@@ -49,9 +50,6 @@ public class PhoneDevice {
         return id.get();
     }
 
-    public StringProperty idProperty() {
-        return id;
-    }
 
     public void setId(String id) {
         this.id.set(id);
@@ -61,9 +59,6 @@ public class PhoneDevice {
         return name.get();
     }
 
-    public StringProperty nameProperty() {
-        return name;
-    }
 
     public void setName(String name) {
         this.name.set(name);
@@ -73,9 +68,6 @@ public class PhoneDevice {
         return type.get();
     }
 
-    public StringProperty typeProperty() {
-        return type;
-    }
 
     public void setType(String type) {
         this.type.set(type);
@@ -85,9 +77,6 @@ public class PhoneDevice {
         return battery.get();
     }
 
-    public IntegerProperty batteryProperty() {
-        return battery;
-    }
 
     public void setBattery(int battery) {
         this.battery.set(battery);
@@ -97,9 +86,6 @@ public class PhoneDevice {
         return charging.get();
     }
 
-    public BooleanProperty chargingProperty() {
-        return charging;
-    }
 
     public void setCharging(boolean charging) {
         this.charging.set(charging);
@@ -109,9 +95,6 @@ public class PhoneDevice {
         return paired.get();
     }
 
-    public BooleanProperty pairedProperty() {
-        return paired;
-    }
 
     public void setPaired(boolean paired) {
         this.paired.set(paired);
@@ -121,33 +104,16 @@ public class PhoneDevice {
         return mounted.get();
     }
 
-    public BooleanProperty mountedProperty() {
-        return mounted;
-    }
 
     public void setMounted(boolean mounted) {
         this.mounted.set(mounted);
     }
 
-    public ObservableList<String> getEnabledModules() {
-        return enabledModules.get();
-    }
-
-    public ListProperty<String> enabledModulesProperty() {
-        return enabledModules;
-    }
-
-    public void setEnabledModules(ObservableList<String> enabledModules) {
-        this.enabledModules.set(enabledModules);
-    }
 
     public ObservableList<NotificationDevice> getNotifications() {
         return notifications.get();
     }
 
-    public ListProperty<NotificationDevice> notificationsProperty() {
-        return notifications;
-    }
 
     public void setNotifications(ObservableList<NotificationDevice> notifications) {
         this.notifications.set(notifications);
@@ -158,9 +124,6 @@ public class PhoneDevice {
         return freeSpace.get();
     }
 
-    public LongProperty freeSpaceProperty() {
-        return freeSpace;
-    }
 
     public void setFreeSpace(long freeSpace) {
         this.freeSpace.set(freeSpace);
@@ -170,9 +133,6 @@ public class PhoneDevice {
         return totalSpace.get();
     }
 
-    public LongProperty totalSpaceProperty() {
-        return totalSpace;
-    }
 
     public void setTotalSpace(long totalSpace) {
         this.totalSpace.set(totalSpace);
@@ -182,9 +142,6 @@ public class PhoneDevice {
         return cpuLoad.get();
     }
 
-    public IntegerProperty cpuLoadProperty() {
-        return cpuLoad;
-    }
 
     public void setCpuLoad(int cpuLoad) {
         this.cpuLoad.set(cpuLoad);
@@ -194,9 +151,6 @@ public class PhoneDevice {
         return totalRam.get();
     }
 
-    public LongProperty totalRamProperty() {
-        return totalRam;
-    }
 
     public void setTotalRam(long totalRam) {
         this.totalRam.set(totalRam);
@@ -206,9 +160,6 @@ public class PhoneDevice {
         return freeRam.get();
     }
 
-    public LongProperty freeRamProperty() {
-        return freeRam;
-    }
 
     public void setFreeRam(long freeRam) {
         this.freeRam.set(freeRam);
@@ -218,9 +169,6 @@ public class PhoneDevice {
         return temp.get();
     }
 
-    public DoubleProperty tempProperty() {
-        return temp;
-    }
 
     public void setTemp(double temp) {
         this.temp.set(temp);
@@ -228,10 +176,6 @@ public class PhoneDevice {
 
     public boolean isLowMemory() {
         return lowMemory.get();
-    }
-
-    public BooleanProperty lowMemoryProperty() {
-        return lowMemory;
     }
 
     public void setLowMemory(boolean lowMemory) {
@@ -242,10 +186,6 @@ public class PhoneDevice {
         return freeSpaceExt.get();
     }
 
-    public LongProperty freeSpaceExtProperty() {
-        return freeSpaceExt;
-    }
-
     public void setFreeSpaceExt(long freeSpaceExt) {
         this.freeSpaceExt.set(freeSpaceExt);
     }
@@ -254,9 +194,6 @@ public class PhoneDevice {
         return totalSpaceExt.get();
     }
 
-    public LongProperty totalSpaceExtProperty() {
-        return totalSpaceExt;
-    }
 
     public void setTotalSpaceExt(long totalSpaceExt) {
         this.totalSpaceExt.set(totalSpaceExt);
