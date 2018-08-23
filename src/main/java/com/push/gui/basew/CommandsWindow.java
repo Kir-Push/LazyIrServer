@@ -47,7 +47,7 @@ public class CommandsWindow {
             commands.forEach(command -> list.add(new CommandGuiEntity(id, command.getProducer(), command.getDevice(), command.getCommand_name(),
                             command.getCommand(), command.getOwner_id(), command.getType())));
             CommandGuiEntity cge = list.get(commands.size() - 1);
-            cge.setCommand_name(" ");
+            cge.setCommandName(" ");
             cge.setCommand(" ");
             setUserId(id);
         }finally {
@@ -146,8 +146,8 @@ public class CommandsWindow {
             CommandGuiEntity cge = items.get(row);
 
             for(int i =0;i<items.size();i++){
-                if(i != row && items.get(i).getCommand_name().equals(newValue)){
-                    cge.setCommand_name(oldValue);
+                if(i != row && items.get(i).getCommandName().equals(newValue)){
+                    cge.setCommandName(oldValue);
                     tableView.refresh();
                     return;
                 }
@@ -157,18 +157,18 @@ public class CommandsWindow {
                 tableView.refresh();
             }
             else if(oldValue.equals(" ") && (row == table.getItems().size()-1)) {
-                cge.setCommand_name(newValue);
+                cge.setCommandName(newValue);
                 tempNewList.add(cge);
                 list.add(new CommandGuiEntity(getUsedId(), cge.getProducer(), cge.getDevice()," "," ",
-                        cge.getOwner_id(), cge.getType()));
+                        cge.getOwnerId(), cge.getType()));
             }
             else if(!oldValue.equals(newValue)){
                 CommandGuiEntity guiEntity = new CommandGuiEntity(getUsedId(), cge.getProducer(), cge.getDevice(), oldValue, cge.getCommand(),
-                        cge.getOwner_id(), cge.getType());
+                        cge.getOwnerId(), cge.getType());
                 if(!tempNewList.contains(guiEntity)) {
                     tempDeleteList.add(guiEntity);
                 }
-                cge.setCommand_name(newValue);
+                cge.setCommandName(newValue);
                 tempNewList.add(cge);
             }
         });
@@ -176,8 +176,8 @@ public class CommandsWindow {
 
     private List<Command> populateCmd(Set<CommandGuiEntity> tempList) {
         List<Command> cmd = new ArrayList<>();
-        tempList.forEach(cge -> cmd.add(new Command(cge.getProducer(),cge.getDevice(),cge.getCommand_name(),
-                cge.getCommand(),cge.getOwner_id(),cge.getType())));
+        tempList.forEach(cge -> cmd.add(new Command(cge.getProducer(),cge.getDevice(),cge.getCommandName(),
+                cge.getCommand(),cge.getOwnerId(),cge.getType())));
        return cmd;
     }
     private void clearResources() {

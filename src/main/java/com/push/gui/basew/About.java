@@ -17,9 +17,11 @@ import java.io.IOException;
 public class About {
     private boolean  opened;
     private final LocalizationManager localizationMng;
+    private GuiUtils guiUtils;
     @Inject
-    public About(final LocalizationManager localizationMng) {
+    public About(final LocalizationManager localizationMng,GuiUtils guiUtils) {
         this.localizationMng = localizationMng;
+        this.guiUtils = guiUtils;
     }
 
     public void showWindow(){
@@ -33,7 +35,7 @@ public class About {
             AnchorPane rootLayout = loader.load();
             Scene scene = new Scene(rootLayout);
             ImageView imageView = (ImageView) scene.lookup("#imgAbout");
-            imageView.setImage(GuiUtils.getImage("information",128,128));
+            imageView.setImage(guiUtils.getImage("information",128,128));
 
             Label appName =(Label) scene.lookup("#appName");
             appName.setText("LazyDroid 1.0");

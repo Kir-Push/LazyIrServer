@@ -65,8 +65,8 @@ public class ServiceModule {
 
     @Provides
     @Singleton
-    public MainController provideMainController(GuiCommunicator guiCommunicator, Dialogs dialogs, CommandsWindow commandsWindow,BackgroundService backgroundService){
-        return new MainController(guiCommunicator,dialogs,commandsWindow,backgroundService);
+    public MainController provideMainController(GuiCommunicator guiCommunicator, Dialogs dialogs, CommandsWindow commandsWindow,BackgroundService backgroundService,GuiUtils guiUtils){
+        return new MainController(guiCommunicator,dialogs,commandsWindow,backgroundService,guiUtils);
     }
 
     @Provides

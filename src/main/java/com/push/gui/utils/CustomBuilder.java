@@ -82,24 +82,18 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         int iconHeigh = notification.getIconlbl().getPreferredSize().height;
         int rightPanelHeigh = notification.getRightpanel().getPreferredSize().height;
         int textHeigh = notification.getTextlbl().getPreferredSize().height;
-        int maxHeighCalculated = textHeigh;
-        if(maxHeighCalculated < rightPanelHeigh)
-            maxHeighCalculated = rightPanelHeigh;
-        if(maxHeighCalculated < iconHeigh)
-            maxHeighCalculated = iconHeigh;
+        int localMax = (rightPanelHeigh > iconHeigh ? rightPanelHeigh : iconHeigh);
+        int maxHeighCalculated =textHeigh > localMax ? textHeigh : localMax;
         maxHeighCalculated += heihhtMagicNumber;
         String text = notification.getTextlbl().getText();
         int lastIndex = 0;
-        int count = 0;
+        int brLenght = "<br>".length();
         while(lastIndex != -1){
             lastIndex = text.indexOf("<br/>",lastIndex);
             if(lastIndex != -1){
-                count ++;
-                lastIndex += "<br>".length();
+                maxHeighCalculated += 5;
+                lastIndex += brLenght;
             }
-        }
-        for(int i =0;i<count;i++){
-            maxHeighCalculated += 5;
         }
         if(maxHeighCalculated > height/4)
             maxHeighCalculated = (int)(height/4);
@@ -116,7 +110,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
             calculatedWidth = (int) (width/6);
         }
         else if(calculatedWidth > width/3) {
-            calculatedWidth = (int) width/5; // test witch big text notifications
+            calculatedWidth = (int) width/5; // test with big text notifications
         }
         return calculatedWidth;
     }

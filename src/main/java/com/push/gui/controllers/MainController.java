@@ -36,6 +36,7 @@ public class MainController {
     private Dialogs dialogs;
     private CommandsWindow commandsWindow;
     GuiCommunicator guiCommunicator;
+    private GuiUtils guiUtils;
     private BackgroundService backgroundService;
 
     /**
@@ -43,11 +44,12 @@ public class MainController {
      * Конструктор вызывается раньше метода initialize().
      */
     @Inject
-    public MainController(GuiCommunicator guiCommunicator, Dialogs dialogs, CommandsWindow commandsWindow,BackgroundService backgroundService) {
+    public MainController(GuiCommunicator guiCommunicator, Dialogs dialogs, CommandsWindow commandsWindow,BackgroundService backgroundService,GuiUtils guiUtils) {
         this.guiCommunicator = guiCommunicator;
         this.dialogs = dialogs;
         this.commandsWindow = commandsWindow;
         this.backgroundService = backgroundService;
+        this.guiUtils = guiUtils;
         personList = new ListView<>();
         notifTList = new ListView<>();
     }
@@ -97,7 +99,7 @@ public class MainController {
                     setText(null);
                     setGraphic(null);
                 }else{
-                    Image image = GuiUtils.getImageByPaired(item.isPaired());
+                    Image image = guiUtils.getImageByPaired(item.isPaired());
                     imageView.setImage(image);
                     Text text = new Text();
                     text.setText(item.getName());
@@ -135,7 +137,7 @@ public class MainController {
                     vBox.setAlignment(Pos.CENTER_LEFT);
 
                     Button button = new Button();
-                    ImageView delete48 = new ImageView( GuiUtils.getImage("delete48",15,15));
+                    ImageView delete48 = new ImageView( guiUtils.getImage("delete48",15,15));
                     delete48.setPreserveRatio(true);
                     button.setGraphic(delete48);
                     button.setOnAction(event -> guiCommunicator.removeNotification(personList.getSelectionModel().getSelectedItem().getId(), item.getId()));
@@ -145,13 +147,13 @@ public class MainController {
                     listCellContents.setHgap(10);
 
                     if(item.getIcon()!= null) {
-                        ImageView icon = new ImageView(SwingFXUtils.toFXImage(GuiUtils.pictureFromBase64Swing(item.getIcon()),null));
+                        ImageView icon = new ImageView(SwingFXUtils.toFXImage(guiUtils.pictureFromBase64Swing(item.getIcon()),null));
                         icon.setFitHeight(50);
                         icon.setFitWidth(50);
                         listCellContents.add(icon, 0, 0);
                     }
                     if(item.getPicture() != null){
-                        ImageView picture = new ImageView(GuiUtils.pictureFromBase64(item.getPicture(),200,200));
+                        ImageView picture = new ImageView(guiUtils.pictureFromBase64(item.getPicture(),200,200));
                         listCellContents.add(picture, 2, 0);
                     }
 
@@ -199,7 +201,7 @@ public class MainController {
         VBox rootLayout = mainApp.getRootLayout();
 
         ImageView batteryImg = (ImageView) rootLayout.lookup("#batteryImg");
-        batteryImg.setImage(GuiUtils.getImageByBattery(newSelection.getBattery(),newSelection.isCharging()));
+        batteryImg.setImage(guiUtils.getImageByBattery(newSelection.getBattery(),newSelection.isCharging()));
         Label batteryText = (Label) rootLayout.lookup("#batteryText");
         batteryText.setText(newSelection.getBattery() + " %");
 
@@ -302,7 +304,7 @@ public class MainController {
        setMemoryText(0,0,0,0);
         VBox rootLayout = getMainApp().getRootLayout();
         ImageView batteryImg = (ImageView) rootLayout.lookup("#batteryImg");
-        batteryImg.setImage(GuiUtils.getImageByBattery(0,false));
+        batteryImg.setImage(guiUtils.getImageByBattery(0,false));
         Label batteryText = (Label) rootLayout.lookup("#batteryText");
         batteryText.setText("");
         Button pairedBtn = (Button) rootLayout.lookup("#pairBtn");

@@ -19,10 +19,12 @@ import java.io.IOException;
 public class Dialogs {
 
     private GuiCommunicator guiCommunicator;
+    private GuiUtils guiUtils;
 
     @Inject
-    public Dialogs(GuiCommunicator guiCommunicator) {
+    public Dialogs(GuiCommunicator guiCommunicator,GuiUtils guiUtils) {
         this.guiCommunicator = guiCommunicator;
+        this.guiUtils = guiUtils;
     }
 
     public void showAnswerMessenger(String id, NotificationDevice notification){
@@ -40,7 +42,7 @@ public class Dialogs {
         textArea.setText(notification.getText());
         if(notification.getPicture() != null) {
             ImageView imageView = (ImageView) scene.lookup("#messageImg");
-            imageView.setImage(GuiUtils.pictureFromBase64(notification.getIcon()));
+            imageView.setImage(guiUtils.pictureFromBase64(notification.getIcon()));
         }
 
         TextArea answerText = (TextArea) scene.lookup("#answerText");
