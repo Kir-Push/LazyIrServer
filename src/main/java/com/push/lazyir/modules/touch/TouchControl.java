@@ -1,8 +1,8 @@
 package com.push.lazyir.modules.touch;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.CacherOld;
+import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.main.BackgroundService;
 
@@ -32,7 +32,7 @@ public class TouchControl extends Module {
     private static volatile int lastY;
 
     @Inject
-    public TouchControl(BackgroundService backgroundService, Cacher cacher)  {
+    public TouchControl(BackgroundService backgroundService, CacherOld cacher)  {
         super(backgroundService, cacher);
         try {
             if(r == null)
@@ -45,7 +45,7 @@ public class TouchControl extends Module {
     }
 
     @Override
-    public void execute(NetworkPackage np) {
+    public void execute(NetworkPackageOld np) {
         String data = np.getData();
         staticLock.lock();
         try {

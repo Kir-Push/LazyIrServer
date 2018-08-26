@@ -7,7 +7,7 @@ public class MainClass {
 
     public static String selected_id;
     public static String broadcast_adress = "";
-    public static ConcurrentHashMap<Long,Process> startedProcesses = new ConcurrentHashMap<>();
+    public final static ConcurrentHashMap<Long,Process> startedProcesses = new ConcurrentHashMap<>();
 
 
     public static void main(BackgroundService backgroundService) { // main entry where started input output listening com.push.lazyir.gui & ipc thread and main thread;!

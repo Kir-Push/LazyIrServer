@@ -1,79 +1,58 @@
 package com.push.lazyir.modules.clipboard;
-
-import com.push.lazyir.modules.clipboard.Rmi.ClientRegister;
-import com.push.lazyir.modules.clipboard.Rmi.ClipboardRmiSeparateProcess;
+import com.push.lazyir.modules.clipboard.rmi.ClientRegister;
+import com.push.lazyir.modules.clipboard.rmi.ClipboardRmiSeparateProcess;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.rmi.RemoteException;
-
-/**
- * Created by buhalo on 11.07.17.
- */
 public class ClipboardJni {
 
-    private volatile boolean listening = false;
-    private static ClientRegister server;
+    private boolean listening = false;
+    private static ClientRegister clientServer;
 
-    public ClipboardJni() {
-    }
-
-    public ClipboardJni(String libend, ClientRegister server) {
+    public ClipboardJni(String libend) {
         try {
             System.load(new File(ClipboardRmiSeparateProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath()+ File.separator + "libServerClipboard" + libend);
-            ClipboardJni.server = server;
         } catch (URISyntaxException e) {
+            System.exit(1);
         }
     }
 
-    native public void startListener();
-    native public void stopListener();
-    native public String getClipboardText();
-    native public void setClipboardText(String text);
+    public static void setClientRegister(ClientRegister server) {
+        clientServer = server;
+    }
 
-    public static void clipboardChanged(String text)
-    {
-        if(server != null){
-            try {
-                server.receiveClipboard(text);
-            } catch (RemoteException e) {
+    public native void startListener();
+    public native void stopListener();
+    public native String getClipboardText();
+    public native void setClipboardText(String text);
 
-            }
+    public static void clipboardChanged(String text) {
+        if(clientServer != null) {
+            clientServer.receiveClipboard(text);
         }
     }
 
-    public void startListening()
-    {
-
-            if (listening) {
-                return;
-            }
-            listening = true;
+    public void startListening() {
+        if (listening) {
+            return;
+        }
+        listening = true;
         startListener();
     }
 
-    public void stopListening()
-    {
-
-            if (!listening) {
-                return;
-            }
-            listening = false;
-            stopListener();
-    }
-
-    public void setClipboardData(String text)
-    {
-        if(!listening)
-        {
+    public void stopListening() {
+        if (!listening) {
             return;
         }
-        try {
-            setClipboardText(text);
-        }catch (Throwable e)
-        {
-           e.printStackTrace();
+        listening = false;
+        stopListener();
+    }
+
+    public void setClipboardData(String text) {
+        if(!listening) {
+            return;
         }
+        setClipboardText(text);
     }
 
 }

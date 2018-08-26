@@ -21,12 +21,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.devices.NetworkPackage.N_OBJECT;
+import static com.push.lazyir.devices.NetworkPackageOld.N_OBJECT;
 import static com.push.lazyir.service.main.TcpConnectionManager.*;
 
 /* class represent thread & tcp connection for device
  listen for device commands and execute it's
- SENDING command to device, going in other thread's, but used this class instance*/
+ SENDING cmd to device, going in other thread's, but used this class instance*/
 public class ConnectionThread implements Runnable {
 
 
@@ -41,9 +41,9 @@ public class ConnectionThread implements Runnable {
         private SettingManager settingManager;
         private GuiCommunicator guiCommunicator;
         private ModuleFactory moduleFactory;
-        private Cacher cacher;
+        private CacherOld cacher;
 
-        public ConnectionThread(Socket socket,BackgroundService backgroundService,SettingManager settingManager,GuiCommunicator guiCommunicator,Cacher cacher,ModuleFactory moduleFactory) throws SocketException {
+        public ConnectionThread(Socket socket, BackgroundService backgroundService, SettingManager settingManager, GuiCommunicator guiCommunicator, CacherOld cacher, ModuleFactory moduleFactory) throws SocketException {
             this.connection = socket;
             this.backgroundService = backgroundService;
             this.settingManager = settingManager;
@@ -73,7 +73,7 @@ public class ConnectionThread implements Runnable {
                         connectionRun = false;
                         continue;
                     }
-                    NetworkPackage np =  cacher.getOrCreatePackage(clientCommand); // create netwrokPackge from income message, actually it's parsing json
+                    NetworkPackageOld np =  cacher.getOrCreatePackage(clientCommand); // create netwrokPackge from income message, actually it's parsing json
                     determineWhatTodo(np); // the name speaks for itself
                 }
             }catch (IOException e)
@@ -95,7 +95,7 @@ public class ConnectionThread implements Runnable {
     }
 
 
-    public void receivePairResult(NetworkPackage np)
+    public void receivePairResult(NetworkPackageOld np)
     {
         receivePairResult( np.getId(),np.getValue("answer").equals("paired") ? OK : REFUSE,np.getData());
         backgroundService.pairResultFromGui(np.getId(),OK,np.getData());
@@ -127,10 +127,10 @@ public class ConnectionThread implements Runnable {
      /*
      must important method based on package type determined what to do
      eat exception, we don't want to interrupt connection with device, so if something go wrong
-     forgot, because if Device always send wrong command's TCP_PING won't be executed, and device
+     forgot, because if Device always send wrong cmd's TCP_PING won't be executed, and device
      will be disconnected on next pingCheck
      * */
-        private void determineWhatTodo(NetworkPackage np)
+        private void determineWhatTodo(NetworkPackageOld np)
         {
                 String type = np.getType();
                 if (deviceId == null && !type.equals(TCP_INTRODUCE)) {
@@ -169,15 +169,15 @@ public class ConnectionThread implements Runnable {
         }
 
     /*
-    receive list of enabledModules from Device
+    receive list of enabledModulesConfig from Device
     * */
-    private void receiveEnabledModules(NetworkPackage np) {
+    private void receiveEnabledModules(NetworkPackageOld np) {
         ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
         lock.lock();
         try {
         Device device = backgroundService.getConnectedDevices().get(np.getId());
         if(device != null){
-            device.refreshEnabledModules(object.getModuleSettingList());
+            device.refreshEnabledModules(object.getSettingList());
         }
         }finally {
             lock.unlock();
@@ -198,10 +198,10 @@ public class ConnectionThread implements Runnable {
     private void sendIntroduce() {
         try {
             String temp =String.valueOf(InetAddress.getLocalHost().getHostName().hashCode());
-            NetworkPackage networkPackage =  cacher.getOrCreatePackage(TCP_INTRODUCE,temp);
+            NetworkPackageOld networkPackage =  cacher.getOrCreatePackage(TCP_INTRODUCE,temp);
 
             ModuleSettingList moduleSettingList = new ModuleSettingList();
-            moduleSettingList.setModuleSettingList(new ArrayList<>(backgroundService.getMyEnabledModules().values()));
+            moduleSettingList.setSettingList(new ArrayList<>(backgroundService.getMyEnabledModules().values()));
             networkPackage.setObject(N_OBJECT,moduleSettingList);  // set myModuleConfig's to introduce package, android do the same
 
             printToOut(networkPackage.getMessage());
@@ -210,7 +210,7 @@ public class ConnectionThread implements Runnable {
         }
     }
 
-        private void newConnectedDevice(NetworkPackage np)
+        private void newConnectedDevice(NetworkPackageOld np)
         {
             lock.lock();
             try {
@@ -223,7 +223,8 @@ public class ConnectionThread implements Runnable {
                     return;
                 }
                 ModuleSettingList object = np.getObject(N_OBJECT, ModuleSettingList.class);
-                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getModuleSettingList(),moduleFactory);
+                Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this,object.getSettingList(),moduleFactory);
+                device.enableModules();
                 backgroundService.getConnectedDevices().put(deviceId, device);
                 String data = np.getData();
                 String pair = backgroundService.getSettingManager().get(deviceId);
@@ -259,11 +260,11 @@ public class ConnectionThread implements Runnable {
         }
         }
 
-        private void pair(NetworkPackage np) {
+        private void pair(NetworkPackageOld np) {
             reguestPair(np);
         }
 
-      private void reguestPair(NetworkPackage np) {
+      private void reguestPair(NetworkPackageOld np) {
         guiCommunicator.requestPair(np);
     }
 
@@ -286,7 +287,7 @@ public class ConnectionThread implements Runnable {
         //    BackgroundService.sendUdpPing(Device.getConnectedDevices().get(deviceId).getIp(),BackgroundService.getPort(),message);
         }
 
-        public void commandFromClient(NetworkPackage np)
+        public void commandFromClient(NetworkPackageOld np)
         {
             lock.lock();
             try {

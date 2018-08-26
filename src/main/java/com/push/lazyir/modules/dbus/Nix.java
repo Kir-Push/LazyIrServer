@@ -1,234 +1,208 @@
 package com.push.lazyir.modules.dbus;
 
-import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackage;
-
+import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.push.lazyir.modules.dbus.DbusCommandFabric.volume;
-import static com.push.lazyir.modules.dbus.Mpris.*;
 
 /**
- * Created by buhalo on 15.08.17.
+ *  strategy for nix which have dbus
  */
-// strategy for nix which have dbus
+@Slf4j
 public class Nix implements OsStrategy {
-
+    private static final String LENGTH = "length";
+    private static final String TITLE = "title";
+    private final String[] getAllMpris = {"/bin/sh", "-c", DbusCommandFabric.getGetAll()};
     private ConcurrentHashMap<String,String> pausedPlayers = new ConcurrentHashMap<>();
 
     @Override
-    public void seek(NetworkPackage np) {
-        String playerValue = np.getValue(player);
-        String seekValue = np.getValue(seek);
-        Long ss = Long.valueOf(seekValue);
-        ss *= 1000000;
-        seekValue = Long.toString(ss);
-        dbusSend(DbusCommandFabric.seek(playerValue, seekValue));
-
+    public void seek(MprisDto dto){
+        long seekValue = (long)dto.getDValue();
+        seekValue *= 1000000;
+        dbusSend(DbusCommandFabric.seek(dto.getPlayer(), Long.toString(seekValue)));
     }
 
     @Override
-    public void stop(NetworkPackage np) {
-        String playerValue = np.getValue(player);
-        dbusSend(DbusCommandFabric.stop(playerValue));
+    public void stop(MprisDto dto) {
+        dbusSend(DbusCommandFabric.stop(dto.getPlayer()));
     }
 
     @Override
-    public void next(NetworkPackage np) {
-        String playerValue = np.getValue(player);
-        dbusSend(DbusCommandFabric.next(playerValue));
+    public void next(MprisDto dto) {
+        dbusSend(DbusCommandFabric.next(dto.getPlayer()));
     }
 
     @Override
-    public void previous(NetworkPackage np) {
-        String playerValue = np.getValue(player);
-        dbusSend(DbusCommandFabric.previous(playerValue));
+    public void previous(MprisDto dto) {
+        dbusSend(DbusCommandFabric.previous(dto.getPlayer()));
     }
 
     @Override
-    public void playPause(NetworkPackage np) {
-        String playerValue = np.getValue(player);
-        dbusSend(DbusCommandFabric.playPause(playerValue));
+    public void playPause(MprisDto dto) {
+        dbusSend(DbusCommandFabric.playPause(dto.getPlayer()));
     }
 
     @Override
-    public void openUri(NetworkPackage np) {
-        String playerValue = np.getValue(player);
-        String uri = np.getValue(openUri);
-        dbusSend(DbusCommandFabric.openUri(playerValue,uri));
+    public void openUri(MprisDto dto) {
+        dbusSend(DbusCommandFabric.openUri(dto.getPlayer(),dto.getValue()));
     }
 
     @Override
-    public void setPosition(NetworkPackage np) {
-        String playerValue = np.getValue(player);
-        String pos = np.getValue("position");
-        String path = np.getValue("path");
-        dbusSend(DbusCommandFabric.setPosition(playerValue,path,pos));
+    public void setPosition(MprisDto dto) {
+        dbusSend(DbusCommandFabric.setPosition(dto.getPlayer(),dto.getValue(),Double.toString(dto.getDValue())));
     }
 
     @Override
-    public void setVolume(NetworkPackage np) {
-        String playerValue = np.getValue(player);
-        String volumeVal = np.getValue(volume);
-        dbusSend(DbusCommandFabric.setVolume(playerValue,volumeVal));
+    public void setVolume(MprisDto dto) {
+        dbusSend(DbusCommandFabric.setVolume(dto.getPlayer(),Double.toString(dto.getDValue())));
+    }
+
+    @Override
+    public void loop(MprisDto dto) {
+        //todo
     }
 
     @Override
     public List<Player> getAllPlayers() {
         List<Player> playerList = new ArrayList<>();
+        Process exec = null;
         try {
-            Process exec = Runtime.getRuntime().exec(getAllMpris);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
-                String temp;
-                while ((temp = reader.readLine()) != null) {
-                    String org = temp.substring(temp.indexOf("org"), temp.length() - 1);
-                    playerList.add(fillPlayer(org));
-                }
+            exec = Runtime.getRuntime().exec(getAllMpris);
+            @Cleanup BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()));
+            String temp;
+            while ((temp = reader.readLine()) != null) {
+                String org = temp.substring(temp.indexOf("org"), temp.length() - 1);
+                playerList.add(fillPlayer(org));
             }
-        }catch (IOException e)
-        {
-            Loggout.e("Nix","getAllPlayers",e);
+        }catch (IOException e) {
+            log.error("error while getAllPlayers",e);
+            if(exec != null){
+                exec.destroyForcibly();
+            }
         }
         return playerList;
     }
 
     @Override
-    public void playAll(String id) {
-        for(String player : pausedPlayers.keySet())
-        {
-            String playStatus = getPlayStatus(DbusCommandFabric.getPlaybackstatus(player));
-            if(playStatus.equalsIgnoreCase("paused"))
-                dbusSend(DbusCommandFabric.playPause(player));
-        }
+    public void playAll() {
+        pausedPlayers.keySet().stream()
+                .filter(player -> getPlayStatus(DbusCommandFabric.getPlaybackstatus(player)).equalsIgnoreCase("paused"))
+                .forEach(player -> dbusSend(DbusCommandFabric.playPause(player)));
         pausedPlayers.clear();
     }
 
     @Override
-    public void pauseAll(String id) {
-        try {
-            Process exec = Runtime.getRuntime().exec(getAllMpris);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()))) {
-                String temp;
-                while ((temp = reader.readLine()) != null) {
-                    String org = temp.substring(temp.indexOf("org"), temp.length() - 1);
-                    Player player = fillPlayer(org);
-                    if (player.getPlaybackStatus().equalsIgnoreCase("playing")) {
-                        dbusSend(DbusCommandFabric.playPause(player.getName()));
-                        pausedPlayers.put(player.getName(), player.getPlaybackStatus());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            Loggout.e("Nix", "pauseAll",e);
-        }
+    public void pauseAll() {
+        List<Player> allPlayers = getAllPlayers();
+        allPlayers.stream()
+                .filter(player -> player.getStatus().equalsIgnoreCase("playing"))
+                .forEach(player -> {
+                    String name = player.getName();
+                    dbusSend(DbusCommandFabric.playPause(name));
+                    pausedPlayers.put(name, player.getStatus());
+                });
     }
-
-
-    private Process dbusSend(String message)
-    {
+    /**
+     *
+     * @return process or null, be careful
+     */
+    private Process dbusSend(String message) {
         try {
             return Runtime.getRuntime().exec(message);
-        } catch (Exception e) {
-            Loggout.e("Nix","dbusSend",e);
+        } catch (IOException e) {
+            log.error("dbusSend error",e);
             return null;
         }
     }
 
     private Player fillPlayer(String org) {
-        try {
-            String status = getPlayStatus(DbusCommandFabric.getPlaybackstatus(org));
-            HashMap<String, String> metadata = getMetadata(DbusCommandFabric.getMetadata(org));
-            String volumeStr = getVolume(DbusCommandFabric.getVolume(org));
-            String currTimeStr = getTime(DbusCommandFabric.getPosition(org));
-            String lenghtStr = metadata.get("lenght");
-            double volume = volumeStr == null ? 0 : (Double.parseDouble(volumeStr) * 100);
-            double currTime = currTimeStr == null ? 0 : ((currTime = Double.parseDouble(currTimeStr)) < 1000000 ? 0 : currTime / 1000000);
-            double lenght = lenghtStr == null ? 0 : ((lenght = Double.parseDouble(lenghtStr)) < 1000000 ? 0 : lenght / 1000000);
-            String readyTime = ((int)currTime) / 60 + ":" + ((int)currTime) % 60 + " / " + ((int)lenght)/60 + ":" + ((int)lenght) % 60;
-            return new Player(org, status, metadata.get("title"), lenght, volume, currTime, readyTime);
-        }catch (Exception e){
-            return new Player(org,"","",0,0,0,"0/0");
-        }
+        String status = getPlayStatus(DbusCommandFabric.getPlaybackstatus(org));
+        Map<String, String> metadata = getMetadata(DbusCommandFabric.getMetadata(org));
+        double volume = getVolume(DbusCommandFabric.getVolume(org));
+        double currTime = getTime(DbusCommandFabric.getPosition(org));
+        String lengthStr = metadata.get(LENGTH);
+        double length = lengthStr == null ? 0 : Double.parseDouble(lengthStr);
+        length = length < 1000000 ? 0 : length / 1000000;
+        return new Player(org, status, metadata.get(TITLE), length, volume, currTime);
     }
 
-    @Override
-    public void loop(NetworkPackage np) {
-        //todo
-    }
-
-    private String getTime(String org) {
+    private double getTime(String org) {
         StringBuilder result = new StringBuilder();
-        getResultFromexec(org).forEach(result::append);
-        return result.substring(result.indexOf("int64 ") + 6);
+        getResultFromExec(org).forEach(result::append);
+        String time = result.substring(result.indexOf("int64 ") + 6);
+        double currTime = time == null ? 0 : Double.parseDouble(time);
+        return currTime < 1000000 ? 0 : currTime / 1000000;
     }
 
-    private String getVolume(String org) {
+    private double getVolume(String org) {
         StringBuilder result = new StringBuilder();
-        getResultFromexec(org).forEach(result::append);
-        return result.substring(result.indexOf("double ") + 7);
+        getResultFromExec(org).forEach(result::append);
+        String volume = result.substring(result.indexOf("double ") + 7);
+        return volume == null ? 0 : (Double.parseDouble(volume) * 100);
     }
 
-    private HashMap<String, String> getMetadata(String metadata) {
+    private Map<String, String> getMetadata(String metadata) {
         HashMap<String,String> result = new HashMap<>();
-        result.put("artist","");
-        List<String> resultFromexec = getResultFromexec(metadata);
-        for(int i=0;i<resultFromexec.size();i++)
-        {
-            if(resultFromexec.get(i).contains("mpris:length") && ++i < resultFromexec.size())
-            {
-                String temp = resultFromexec.get(i);
-                int indx = temp.indexOf("int64 ");
-                if(indx != -1)
-                    result.put("lenght",temp.substring(indx+6));
-                else if((indx = temp.indexOf("double ")) != -1)
-                {
-                    result.put("lenght",temp.substring(indx+7));
-                }
-            } else if(resultFromexec.get(i).contains("mpris:trackid") && ++i < resultFromexec.size())
-            {
-                String temp = resultFromexec.get(i);
-                result.put("object path",temp.substring(temp.indexOf("object path ")+13,temp.length()-1)); // for delete quotes
-            } else if(resultFromexec.get(i).contains("title") && ++i < resultFromexec.size())
-            {
-                String temp = resultFromexec.get(i);
-                result.put("title",temp.substring(temp.indexOf("string ")+8,temp.length()-1));
-            } else if(resultFromexec.get(i).contains("artist") && (i+=2) < resultFromexec.size())
-            {
-                String temp = resultFromexec.get(i);
-                try {
-                    result.put("artist",temp.trim().substring(temp.indexOf("string ") + 7));
-                }catch (NullPointerException e) {
-                    result.put("artist","");
-                }
+        List<String> resultFromexec = getResultFromExec(metadata);
+        int i = 1;
+        while (i < resultFromexec.size()){
+            if(resultFromexec.get(i-1).contains("mpris:LENGTH")) {
+                result.put(LENGTH,extractLength(resultFromexec.get(i)));
+                i++;
+            } else if(resultFromexec.get(i-1).contains(TITLE)) {
+                result.put(TITLE,extractTitle(resultFromexec.get(i)));
+                i++;
             }
+            i++;
         }
         return result;
+    }
+
+    private String extractTitle(String temp) {
+        return temp.substring(temp.indexOf("string ")+8,temp.length()-1);
+    }
+
+    private String extractLength(String temp) {
+        int indx = temp.indexOf("int64 ");
+        if(indx != -1) {
+            return temp.substring(indx+6);
+        }
+        indx = temp.indexOf("double ");
+        if(indx != -1){
+            return temp.substring(indx+7);
+        }
+        return null;
     }
 
 
     private String getPlayStatus(String org) {
         StringBuilder result = new StringBuilder();
-        getResultFromexec(org).forEach(result::append);
-        return result.substring(result.indexOf("string ") + 8,result.length()-1); //magic number is double string lenght
+        getResultFromExec(org).forEach(result::append);
+        return result.substring(result.indexOf("string ") + 8,result.length()-1); //magic number is double string LENGTH
     }
 
-    private List<String> getResultFromexec(String org)
-    {
+    private List<String> getResultFromExec(String org) {
         List<String> result = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(dbusSend(org).getInputStream()))) {
+        Process process = dbusSend(org);
+        if(process == null) {
+            return result;
+        }
+        try{
+        @Cleanup BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String temp;
             while ((temp = reader.readLine()) != null) {
                 result.add(temp);
             }
         }catch (IOException e) {
-            Loggout.e("Nix","getResultFromExe",e);
+            log.error("error in getResultFromExec - " + org,e);
+            process.destroyForcibly();
         }
         return result;
     }

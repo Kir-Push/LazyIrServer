@@ -67,7 +67,7 @@ public class GuiUtils {
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(dencodedImg));
             return new ImageIcon(image.getScaledInstance(width,height,java.awt.Image.SCALE_SMOOTH));
         } catch (IOException e) {
-            log.error(" pictureFromBase64Swing(String base64,int width,int height)",e);
+            log.error(" pictureFromBase64Swing -width: "+ width + " height: "+height,e);
            return null;
         }
     }
@@ -95,7 +95,7 @@ public class GuiUtils {
         try {
             return new ImageIcon(ImageIO.read(ClassLoader.getSystemResource( "icons/"+file+".png" )).getScaledInstance(width,height,java.awt.Image.SCALE_SMOOTH));
         } catch (IOException e) {
-          log.error("getIconByFileName",e);
+          log.error("getIconByFileName - "+ file + " width: "+ width + " height: "+ height,e);
             return null;
         }
     }

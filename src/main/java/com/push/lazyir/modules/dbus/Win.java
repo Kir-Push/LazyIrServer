@@ -1,6 +1,5 @@
 package com.push.lazyir.modules.dbus;
 
-import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.modules.dbus.strategies.win.Strategy;
 import com.push.lazyir.modules.dbus.strategies.win.Vlc;
 import com.push.lazyir.service.managers.settings.SettingManager;
@@ -9,125 +8,117 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.push.lazyir.modules.dbus.Mpris.*;
-
-/**
- * Created by buhalo on 16.08.17.
- */
 public class Win implements OsStrategy {
     private ConcurrentHashMap<String,Strategy> strategies;
     private ConcurrentHashMap<String,String> pausedPlayersWin = new ConcurrentHashMap<>();
-    private SettingManager settingManager;
 
     public Win(SettingManager settingManager) {
-        this.settingManager = settingManager;
-            strategies = new ConcurrentHashMap<>();
-            strategies.put("vlc",new Vlc(settingManager));
+        strategies = new ConcurrentHashMap<>();
+        strategies.put("vlc",new Vlc(settingManager));
     }
 
     @Override
-    public void seek(NetworkPackage np) {
-        setPosition(np);
+    public void seek(MprisDto dto) {
+        setPosition(dto);
     }
 
     @Override
-    public void stop(NetworkPackage np) {
-        String npValue = np.getValue(player);
-        Strategy strategy = strategies.get(npValue.substring(0, 3));
-        strategy.stop(npValue);
+    public void stop(MprisDto dto) {
+        String player = dto.getPlayer();
+        getStrategy(player).stop(player);
     }
 
     @Override
-    public void next(NetworkPackage np) {
-        String npValue = np.getValue(player);
-        Strategy strategy = strategies.get(npValue.substring(0, 3));
-        strategy.next(npValue);
+    public void next(MprisDto dto) {
+        String player = dto.getPlayer();
+        getStrategy(player).next(player);
     }
 
     @Override
-    public void previous(NetworkPackage np) {
-        String npValue = np.getValue(player);
-        Strategy strategy = strategies.get(npValue.substring(0, 3));
-        strategy.previous(npValue);
+    public void previous(MprisDto dto) {
+        String player = dto.getPlayer();
+        getStrategy(player).previous(player);
     }
 
     @Override
-    public void playPause(NetworkPackage np) {
-        String npValue = np.getValue(player);
-        Strategy strategy = strategies.get(npValue.substring(0, 3));
-        strategy.playPause(npValue);
+    public void playPause(MprisDto dto) {
+        String player = dto.getPlayer();
+        getStrategy(player).playPause(player);
     }
 
     @Override
-    public void openUri(NetworkPackage np) {
-        String npValue = np.getValue(player);
-        Strategy strategy = strategies.get(npValue.substring(0, 3));
-        strategy.openUri(npValue,np.getValue(openUri));
+    public void openUri(MprisDto dto) {
+        String player = dto.getPlayer();
+        getStrategy(player).openUri(player,dto.getValue());
     }
 
     @Override
-    public void setPosition(NetworkPackage np) {
-        String npValue = np.getValue(player);
-        Strategy strategy = strategies.get(npValue.substring(0, 3));
-        strategy.seek(npValue,np.getValue(seek));
+    public void setPosition(MprisDto dto) {
+        String player = dto.getPlayer();
+        getStrategy(player).seek(player,Double.toString(dto.getDValue()));
     }
 
     @Override
-    public void setVolume(NetworkPackage np) {
-        String npValue = np.getValue(player);
-        Strategy strategy = strategies.get(npValue.substring(0, 3));
-        strategy.setVolume(npValue,np.getValue(volume));
+    public void setVolume(MprisDto dto) {
+        String player = dto.getPlayer();
+        getStrategy(player).setVolume(player,dto.getDValue());
     }
 
     @Override
-    public void loop(NetworkPackage np) {
+    public void loop(MprisDto dto) {
         //todo
     }
 
     @Override
     public List<Player> getAllPlayers() {
         List<Player> playerList = new ArrayList<>();
-        for (Strategy strategy : strategies.values()) {
+        strategies.values().forEach(strategy -> {
             if (!strategy.checkStatus()) {
-                strategy.Tryinitiate();
+                strategy.initiate();
+            }else{
+                playerList.addAll(strategy.getGetAll());
             }
-            else
-            {
-                playerList.addAll(strategy.getGetAll().getPlayerList());
-            }
-        }
+        });
         return playerList;
     }
 
     @Override
-    public void playAll(String id) {
-        for (String s : pausedPlayersWin.keySet()) {
-            String strategyType = s.substring(0, 2);
-            Strategy strategy = strategies.get(strategyType);
-            if (!strategy.checkStatus())
+    public void playAll() {
+        pausedPlayersWin.keySet().forEach(player -> {
+            Strategy strategy = strategies.get(player.substring(0, 2));
+            if(!strategy.checkStatus()){
                 strategy.initiate();
-            String playbackStatus = strategy.getOnePlayer().getPlaybackStatus();
-            if(playbackStatus.equalsIgnoreCase("pause"))
-                strategy.playPause(s);
-        }
+            }
+            if(strategy.getOnePlayer().getStatus().equalsIgnoreCase("pause")){
+                strategy.playPause(player);
+            }
+        });
         pausedPlayersWin.clear();
     }
 
     @Override
-    public void pauseAll(String id) {
-        for (Strategy strategy : strategies.values()) {
-            if (!strategy.checkStatus()) {
-                strategy.initiate();
-                List<Player> playerList = strategy.getGetAll().getPlayerList();
-                for (Player pl : playerList) {
-                    if (pl.getPlaybackStatus().equalsIgnoreCase("playing") || pl.getPlaybackStatus().equalsIgnoreCase("play"))
-                    {
-                        pausedPlayersWin.put(pl.getName(), pl.getPlaybackStatus());
-                        strategy.playPause(pl.getName());
+    public void pauseAll() {
+        strategies.values()
+                .forEach(strategy -> {
+                    if(!strategy.checkStatus()) {
+                        strategy.initiate();
                     }
-                }
-            }
-        }
+                    strategy.getGetAll()
+                            .stream()
+                            .filter(player -> {
+                                String status = player.getStatus();
+                                return  (status.equalsIgnoreCase("play") || status.equalsIgnoreCase("playing"));
+                            })
+                            .forEach(player -> {
+                                String name = player.getName();
+                                pausedPlayersWin.put(name, player.getStatus());
+                                strategy.playPause(name);
+                            });
+                });
+    }
+
+    private Strategy getStrategy(String player){
+        return strategies.get(player.substring(0, 3));
     }
 
     @Override

@@ -7,8 +7,8 @@ import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.gui.GuiCommunicator;
-import com.push.lazyir.modules.sync.SynchroModule;
-import com.push.lazyir.pojo.Command;
+import com.push.lazyir.modules.command.SendCommand;
+import com.push.lazyir.modules.command.Command;
 import com.push.lazyir.service.main.BackgroundService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.HPos;
@@ -23,7 +23,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.util.Set;
 
 
 public class MainController {
@@ -35,7 +35,7 @@ public class MainController {
     private MainWin mainApp;
     private Dialogs dialogs;
     private CommandsWindow commandsWindow;
-    GuiCommunicator guiCommunicator;
+    private GuiCommunicator guiCommunicator;
     private GuiUtils guiUtils;
     private BackgroundService backgroundService;
 
@@ -198,6 +198,7 @@ public class MainController {
     }
 
     void onSelectDevice(PhoneDevice newSelection){
+        String id = newSelection.getId();
         VBox rootLayout = mainApp.getRootLayout();
 
         ImageView batteryImg = (ImageView) rootLayout.lookup("#batteryImg");
@@ -208,35 +209,35 @@ public class MainController {
         Button pairedBtn = (Button) rootLayout.lookup("#pairBtn");
         if(newSelection.isPaired()){
             pairedBtn.setText("Unpair");
-            pairedBtn.setOnAction(event -> guiCommunicator.unPair(newSelection.getId()));
+            pairedBtn.setOnAction(event -> guiCommunicator.unPair(id));
         }else{
             pairedBtn.setText("Pair");
-            pairedBtn.setOnAction(event -> guiCommunicator.pair(newSelection.getId()));
+            pairedBtn.setOnAction(event -> guiCommunicator.pair(id));
         }
 
 
         Button reconnect = (Button) rootLayout.lookup("#reconnectBtn");
-        reconnect.setOnAction(event -> guiCommunicator.reconnect(newSelection.getId()));
+        reconnect.setOnAction(event -> guiCommunicator.reconnect(id));
 
 
         Button mount = (Button) rootLayout.lookup("#mountBtn");
         if(newSelection.isMounted()){
             mount.setText("Unmount");
-            mount.setOnAction(event -> guiCommunicator.unMount(newSelection.getId()));
+            mount.setOnAction(event -> guiCommunicator.unMount(id));
         }else{
             mount.setText("Mount");
-            mount.setOnAction(event -> guiCommunicator.mount(newSelection.getId()));
+            mount.setOnAction(event -> guiCommunicator.mount(id));
         }
 
         Button commandsButtn = (Button) rootLayout.lookup("#CommandsBtn");
         commandsButtn.setOnAction(event -> {
-            backgroundService.getModuleById(newSelection.getId(),SynchroModule.class).sendGetAllCommands(newSelection.getId());
-            commandsWindow.showWindow(newSelection.getId());
+            backgroundService.getModuleById(id, SendCommand.class).sendGetAllCommands();
+            commandsWindow.showWindow(id);
         });
 
 
         Button ping = (Button) rootLayout.lookup("#pingBtn");
-        ping.setOnAction(event -> guiCommunicator.ping(newSelection.getId()));
+        ping.setOnAction(event -> guiCommunicator.ping(id));
 
         setMemoryText(newSelection.getFreeSpace(),newSelection.getTotalSpace(),newSelection.getFreeSpaceExt(),newSelection.getTotalSpaceExt());
 
@@ -292,7 +293,7 @@ public class MainController {
         return notifTList;
     }
 
-    void setCommands(List<Command> commands, String id) {
+    void setCommands(Set<Command> commands, String id) {
         commandsWindow.receiveCommands(commands,id);
     }
 

@@ -1,8 +1,8 @@
 package com.push.lazyir.modules.notifications.messengers;
 
-import com.push.lazyir.devices.Cacher;
+import com.push.lazyir.devices.CacherOld;
 import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
@@ -20,15 +20,15 @@ public class Messengers extends Module {
     private GuiCommunicator guiCommunicator;
 
     @Inject
-    public Messengers(BackgroundService backgroundService, Cacher cacher, GuiCommunicator guiCommunicator) {
+    public Messengers(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator) {
         super(backgroundService, cacher);
         this.guiCommunicator = guiCommunicator;
     }
 
     @Override
-    public void execute(NetworkPackage np) {
+    public void execute(NetworkPackageOld np) {
         if(np.getData().equals(ANSWER)) {
-            Notification message = np.getObject(NetworkPackage.N_OBJECT, Notification.class);
+            Notification message = np.getObject(NetworkPackageOld.N_OBJECT, Notification.class);
             guiCommunicator.show_notification(device.getId(),message);
         }
     }
@@ -40,13 +40,13 @@ public class Messengers extends Module {
 
     public void sendAnswer(String typeName,String text,String id)
     {
-        NetworkPackage np =  cacher.getOrCreatePackage(Messengers.class.getSimpleName(),ANSWER);
+        NetworkPackageOld np =  cacher.getOrCreatePackage(Messengers.class.getSimpleName(),ANSWER);
         np.setValue("typeName",typeName);
         np.setValue("text",text);
         backgroundService.sendToDevice(id,np.getMessage());
     }
 
-    public boolean isCalling(Notification not, Device device, NetworkPackage np, boolean isReceive) {
+    public boolean isCalling(Notification not, Device device, NetworkPackageOld np, boolean isReceive) {
         if(checkForIncomingCall(np,not)) {
             if(isReceive)
                 pauseAll(np.getId(),device);
@@ -74,33 +74,33 @@ public class Messengers extends Module {
         }
     }
 
-    private void playAll(String id, Device device) {
+    private void playAll(Device device) {
         Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
         if (mpris != null)
-            mpris.playAll(id);
+            mpris.playAll();
     }
 
-    private void pauseAll(String id,Device device){
+    private void pauseAll(Device device){
         Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
         if (mpris != null)
-            mpris.pauseAll(id);
+            mpris.pauseAll();
     }
 
-    private boolean checkForGoingCall(NetworkPackage np, Notification not) {
+    private boolean checkForGoingCall(NetworkPackageOld np, Notification not) {
         String type = getCallType( not.getPack(),not.getId(),not.getText());
         if(type.equalsIgnoreCase("ongoing"))
             return true;
         return false;
     }
 
-    private boolean checkForOutcomingCall(NetworkPackage np, Notification not) {
+    private boolean checkForOutcomingCall(NetworkPackageOld np, Notification not) {
         String type = getCallType( not.getPack(),not.getId(),not.getText());
         if(type.equalsIgnoreCase("outcoming"))
             return true;
         return false;
     }
 
-    private boolean checkForIncomingCall(NetworkPackage np, Notification not) {
+    private boolean checkForIncomingCall(NetworkPackageOld np, Notification not) {
         String type = getCallType( not.getPack(),not.getId(),not.getText());
         if(type.equalsIgnoreCase("incoming"))
             return true;

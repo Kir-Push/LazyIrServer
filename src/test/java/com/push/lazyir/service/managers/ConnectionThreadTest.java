@@ -74,7 +74,7 @@ public class ConnectionThreadTest {
 //    @Test
 //    public void determineWhatTodo() throws Exception {
 //        setUpInOut();
-//        connectionThread.determineWhatTodo(new NetworkPackage("{\"id\":\"buhalo-MS-78172\",\"name\":\"buhalo2\",\"type\":\"tcpIntroduce\",\"data\":\"407820240\"}"));
+//        connectionThread.determineWhatTodo(new NetworkPackageOld("{\"id\":\"buhalo-MS-78172\",\"name\":\"buhalo2\",\"type\":\"tcpIntroduce\",\"data\":\"407820240\"}"));
 //        System.out.println( byteArrayOutputStream.toString());
 //    }
 

@@ -3,13 +3,11 @@ package com.push.lazyir.modules.battery;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.service.main.BackgroundService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class BatteryTest {
@@ -35,7 +33,7 @@ class BatteryTest {
 //            assertEquals(invocation.getArguments()[0].toString().equals(test),invocation.getArguments()[1].toString().equals(test2));
 //            return "";
 //        }).when(guiCommunicatorMock).batteryStatus(anyString(),anyString(),any());
-//        NetworkPackage orCreatePackage = NetworkPackage.Cacher.getOrCreatePackage(Battery.class.getSimpleName(),"data");
+//        NetworkPackageOld orCreatePackage = NetworkPackageOld.CacherOld.getOrCreatePackage(Battery.class.getSimpleName(),"data");
 //        orCreatePackage.setValue(Battery.api.percentage.name(),test);
 //        orCreatePackage.setValue(Battery.api.status.name(),test2);
 //        battery.execute(orCreatePackage);

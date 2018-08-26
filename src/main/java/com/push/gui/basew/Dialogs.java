@@ -63,7 +63,7 @@ public class Dialogs {
         });
             stage.show();
         } catch (IOException e) {
-            log.error("showMessage",e);
+            log.error("showAnswerMessenger id - " + id + " NotificationDevice - " + notification,e);
         }
     }
 }

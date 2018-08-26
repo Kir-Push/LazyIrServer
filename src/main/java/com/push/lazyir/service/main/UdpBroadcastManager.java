@@ -3,9 +3,9 @@ package com.push.lazyir.service.main;
 
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Cacher;
+import com.push.lazyir.devices.CacherOld;
 import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.gui.GuiCommunicator;
 
 import java.io.IOException;
@@ -37,9 +37,9 @@ public class UdpBroadcastManager  {
     private Lock lock = new ReentrantLock();
     private BackgroundService backgroundService;
     private GuiCommunicator guiCommunicator;
-    private Cacher cacher;
+    private CacherOld cacher;
 
-    public UdpBroadcastManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, Cacher cacher) {
+    public UdpBroadcastManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, CacherOld cacher) {
         this.backgroundService = backgroundService;
         this.guiCommunicator = guiCommunicator;
         this.cacher = cacher;
@@ -138,7 +138,7 @@ public class UdpBroadcastManager  {
     private void broadcastReceived(DatagramPacket packet) throws UnknownHostException
     {
         String pck = new String(packet.getData(),packet.getOffset(),packet.getLength());
-        NetworkPackage np =  cacher.getOrCreatePackage(pck);
+        NetworkPackageOld np =  cacher.getOrCreatePackage(pck);
         String myid = getMyId();
        if(np.getType().equals(BROADCAST_INTRODUCE) && !np.getId().equals(myid))
         {
@@ -158,7 +158,7 @@ public class UdpBroadcastManager  {
     public void sendUdp(InetAddress address, int port) {
         lock.lock();
         try {
-            NetworkPackage np =  cacher.getOrCreatePackage(BROADCAST_INTRODUCE, BROADCAST_INTRODUCE_MSG);
+            NetworkPackageOld np =  cacher.getOrCreatePackage(BROADCAST_INTRODUCE, BROADCAST_INTRODUCE_MSG);
             String fromTypeAndData = np.getMessage();
             if (fromTypeAndData == null)
                 return;
@@ -193,7 +193,7 @@ public class UdpBroadcastManager  {
         }
     }
 
-    public void addToNeighboors(NetworkPackage np)
+    public void addToNeighboors(NetworkPackageOld np)
     {
     }
 

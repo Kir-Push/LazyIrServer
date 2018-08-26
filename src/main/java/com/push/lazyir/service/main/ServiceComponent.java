@@ -5,6 +5,7 @@ import com.push.gui.basew.MainWin;
 import com.push.gui.basew.SettingsWindow;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.CustomNotification;
+import com.push.lazyir.api.DtoSerializer;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
 import dagger.Component;
@@ -31,4 +32,6 @@ public interface ServiceComponent {
     LocalizationManager provideLocalizationManager();
 
     ModuleComponent getModuleComponent();
+
+
 }

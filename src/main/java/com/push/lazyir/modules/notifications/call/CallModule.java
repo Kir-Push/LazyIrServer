@@ -1,8 +1,8 @@
 package com.push.lazyir.modules.notifications.call;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.CacherOld;
+import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
@@ -31,7 +31,7 @@ public class CallModule extends Module {
 
 
     @Inject
-    public CallModule(BackgroundService backgroundService, Cacher cacher, GuiCommunicator guiCommunicator, SettingManager settingManager) {
+    public CallModule(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator, SettingManager settingManager) {
         super(backgroundService, cacher);
         this.guiCommunicator = guiCommunicator;
         this.settingManager = settingManager;
@@ -42,7 +42,7 @@ public class CallModule extends Module {
     }
 
     @Override
-    public void execute(NetworkPackage np) {
+    public void execute(NetworkPackageOld np) {
         String data = np.getData();
         try{
             if(CALL.equals(data))
@@ -51,7 +51,7 @@ public class CallModule extends Module {
                     Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
                     if(mpris != null)
                     {
-                        mpris.pauseAll(np.getId());
+                        mpris.pauseAll();
                     }
 
                     int boolToCheck = 0;
@@ -72,7 +72,7 @@ public class CallModule extends Module {
                 Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
                 if(mpris != null)
                 {
-                    mpris.playAll(np.getId());
+                    mpris.playAll();
                 }
                 int boolToCheck = 0;
                 String callType = np.getValue("callType");
@@ -91,12 +91,12 @@ public class CallModule extends Module {
         }
     }
 
-    private void unMute(NetworkPackage np) {
+    private void unMute(NetworkPackageOld np) {
         muteUnmute(false);
         muted.clear();
     }
 
-    private void mute(NetworkPackage np) {
+    private void mute(NetworkPackageOld np) {
         muteUnmute(true);
     }
 
@@ -170,27 +170,27 @@ public class CallModule extends Module {
     }
 
     public void sendMute(String id){
-        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), MUTE);
+        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), MUTE);
         backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
     public void rejectCall(String id) {
-        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL);
+        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL);
         backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
     public void answerCall(String id) {
-        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), ANSWER_CALL);
+        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), ANSWER_CALL);
         backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
     public void rejectOutgoingCall(String id) {
-        NetworkPackage orCreatePackage =cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL); //?
+        NetworkPackageOld orCreatePackage =cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL); //?
         backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }
 
     public void recall(String id, String num) {
-        NetworkPackage orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), RECALL);
+        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), RECALL);
         orCreatePackage.setValue("number",num);
         backgroundService.sendToDevice(id,orCreatePackage.getMessage());
     }

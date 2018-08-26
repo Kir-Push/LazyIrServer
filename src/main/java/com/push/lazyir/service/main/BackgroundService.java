@@ -2,7 +2,7 @@ package com.push.lazyir.service.main;
 
 import com.push.gui.systray.JavaFXTrayIconSample;
 import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Cacher;
+import com.push.lazyir.devices.CacherOld;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.ModuleSetting;
 import com.push.lazyir.gui.GuiCommunicator;
@@ -13,6 +13,7 @@ import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
 import com.push.lazyir.service.managers.settings.SettingManager;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
+import lombok.Synchronized;
 
 import javax.inject.Inject;
 import java.net.InetAddress;
@@ -38,7 +39,7 @@ public class BackgroundService {
     private UdpBroadcastManager udp;
     private SettingManager settingManager;
     private LocalizationManager localizationManager;
-    private Cacher cacher;
+    private CacherOld cacher;
     private GuiCommunicator guiCommunicator;
     private ModuleFactory moduleFactory;
     private JavaFXTrayIconSample javaFXTrayIconSample;
@@ -50,7 +51,7 @@ public class BackgroundService {
 
 
     @Inject
-    public BackgroundService(SettingManager settingManager, LocalizationManager localizationManager,Cacher cacher,ModuleFactory moduleFactory) {
+    public BackgroundService(SettingManager settingManager, LocalizationManager localizationManager, CacherOld cacher, ModuleFactory moduleFactory) {
         this.settingManager = settingManager;
         this.localizationManager = localizationManager;
         this.cacher = cacher;
@@ -140,8 +141,11 @@ public class BackgroundService {
     public LocalizationManager getLocalizationManager(){return localizationManager;}
 
     public  void sendToDevice(String id, String msg) {
+        sendToDevice(connectedDevices.get(id),msg);
+    }
+
+    public  void sendToDevice(Device device, String msg) {
         // separate thread maybe?
-        Device device = connectedDevices.get(id);
         if(device != null && device.isConnected())
             device.sendMessage(msg);
     }
@@ -266,6 +270,13 @@ public class BackgroundService {
         System.out.println("Device null? " + device);
 
         return (T)connectedDevices.get(id).getEnabledModules().get(module.getSimpleName());
+    }
+
+    @Synchronized
+    public boolean ifLastConnectedDeviceAreYou(String id){
+        Device device = connectedDevices.get(id);
+        int size = connectedDevices.size();
+        return ((device != null && device.getId().equals(id) && size == 1) || size == 0);
     }
 
     public JavaFXTrayIconSample getJavaFXTrayIconSample() {

@@ -6,13 +6,14 @@ import com.push.gui.entity.PhoneDevice;
 import com.push.lazyir.modules.memory.CRTEntity;
 import com.push.lazyir.modules.memory.MemPair;
 import com.push.lazyir.modules.memory.MemoryEntity;
-import com.push.lazyir.pojo.Command;
+import com.push.lazyir.modules.command.Command;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -135,7 +136,7 @@ public class ApiController {
         });
     }
 
-    public void receiveCommands(List<Command> commands, String id) {
+    public void receiveCommands(Set<Command> commands, String id) {
         mainController.setCommands(commands,id);
     }
 }

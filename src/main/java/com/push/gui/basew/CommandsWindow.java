@@ -1,8 +1,7 @@
 package com.push.gui.basew;
 
-import com.push.gui.entity.CommandGuiEntity;
-import com.push.lazyir.modules.sync.SynchroModule;
-import com.push.lazyir.pojo.Command;
+import com.push.lazyir.modules.command.SendCommand;
+import com.push.lazyir.modules.command.Command;
 import com.push.lazyir.service.main.BackgroundService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,23 +14,21 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 public class CommandsWindow {
     private boolean opened;
     private String usedId;
-    private Lock lock = new ReentrantLock();
-    private ObservableList<CommandGuiEntity> list = FXCollections.observableArrayList(FXCollections.synchronizedObservableSet(FXCollections.observableSet(new HashSet<>())));
-    private Set<CommandGuiEntity> tempUpdateList = new TreeSet<>();
-    private Set<CommandGuiEntity> tempDeleteList = new TreeSet<>();
-    private Set<CommandGuiEntity> tempNewList = new TreeSet<>();
+    private ObservableList<Command> list = FXCollections.observableArrayList(FXCollections.synchronizedObservableSet(FXCollections.observableSet(new HashSet<>())));
+    private Set<Command> tempUpdateList = new TreeSet<>();
+    private Set<Command> tempDeleteList = new TreeSet<>();
+    private Set<Command> tempNewList = new TreeSet<>();
     private BackgroundService backgroundService;
 
     @Inject
@@ -39,21 +36,15 @@ public class CommandsWindow {
         this.backgroundService = backgroundService;
     }
 
-    public void receiveCommands(List<Command> commands, String id) {
-        lock.lock();
-        try {
+    @Synchronized
+    public void receiveCommands(Set<Command> commands, String id) {
             if (commands == null ||(getUsedId() != null && !getUsedId().equals(id)))
                 return;
-            commands.forEach(command -> list.add(new CommandGuiEntity(id, command.getProducer(), command.getDevice(), command.getCommand_name(),
-                            command.getCommand(), command.getOwner_id(), command.getType())));
-            CommandGuiEntity cge = list.get(commands.size() - 1);
+            list.addAll(commands);
+            Command cge = list.get(commands.size() - 1);
             cge.setCommandName(" ");
-            cge.setCommand(" ");
+            cge.setCmd(" ");
             setUserId(id);
-        }finally {
-            lock.unlock();
-        }
-
     }
 
     public void showWindow(String id){
@@ -71,24 +62,24 @@ public class CommandsWindow {
             setClsButtonAction(((Button) scene.lookup("#clsBtn")),id,stage);
             setCloseButtonAction( ((Button) scene.lookup("#cls")),stage);
 
-            TableView<CommandGuiEntity> table = (TableView)scene.lookup("#table");
-            TableColumn<CommandGuiEntity,String> name = new TableColumn<>("Name");
-            TableColumn<CommandGuiEntity,String> command = new TableColumn<>("Command");
+            TableView<Command> table = (TableView)scene.lookup("#table");
+            TableColumn<Command,String> name = new TableColumn<>("Name");
+            TableColumn<Command,String> command = new TableColumn<>("NetworkPackage");
 
             name.setEditable(true);
             name.setCellValueFactory(new PropertyValueFactory<>("command_name"));
-            name.setCellFactory(TextFieldTableCell.<CommandGuiEntity> forTableColumn());
+            name.setCellFactory(TextFieldTableCell.<Command> forTableColumn());
             setNameEditAction(name,table);
 
             command.setEditable(true);
-            command.setCellFactory(TextFieldTableCell.<CommandGuiEntity> forTableColumn());
-            command.setCellValueFactory(new PropertyValueFactory<>("command"));
+            command.setCellFactory(TextFieldTableCell.<Command> forTableColumn());
+            command.setCellValueFactory(new PropertyValueFactory<>("cmd"));
             command.setOnEditCommit(value -> {
                 String oldValue = value.getOldValue();
                 String newValue = value.getNewValue();
                 int row = value.getTablePosition().getRow();
-                CommandGuiEntity commandGuiEntity = value.getTableView().getItems().get(row);
-                commandGuiEntity.setCommand(newValue);
+                Command commandGuiEntity = value.getTableView().getItems().get(row);
+                commandGuiEntity.setCmd(newValue);
                 if(!oldValue.equals(newValue)){
                     tempUpdateList.add(commandGuiEntity);
                 }
@@ -108,7 +99,7 @@ public class CommandsWindow {
             stage.show();
 
         }catch (IOException e){
-            log.error("showWindow",e);
+            log.error("showWindow - id: " + id,e);
         }
 
     }
@@ -116,10 +107,10 @@ public class CommandsWindow {
     private void setClsButtonAction(Button btn,String id,Stage stage) {
         btn.setOnAction(event -> {
             backgroundService.submitNewTask(()->{
-                SynchroModule synchroModule = backgroundService.getModuleById(id, SynchroModule.class);
-                synchroModule.sendDeleteCommands(id,populateCmd(tempDeleteList));
-                synchroModule.sendAddCommands(id,populateCmd(tempNewList));
-                synchroModule.sendUpdateCommands(id,populateCmd(tempUpdateList));
+                SendCommand sendCommand = backgroundService.getModuleById(id, SendCommand.class);
+                sendCommand.sendDeleteCommands(tempDeleteList);
+                sendCommand.sendAddCommands(tempNewList);
+                sendCommand.sendUpdateCommands(tempNewList);
                 clearResources();
             });
             clearList();
@@ -136,14 +127,14 @@ public class CommandsWindow {
         });
     }
 
-    private void setNameEditAction(TableColumn<CommandGuiEntity, String> name, TableView<CommandGuiEntity> table){
+    private void setNameEditAction(TableColumn<Command, String> name, TableView<Command> table){
         name.setOnEditCommit(value->{
-            TableView<CommandGuiEntity> tableView = value.getTableView();
+            TableView<Command> tableView = value.getTableView();
             String oldValue = value.getOldValue();
             String newValue = value.getNewValue();
             int row = value.getTablePosition().getRow();
-            ObservableList<CommandGuiEntity> items = tableView.getItems();
-            CommandGuiEntity cge = items.get(row);
+            ObservableList<Command> items = tableView.getItems();
+            Command cge = items.get(row);
 
             for(int i =0;i<items.size();i++){
                 if(i != row && items.get(i).getCommandName().equals(newValue)){
@@ -159,11 +150,11 @@ public class CommandsWindow {
             else if(oldValue.equals(" ") && (row == table.getItems().size()-1)) {
                 cge.setCommandName(newValue);
                 tempNewList.add(cge);
-                list.add(new CommandGuiEntity(getUsedId(), cge.getProducer(), cge.getDevice()," "," ",
+                list.add(new Command(cge.getProducer(), cge.getDevice()," "," ",
                         cge.getOwnerId(), cge.getType()));
             }
             else if(!oldValue.equals(newValue)){
-                CommandGuiEntity guiEntity = new CommandGuiEntity(getUsedId(), cge.getProducer(), cge.getDevice(), oldValue, cge.getCommand(),
+                Command guiEntity = new Command(cge.getProducer(), cge.getDevice(), oldValue, cge.getCmd(),
                         cge.getOwnerId(), cge.getType());
                 if(!tempNewList.contains(guiEntity)) {
                     tempDeleteList.add(guiEntity);
@@ -172,13 +163,6 @@ public class CommandsWindow {
                 tempNewList.add(cge);
             }
         });
-    }
-
-    private List<Command> populateCmd(Set<CommandGuiEntity> tempList) {
-        List<Command> cmd = new ArrayList<>();
-        tempList.forEach(cge -> cmd.add(new Command(cge.getProducer(),cge.getDevice(),cge.getCommandName(),
-                cge.getCommand(),cge.getOwnerId(),cge.getType())));
-       return cmd;
     }
     private void clearResources() {
         tempUpdateList.clear();

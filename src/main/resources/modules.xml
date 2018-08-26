@@ -24,12 +24,6 @@
         <workOnly>true</workOnly>
     </module>
     <module>
-        <name>IrModule</name>
-        <enabled>true</enabled>
-        <ignored>*</ignored>
-        <workOnly>true</workOnly>
-    </module>
-    <module>
         <name>SmsModule</name>
         <enabled>true</enabled>
         <ignored>*</ignored>
@@ -72,12 +66,6 @@
         <workOnly>true</workOnly>
     </module>
     <module>
-        <name>SynchroModule</name>
-        <enabled>true</enabled>
-        <ignored>*</ignored>
-        <workOnly>true</workOnly>
-    </module>
-    <module>
         <name>Memory</name>
         <enabled>true</enabled>
         <ignored>*</ignored>
@@ -85,12 +73,6 @@
     </module>
     <module>
         <name>Ping</name>
-        <enabled>true</enabled>
-        <ignored>*</ignored>
-        <workOnly>true</workOnly>
-    </module>
-    <module>
-        <name>ScreenShareModule</name>
         <enabled>true</enabled>
         <ignored>*</ignored>
         <workOnly>true</workOnly>

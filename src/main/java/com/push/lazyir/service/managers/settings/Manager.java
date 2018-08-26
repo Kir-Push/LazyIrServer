@@ -1,6 +1,6 @@
 package com.push.lazyir.service.managers.settings;
 
-import com.push.lazyir.pojo.Command;
+import com.push.lazyir.modules.command.Command;
 
 import java.util.List;
 

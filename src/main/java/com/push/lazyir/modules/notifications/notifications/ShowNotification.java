@@ -1,8 +1,8 @@
 package com.push.lazyir.modules.notifications.notifications;
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.CacherOld;
+import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.notifications.messengers.Messengers;
@@ -24,18 +24,18 @@ public class ShowNotification extends Module {
     private GuiCommunicator guiCommunicator;
 
     @Inject
-    public ShowNotification(BackgroundService backgroundService, Cacher cacher, GuiCommunicator guiCommunicator) {
+    public ShowNotification(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator) {
         super(backgroundService, cacher);
         this.guiCommunicator = guiCommunicator;
     }
 
     @Override
-    public void execute(NetworkPackage np) {
+    public void execute(NetworkPackageOld np) {
         String data = np.getData();
         Messengers messengers = backgroundService.getModuleById(device.getId(), Messengers.class);
         try {
                             if (RECEIVE_NOTIFICATION.equals(data)) {
-                                Notification not = np.getObject(NetworkPackage.N_OBJECT, Notification.class);
+                                Notification not = np.getObject(NetworkPackageOld.N_OBJECT, Notification.class);
                                 if(messengers.isCalling(not,device,np,true)){
 
                                 }else
@@ -43,7 +43,7 @@ public class ShowNotification extends Module {
                             }
                             else if(ALL_NOTIFS.equals(data))
                             {
-                                Notifications notifications = np.getObject(NetworkPackage.N_OBJECT, Notifications.class);
+                                Notifications notifications = np.getObject(NetworkPackageOld.N_OBJECT, Notifications.class);
                                 if(notifications.getNotifications().size() > 0) {
                                     notifications.getNotifications().forEach(notification ->{
 //                                        if(notification != null) {
@@ -57,7 +57,7 @@ public class ShowNotification extends Module {
                                     guiCommunicator.receive_notifications(device.getId(), new ArrayList<>());
                                 }
                             }else if(REMOVE_NOTIFICATION.equalsIgnoreCase(data)){
-                                Notification not = np.getObject(NetworkPackage.N_OBJECT, Notification.class);
+                                Notification not = np.getObject(NetworkPackageOld.N_OBJECT, Notification.class);
                                 if(messengers.isCalling(not,device,np,false)){
 
                                 }
@@ -78,7 +78,7 @@ public class ShowNotification extends Module {
     }
 
     public void sendRemoveNotification(String ownerId, String notificationId) {
-        NetworkPackage np = cacher.getOrCreatePackage(SHOW_NOTIFICATION, REMOVE_NOTIFICATION);
+        NetworkPackageOld np = cacher.getOrCreatePackage(SHOW_NOTIFICATION, REMOVE_NOTIFICATION);
         np.setValue(NOTIFICATION_ID,notificationId);
         System.out.println(ownerId + "  " + np.getMessage());
       backgroundService.submitNewTask(()->{backgroundService.sendToDevice(ownerId,np.getMessage());});

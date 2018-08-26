@@ -55,7 +55,6 @@ public class Popup {
             if(manager != null)
                 manager.stop();
             manager = new QueueManager(NotificationFactory.Location.SOUTHEAST);
-            // add the Notification
             manager.setScrollDirection(QueueManager.ScrollDirection.NORTH);
             initialized = true;
             notTime = Double.parseDouble(settingManager.get("Notif-time"));

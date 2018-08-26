@@ -1,123 +1,92 @@
 package com.push.lazyir.modules.dbus.websocket;
 
-import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.modules.dbus.MprisDto;
 import com.push.lazyir.modules.dbus.Player;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.WebSocket;
-
 import javax.inject.Inject;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
+@Slf4j
 public class ServerController{
+
     private DbusWebSocketServer dbusWebSocketServer;
-    private Lock lock = new ReentrantLock();
-    private boolean working = false;
-    private Cacher cacher;
+    private boolean working;
+    private MessageFactory messageFactory;
 
     @Inject
-    public ServerController(Cacher cacher) {
-        this.cacher = cacher;
+    public ServerController(MessageFactory messageFactory) {
+        this.messageFactory = messageFactory;
     }
 
+    @Synchronized
     public void startServer(){
-        lock.lock();
-        try {
-            if (dbusWebSocketServer == null && !working) {
-                dbusWebSocketServer = new DbusWebSocketServer(new InetSocketAddress("localhost", 11520));
+        if (dbusWebSocketServer == null && notWorking()) {
+                dbusWebSocketServer = new DbusWebSocketServer(new InetSocketAddress("localhost", 11520),messageFactory);
                 dbusWebSocketServer.setReuseAddr(true);
-                working = true;
                 dbusWebSocketServer.start();
-            }
-        }finally {
-            lock.unlock();
+                working = true;
         }
     }
 
+    @Synchronized
     public void stopServer(){
-        lock.lock();
-        try {
+        try{
+            working = false;
             dbusWebSocketServer.stop();
             dbusWebSocketServer = null;
-            working = false;
-        } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-        } finally {
-            lock.unlock();
+        } catch (IOException | InterruptedException e){
+            log.error("stopServer interrupt AAA",e);
+            if(Thread.interrupted()){
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
     public List<Player> getAll(){
-        ConcurrentHashMap<InetSocketAddress, List<Player>> playersHashMap = dbusWebSocketServer.getPlayersHashMap();
-        List<Player> players = new ArrayList<>();
-        for (List<Player> playerList : playersHashMap.values()) {
-            players.addAll(playerList);
-        }
-        return players;
+        return new ArrayList<>( dbusWebSocketServer.getPlayersHashMap().values());
     }
 
 
-        private String[] checkIfMultiple(String id) {
-        String[] split = id.split(":::wbmpl:::");
-        if( split.length == 2)
-            return split;
-        else
-            return null;
-    }
-
-    private void sendMessage(NetworkPackage np, String id) {
-        String[] splittedId = checkIfMultiple(id);
-        String localId, lclMsg;
-        if (splittedId == null) {
-            localId = id;
-            lclMsg = np.getMessage();
-        }else{
-            localId = splittedId[0];
-            np.setValue("multipleVids","true");
-            np.setValue("lazyIrId",splittedId[1]);
-            lclMsg = np.getMessage();
-        }
+    private void sendMessage(String id,String msg) {
         for (WebSocket webSocket : dbusWebSocketServer.getConnections()) {
-            if(webSocket.getRemoteSocketAddress().toString().equals(localId)) {
-                webSocket.send(lclMsg);
+            if(webSocket.getRemoteSocketAddress().toString().equals(id)) {
+                webSocket.send(msg);
                 break;
             }
         }
     }
 
-    public void sendTime(String id,String time) {
-        NetworkPackage np =  cacher.getOrCreatePackage("Web","JS");
-        np.setValue("command","setTime");
-        np.setValue("time",time);
-        sendMessage(np,id);
+    public void sendTime(String ip,double time,String jsId) {
+        String message = messageFactory.createMessage("Web", true, new MprisDto("setTime", jsId, time));
+        sendMessage(ip,message);
         sendGetInfo();
     }
 
-    public void sendStatus(String id, String status) {
-        NetworkPackage np =  cacher.getOrCreatePackage("Web","JS");
-        np.setValue("command",status);
-        sendMessage(np,id);
+    public void sendStatus(String ip, String status,String jsId) {
+        String message = messageFactory.createMessage("Web", true, new MprisDto(status, jsId));
+        sendMessage(ip,message);
         sendGetInfo();
     }
 
-    public void sendVolume(String id,String volume) {
-        NetworkPackage np =  cacher.getOrCreatePackage("Web","JS");
-        np.setValue("command","setVolume");
-        np.setValue("volume",volume);
-        sendMessage(np,id);
+    public void sendVolume(String ip, double volume, String jsId) {
+        String message = messageFactory.createMessage("Web", true, new MprisDto("setVolume", jsId,volume));
+        sendMessage(ip,message);
         sendGetInfo();
     }
 
 
-    public void sendGetInfo()
-    {
-        NetworkPackage np =  cacher.getOrCreatePackage("Web","JS");
-        np.setValue("command","getInfo");
-        dbusWebSocketServer.broadcast(np.getMessage());
+    public void sendGetInfo() {
+        String message = messageFactory.getCachedMessage("GETINFO");
+        dbusWebSocketServer.broadcast(message);
+    }
+
+    public boolean notWorking() {
+        return !working;
     }
 }

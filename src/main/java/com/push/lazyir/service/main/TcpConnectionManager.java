@@ -2,15 +2,14 @@ package com.push.lazyir.service.main;
 
 
 import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Cacher;
+import com.push.lazyir.devices.CacherOld;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.ModuleFactory;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.service.tcp.ConnectionThread;
 
-import javax.inject.Inject;
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.*;
@@ -31,7 +30,7 @@ public class TcpConnectionManager {
     public final static String TCP_PAIR = "pair";
     public final static String TCP_UNPAIR = "unpair";
     public final static String TCP_SYNC = "sync";
-    public final static String ENABLED_MODULES = "enabledModules";
+    public final static String ENABLED_MODULES = "enabledModulesConfig";
 
     private int port;
     private boolean tls;
@@ -39,7 +38,7 @@ public class TcpConnectionManager {
     private ServerSocket myServerSocket;
     private BackgroundService backgroundService;
     private GuiCommunicator guiCommunicator;
-    private Cacher cacher;
+    private CacherOld cacher;
     private ModuleFactory moduleFactory;
 
     public boolean isServerOn() {
@@ -48,7 +47,7 @@ public class TcpConnectionManager {
 
     private volatile boolean ServerOn = false;
 
-    TcpConnectionManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, Cacher cacher, ModuleFactory moduleFactory) {
+    TcpConnectionManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, CacherOld cacher, ModuleFactory moduleFactory) {
         this.backgroundService = backgroundService;
         this.guiCommunicator = guiCommunicator;
         this.cacher = cacher;
@@ -141,7 +140,7 @@ public class TcpConnectionManager {
 
     void sendRequestPairDevice(String id)
     {
-        NetworkPackage np = null;
+        NetworkPackageOld np = null;
         try {
             np = cacher.getOrCreatePackage(TCP_PAIR,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
             backgroundService.sendToDevice(id,np.getMessage());
@@ -152,7 +151,7 @@ public class TcpConnectionManager {
 
     void sendPairResult(String id, String result, String data) {
         try {
-            NetworkPackage np =  cacher.getOrCreatePackage(TCP_PAIR_RESULT,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
+            NetworkPackageOld np =  cacher.getOrCreatePackage(TCP_PAIR_RESULT,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
             np.setValue(RESULT,result);
             backgroundService.sendToDevice(id,np.getMessage());
             Device device = backgroundService.getConnectedDevices().get(id);

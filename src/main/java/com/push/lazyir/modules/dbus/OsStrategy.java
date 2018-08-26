@@ -1,23 +1,21 @@
 package com.push.lazyir.modules.dbus;
-
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.api.Dto;
 
 import java.util.List;
 
 
 public interface OsStrategy {
-
-    void seek(NetworkPackage np);
-    void stop(NetworkPackage np);
-    void next(NetworkPackage np);
-    void previous(NetworkPackage np);
-    void playPause(NetworkPackage np);
-    void openUri(NetworkPackage np);
-    void setPosition(NetworkPackage np);
-    void setVolume(NetworkPackage np);
+    void seek(MprisDto dto);
+    void stop(MprisDto dto);
+    void next(MprisDto dto);
+    void previous(MprisDto dto);
+    void playPause(MprisDto dto);
+    void openUri(MprisDto dto);
+    void setPosition(MprisDto dto);
+    void setVolume(MprisDto dto);
     List<Player> getAllPlayers();
-    void playAll(String id);
-    void pauseAll(String id);
+    void playAll();
+    void pauseAll();
     void endWork();
-    void loop(NetworkPackage np);
+    void loop(MprisDto dto);
 }

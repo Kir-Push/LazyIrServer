@@ -1,67 +1,91 @@
 package com.push.lazyir.modules.command;
 
-
-
-import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.Device;
-import com.push.lazyir.pojo.Command;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
+import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.pojo.CommandsList;
 import com.push.lazyir.service.main.BackgroundService;
-
+import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
-/**
- * Created by buhalo on 05.03.17.
- */
-
+@Slf4j
 public class SendCommand extends Module {
-    public static final String SEND_COMMAND = "SendCommand";
-    public static final String RECEIVED_COMMAND = "receivedCommand";
-    public static final String EXECUTE = "execute";
-    public static final String COMMAND = "command";
+    public enum api{
+        EXECUTE,
+        DELETE_COMMANDS,
+        ADD_COMMAND,
+        GET_ALL_COMMANDS,
+        UPDATE_COMMANDS
+    }
+    private GuiCommunicator guiCommunicator;
 
     @Inject
-    public SendCommand(BackgroundService backgroundService, Cacher cacher) {
-        super(backgroundService, cacher);
+    public SendCommand(BackgroundService backgroundService, MessageFactory messageFactory, GuiCommunicator guiCommunicator) {
+        super(backgroundService, messageFactory);
+        this.guiCommunicator = guiCommunicator;
     }
 
 
     @Override
     public void execute(NetworkPackage np) {
-
-        if(np.getData().equals(EXECUTE)) {
-           executeCommand(np.getObject(NetworkPackage.N_OBJECT, CommandsList.class).getCommands());
+        SendCommandDto data = (SendCommandDto) np.getData();
+        Set<Command> commands = data.getCommands();
+        api cmd =api.valueOf(data.getCommand());
+        switch (cmd){
+            case EXECUTE:
+                executeCommands(commands);
+                break;
+            case GET_ALL_COMMANDS:
+                receiveAllCommands(commands);
+                break;
+            default:
+                break;
         }
 
     }
 
     @Override
     public void endWork() {
-
+        // here nothing to erase, so empty method :(
     }
-
-    private void executeCommand(List<Command> commands) {
-        if(commands != null)
-        for(Command command : commands)
-        {
-            try {
-                String command1 = command.getCommand();
-                if(command1 != null)
-                Runtime.getRuntime().exec(command1);
-            } catch (Exception e) {
-                Loggout.e("SendCommand","error in executeCommand",e);
-            }
+    private void executeCommand(String command){
+        try {
+            Runtime.getRuntime().exec(command);
+        }catch (IOException e){
+            log.error("error in executeCommand - " + command,e);
         }
     }
 
-
-    private void saveCommandToClient(List<Command> args)
-    {
-
+    private void executeCommands(Set<Command> commands) {
+        commands.forEach(cmd -> executeCommand(cmd.getCmd()));
     }
+
+    private void receiveAllCommands(Set<Command> commands) {
+        guiCommunicator.receiveCommands(commands,device.getId());
+    }
+
+    public void sendUpdateCommands( Set<Command> commands){
+        sendCommand(commands,api.UPDATE_COMMANDS);
+    }
+
+    public void sendDeleteCommands(Set<Command> commands){
+        sendCommand(commands,api.DELETE_COMMANDS);
+    }
+
+    public void sendAddCommands(Set<Command> commands){
+        sendCommand(commands,api.ADD_COMMAND);
+    }
+
+    public void sendGetAllCommands(){
+        sendCommand(null,api.GET_ALL_COMMANDS);
+    }
+
+    private void sendCommand(Set<Command> commands,api cmd){
+        String message = messageFactory.createMessage(this.getClass().getSimpleName(), true,
+                new SendCommandDto(cmd.name(), commands));
+        sendMsg(message);
+    }
+
 }

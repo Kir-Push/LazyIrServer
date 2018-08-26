@@ -2,9 +2,8 @@ package com.push.lazyir.modules.share;
 
 
 
-import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.CacherOld;
+import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.main.BackgroundService;
@@ -42,13 +41,13 @@ public class ShareModule extends Module {
     private GuiCommunicator guiCommunicator;
 
     @Inject
-    public ShareModule(BackgroundService backgroundService, Cacher cacher, GuiCommunicator guiCommunicator) {
+    public ShareModule(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator) {
         super(backgroundService, cacher);
         this.guiCommunicator = guiCommunicator;
     }
 
     @Override
-    public void execute(NetworkPackage np) {
+    public void execute(NetworkPackageOld np) {
         staticLock.lock();
         try {
             if (np.getData().equals(CONNECT_TO_ME_AND_RECEIVE_FILES)) {
@@ -85,7 +84,7 @@ public class ShareModule extends Module {
         }
     }
 
-    private void connectToSftpServer(NetworkPackage np) {
+    private void connectToSftpServer(NetworkPackageOld np) {
         lock.lock();
         try {
             String value = np.getValue(PORT);
@@ -96,7 +95,7 @@ public class ShareModule extends Module {
             mountPoint = np.getValue("mainDir");
             externalMountPoint = np.getObject("externalPath",PathWrapper.class);
             if(userName == null || pass == null) {
-                NetworkPackage tryMore =  cacher.getOrCreatePackage(SHARE_T,RECCONECT);
+                NetworkPackageOld tryMore =  cacher.getOrCreatePackage(SHARE_T,RECCONECT);
                 backgroundService.sendToDevice(device.getId(),tryMore.getMessage());
                 return;
             }
@@ -107,7 +106,7 @@ public class ShareModule extends Module {
         }
     }
 
-    public void recconectToSftp(NetworkPackage np)
+    public void recconectToSftp(NetworkPackageOld np)
     {
         lock.lock();
         try {
@@ -139,9 +138,9 @@ public class ShareModule extends Module {
         return null;
     }
 
-    public static void sendSetupServerCommand(String dvID,Cacher cacher,BackgroundService backgroundService)
+    public static void sendSetupServerCommand(String dvID, CacherOld cacher, BackgroundService backgroundService)
     {
-        NetworkPackage np =  cacher.getOrCreatePackage(SHARE_T,SETUP_SERVER_AND_SEND_ME_PORT);
+        NetworkPackageOld np =  cacher.getOrCreatePackage(SHARE_T,SETUP_SERVER_AND_SEND_ME_PORT);
         String os;
         if(MainClass.isWindows())
             os = "win";

@@ -6,11 +6,14 @@ import com.push.gui.basew.Popup;
 import com.push.gui.controllers.ApiController;
 import com.push.gui.controllers.MainController;
 import com.push.gui.utils.GuiUtils;
-import com.push.lazyir.devices.Cacher;
+import com.push.lazyir.api.DtoSerializer;
+import com.push.lazyir.devices.CacherOld;
+import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.ModuleFactory;
-import com.push.lazyir.modules.clipboard.Rmi.ClipboardRmiServer;
+import com.push.lazyir.modules.clipboard.rmi.ClipboardRmiServer;
 import com.push.lazyir.modules.dbus.websocket.ServerController;
+import com.push.lazyir.service.dto.NetworkDtoRegister;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
 import com.push.lazyir.service.managers.settings.SettingManager;
 import dagger.Module;
@@ -23,7 +26,7 @@ public class ServiceModule {
 
     @Provides
     @Singleton
-    public BackgroundService provideBackgroundService(SettingManager settingManager, LocalizationManager localizationManager,Cacher cacher,ModuleFactory moduleFactory){
+    public BackgroundService provideBackgroundService(SettingManager settingManager, LocalizationManager localizationManager, CacherOld cacher, ModuleFactory moduleFactory){
         return new BackgroundService(settingManager,localizationManager,cacher,moduleFactory);
     }
 
@@ -37,12 +40,6 @@ public class ServiceModule {
     @Singleton
     public LocalizationManager provideLocalizationManager(){
         return new LocalizationManager();
-    }
-
-    @Provides
-    @Singleton
-    public Cacher provideCacher(){
-        return new Cacher();
     }
 
     @Provides
@@ -77,8 +74,8 @@ public class ServiceModule {
 
     @Provides
     @Singleton
-    public Dialogs provideDialogs(GuiCommunicator guiCommunicator){
-        return new Dialogs(guiCommunicator);
+    public Dialogs provideDialogs(GuiCommunicator guiCommunicator,GuiUtils guiUtils){
+        return new Dialogs(guiCommunicator,guiUtils);
     }
 
     @Provides
@@ -95,13 +92,29 @@ public class ServiceModule {
 
     @Provides
     @Singleton
-    public ClipboardRmiServer provideClipboardRmiServer(BackgroundService backgroundService,Cacher cacher){
-        return new ClipboardRmiServer(cacher,backgroundService);
+    public ClipboardRmiServer provideClipboardRmiServer(BackgroundService backgroundService, MessageFactory messageFactory,SettingManager settingManager){
+        return new ClipboardRmiServer(messageFactory,backgroundService,settingManager);
     }
 
     @Provides
     @Singleton
-    public ServerController provideServeController(Cacher cacher){
-        return new ServerController(cacher);
+    public ServerController provideServerController(MessageFactory messageFactory){
+        return new ServerController(messageFactory);
+    }
+
+    @Provides
+    @Singleton
+    public DtoSerializer provideDtoSerializer(ModuleFactory moduleFactory, NetworkDtoRegister ndto){
+        return new DtoSerializer(moduleFactory,ndto);
+    }
+
+    @Provides
+    @Singleton
+    public NetworkDtoRegister provideNetworkDtoRegister(){return new NetworkDtoRegister();}
+
+    @Provides
+    @Singleton
+    public MessageFactory provideMessageFactory(DtoSerializer dtoSerializer){
+        return new MessageFactory(dtoSerializer);
     }
 }

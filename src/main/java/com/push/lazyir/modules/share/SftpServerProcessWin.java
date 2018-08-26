@@ -140,10 +140,10 @@ public class SftpServerProcessWin implements SftpServerProcess {
         return running;
     }
 
-    // execute win command FSUTIL FSINFO DRIVES, get list of used drives
+    // execute win cmd FSUTIL FSINFO DRIVES, get list of used drives
     // iterate over alphabet list, and on each letter check if exist in list
     // if no return it, it free letter, may iterate over thousand times, much but
-    // command executes only when device connect to sftp, not too often
+    // cmd executes only when device connect to sftp, not too often
     private String getFreeDrive(){
         Runtime rt = Runtime.getRuntime();
         try {

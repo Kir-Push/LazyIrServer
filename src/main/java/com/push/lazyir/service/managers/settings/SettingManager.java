@@ -2,7 +2,7 @@ package com.push.lazyir.service.managers.settings;
 
 import com.push.lazyir.Loggout;
 import com.push.lazyir.devices.ModuleSetting;
-import com.push.lazyir.pojo.Command;
+import com.push.lazyir.modules.command.Command;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

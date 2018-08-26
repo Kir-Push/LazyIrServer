@@ -1,8 +1,8 @@
 package com.push.lazyir.modules.notifications.sms;
 
 
-import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.CacherOld;
+import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.main.BackgroundService;
@@ -22,16 +22,16 @@ public class SmsModule extends Module {
     private GuiCommunicator guiCommunicator;
 
     @Inject
-    public SmsModule(BackgroundService backgroundService, Cacher cacher, GuiCommunicator guiCommunicator) {
+    public SmsModule(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator) {
         super(backgroundService, cacher);
         this.guiCommunicator = guiCommunicator;
     }
 
     @Override
-    public void execute(NetworkPackage np) {
+    public void execute(NetworkPackageOld np) {
         if(np.getData().equals(RECEIVE))
         {
-            Sms sms = np.getObject(NetworkPackage.N_OBJECT, Sms.class);
+            Sms sms = np.getObject(NetworkPackageOld.N_OBJECT, Sms.class);
             guiCommunicator.show_sms(device.getId(),sms);
         }
     }
@@ -42,9 +42,9 @@ public class SmsModule extends Module {
     }
 
     public void send_sms(String name,String text,String dvId) {
-        NetworkPackage np =  cacher.getOrCreatePackage(SMS_TYPE,SEND);
+        NetworkPackageOld np =  cacher.getOrCreatePackage(SMS_TYPE,SEND);
         Sms message = new Sms(name,name,text,null,null);
-        np.setObject(NetworkPackage.N_OBJECT,message);
+        np.setObject(NetworkPackageOld.N_OBJECT,message);
         backgroundService.sendToDevice(dvId,np.getMessage());
     }
 

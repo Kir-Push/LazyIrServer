@@ -8,25 +8,18 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.push.lazyir.Loggout;
-import com.push.lazyir.modules.dbus.Mpris;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.push.lazyir.service.main.TcpConnectionManager.TCP_PING;
-import static com.push.lazyir.service.main.UdpBroadcastManager.BROADCAST_INTRODUCE;
-import static com.push.lazyir.service.main.UdpBroadcastManager.BROADCAST_INTRODUCE_MSG;
-import static com.push.lazyir.modules.dbus.Mpris.ALL_PLAYERS;
 
 /**
  * Created by buhalo on 05.03.17.
  */
 
 
-public class NetworkPackage {
+public class NetworkPackageOld {
     public final static String ID = "id";
     public final static String NAME = "name";
     public final static String TYPE = "type";
@@ -53,7 +46,7 @@ public class NetworkPackage {
         this.idNode = idNode;
     }
 
-    public NetworkPackage(String type, String data) {
+    public NetworkPackageOld(String type, String data) {
        // args = new ArrayList<>();
         factory = JsonNodeFactory.instance;
         idNode = factory.objectNode();
@@ -64,7 +57,7 @@ public class NetworkPackage {
         idNode.put(DEVICE_TYPE,DEVICE);
     }
 
-    public NetworkPackage(String message)
+    public NetworkPackageOld(String message)
     {
         this.msg = message;
         parseMessage();
@@ -76,7 +69,7 @@ public class NetworkPackage {
         try {
             idNode = (ObjectNode) mapper.readTree(msg);
         } catch (IOException e) {
-            Loggout.e("NetworkPackage","Error in Parse message",e);
+            Loggout.e("NetworkPackageOld","Error in Parse message",e);
         }
     }
 
@@ -153,7 +146,7 @@ public class NetworkPackage {
         idNode.put(key,value);
     }
 
-    public <T> NetworkPackage setObject(String key,T object)
+    public <T> NetworkPackageOld setObject(String key, T object)
     {
         JsonNode node = new ObjectMapper().convertValue(object, JsonNode.class);
         idNode.set(key,node);
@@ -167,12 +160,12 @@ public class NetworkPackage {
         try {
             return new ObjectMapper().readValue(object.toString(),tClass);
         } catch (Exception e) {
-            Loggout.e("NetworkPackage","Error in getObject ",e);
+            Loggout.e("NetworkPackageOld","Error in getObject ",e);
         }
         return null;
     }
 
-    public static final String getMyId()
+    public final String getMyId()
     {
         try {
             return InetAddress.getLocalHost().getHostName();
@@ -191,19 +184,11 @@ public class NetworkPackage {
         return idNode.get(NAME).textValue();
     }
 
-    public static String getMyName()
+    public String getMyName()
     {
         return System.getProperty("user.name");
     }
 
-
-    public Device getDv() {
-        return dv;
-    }
-
-    public void setDv(Device dv) {
-        this.dv = dv;
-    }
 
 
 

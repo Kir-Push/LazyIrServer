@@ -1,42 +1,45 @@
 package com.push.lazyir.modules.clipboard;
 
-import com.push.lazyir.devices.Cacher;
-import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.modules.clipboard.Rmi.ClipboardRmiServer;
+import com.push.lazyir.modules.clipboard.rmi.ClipboardRmiServer;
 import com.push.lazyir.service.main.BackgroundService;
-
 import javax.inject.Inject;
 
-/**
- * Created by buhalo on 19.04.17.
- */
-public class ClipBoard extends Module {
-  public final static String RECEIVE = "receive";
-    private ClipboardRmiServer server;
+import static com.push.lazyir.modules.clipboard.ClipBoard.api.RECEIVE;
 
+public class ClipBoard extends Module {
+  private ClipboardRmiServer server;
+     public enum api{
+         RECEIVE
+     }
     @Inject
-    public ClipBoard(BackgroundService backgroundService, Cacher cacher, ClipboardRmiServer server) {
-        super(backgroundService, cacher);
+    public ClipBoard(BackgroundService backgroundService, MessageFactory messageFactory, ClipboardRmiServer server) {
+        super(backgroundService, messageFactory);
         this.server = server;
-        server.startListening();
+        if(!server.isWorking()) {
+            server.startListening();
+        }
     }
 
 
     @Override
     public void execute(NetworkPackage np) {
-        if(np.getData().equals(RECEIVE)) {
-            onReceive(np);
+        ClipBoardDto data = (ClipBoardDto) np.getData();
+        if(data.getCommand().equalsIgnoreCase(RECEIVE.name())) {
+            onReceive(data.getText());
         }
     }
 
     @Override
     public void endWork() {
-        //todo
+        if(backgroundService.ifLastConnectedDeviceAreYou(device.getId())){
+            server.stopListening();
+        }
     }
 
-    private void onReceive(NetworkPackage np) {
-        server.setClipboard(np.getValue("text")); 
+    private void onReceive(String text) {
+        server.setClipboard(text);
     }
 }

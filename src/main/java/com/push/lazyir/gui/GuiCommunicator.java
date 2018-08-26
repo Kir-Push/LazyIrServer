@@ -4,7 +4,8 @@ import com.push.gui.controllers.ApiController;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
 import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackage;
+import com.push.lazyir.devices.NetworkPackageOld;
+import com.push.lazyir.modules.command.Command;
 import com.push.lazyir.modules.memory.CRTEntity;
 import com.push.lazyir.modules.memory.Memory;
 import com.push.lazyir.modules.memory.MemoryEntity;
@@ -16,14 +17,13 @@ import com.push.lazyir.modules.notifications.sms.Sms;
 import com.push.lazyir.modules.notifications.sms.SmsModule;
 import com.push.lazyir.modules.reminder.MessagesPack;
 import com.push.lazyir.modules.reminder.Reminder;
-import com.push.lazyir.pojo.CommandsList;
 import com.push.lazyir.service.main.BackgroundService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import static com.push.lazyir.modules.notifications.sms.SmsModule.SMS_TYPE;
 import static com.push.lazyir.service.main.TcpConnectionManager.OK;
@@ -160,14 +160,14 @@ public class GuiCommunicator {
         backgroundService.pairResultFromGui(id,answer ? OK : REFUSE,data);
     }
 
-    public void requestPair(NetworkPackage np) {
+    public void requestPair(NetworkPackageOld np) {
         String name = np.getName();
         NotificationDevice notificationDevice = new NotificationDevice("Request Pair" ,"pair", name,np.getType(),np.getData(),np.getId(),np.getValue("icon"),null);
         notificationDevice.setOwnerName(name);
         apiController.requestPair(np.getId(),notificationDevice);
     }
 
-    public void call_Notif(NetworkPackage np) {
+    public void call_Notif(NetworkPackageOld np) {
         String callType = np.getValue("callType");
            NotificationDevice notificationDevice = new NotificationDevice(np.getValue("text"),callType,np.getValue("number"),callType,callType,np.getId(),np.getValue("icon"),null);
            notificationDevice.setOwnerName(np.getName());
@@ -176,7 +176,7 @@ public class GuiCommunicator {
     }
 
 
-    public void call_notif_end(NetworkPackage np) {
+    public void call_notif_end(NetworkPackageOld np) {
         apiController.removeNotificationCallEnd(np.getValue("number"));
     }
 
@@ -221,14 +221,14 @@ public class GuiCommunicator {
     }
 
     public void setGetRequestTimer(String id, int time) {
-        backgroundService.getModuleById(id,Memory.class).setGetRequestTimer(time,id);
+        backgroundService.getModuleById(id,Memory.class).setGetRequestTimer(time);
     }
 
     public void clearGetRequestTimer(){
         Memory.clearTimer();
     }
 
-    public void receiveCommands(CommandsList cmds, String id) {
-        apiController.receiveCommands(cmds.getCommands(),id);
+    public void receiveCommands(Set<Command> cmd, String id) {
+        apiController.receiveCommands(cmd,id);
     }
 }
