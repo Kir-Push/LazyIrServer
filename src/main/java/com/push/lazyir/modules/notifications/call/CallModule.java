@@ -1,139 +1,161 @@
 package com.push.lazyir.modules.notifications.call;
 
-import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.CacherOld;
-import com.push.lazyir.devices.NetworkPackageOld;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
+import com.push.lazyir.modules.notifications.NotificationTypes;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.managers.settings.SettingManager;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.sound.sampled.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+@Slf4j
 public class CallModule extends Module {
-    public static final String CALL = "com.android.call";
-    public static final String ENDCALL = "com.android.endCall";
-    public static final String ANSWER = "answer";
-    public static final String ANSWER_CALL = "asnwerCall";
-    public static final String DECLINE_CALL = "declineCall";
-    public static final String MUTE = "mute";
-    public static final String MUTE_NOVIBRO = "muteNoVibro";
-    public static final String RECALL = "call";
-    private static volatile boolean CALLING = false;
-    public static volatile int muteWhenCall = -1;
-    public static volatile int muteWhenOutcomingCall = -1;
+    public enum api{
+        CALL,
+        ENDCALL,
+        ANSWER,
+        ANSWER_CALL,
+        DECLINE_CALL,
+        MUTE,
+        RECALL
+    }
+    @Getter @Setter(value = AccessLevel.PRIVATE)
+    private static boolean calling;
+    @Getter @Setter(value = AccessLevel.PRIVATE)
+    private static boolean muteWhenCall;
+    @Getter @Setter(value = AccessLevel.PRIVATE)
+    private static boolean muteWhenOutcomingCall;
     private static ConcurrentSkipListSet<String> muted = new ConcurrentSkipListSet<>();
     private GuiCommunicator guiCommunicator;
     private SettingManager settingManager;
 
 
     @Inject
-    public CallModule(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator, SettingManager settingManager) {
-        super(backgroundService, cacher);
+    public CallModule(BackgroundService backgroundService, MessageFactory messageFactory, GuiCommunicator guiCommunicator, SettingManager settingManager) {
+        super(backgroundService, messageFactory);
         this.guiCommunicator = guiCommunicator;
         this.settingManager = settingManager;
-        if(muteWhenCall == -1)
-            muteWhenCall = Boolean.parseBoolean(settingManager.get("muteWhenCall")) ? 1 : 0;
-        if(muteWhenOutcomingCall == -1)
-            muteWhenOutcomingCall = Boolean.parseBoolean(settingManager.get("muteWhenOutcomingCall")) ? 1 : 0;
     }
 
     @Override
-    public void execute(NetworkPackageOld np) {
-        String data = np.getData();
-        try{
-            if(CALL.equals(data))
-            {
-                if(!CALLING) {
-                    Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
-                    if(mpris != null)
-                    {
-                        mpris.pauseAll();
-                    }
-
-                    int boolToCheck = 0;
-                    String callType = np.getValue("callType");
-                    if(callType.equalsIgnoreCase(NotificationTypes.outgoing.name()))
-                        boolToCheck = muteWhenOutcomingCall;
-                    else if(callType.equalsIgnoreCase(NotificationTypes.incoming.name()))
-                        boolToCheck = muteWhenCall;
-                    if(boolToCheck == 1)
-                        mute(np);
-                    CALLING = true;
-                }
-                guiCommunicator.call_Notif(np);
-            }
-            else if(CALLING && ENDCALL.equals(data))
-            {
-                CALLING = false;
-                Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
-                if(mpris != null)
-                {
-                    mpris.playAll();
-                }
-                int boolToCheck = 0;
-                String callType = np.getValue("callType");
-                if(callType.equalsIgnoreCase(NotificationTypes.outgoing.name()))
-                    boolToCheck = muteWhenOutcomingCall;
-                else if(callType.equalsIgnoreCase(NotificationTypes.incoming.name()))
-                    boolToCheck = muteWhenCall;
-                if(boolToCheck == 1 || callType.equalsIgnoreCase(NotificationTypes.missedIn.name()))
-                    unMute(np);
-                guiCommunicator.call_notif_end(np);
-            }else if(ANSWER.equals(data)){
-                guiCommunicator.call_notif_end(np);
-            }
-        }catch (Exception e){
-            Loggout.e("CallModule", "execute ",e);
+    public void execute(NetworkPackage np) {
+        CallModuleDto dto = (CallModuleDto) np.getData();
+        api command = api.valueOf(dto.getCommand());
+        boolean muteOutgoingCall = Boolean.parseBoolean(settingManager.get("muteWhenOutcomingCall"));
+        boolean muteIncomingCall = Boolean.parseBoolean(settingManager.get("muteWhenCall"));
+        switch (command) {
+            case CALL:
+                inCall(muteOutgoingCall, muteIncomingCall, dto);
+                break;
+            case ENDCALL:
+                endCall(muteOutgoingCall, muteIncomingCall, dto);
+                break;
+            case ANSWER:
+                answer(dto);
+                break;
+            default:
+                break;
         }
     }
 
-    private void unMute(NetworkPackageOld np) {
+    private void answer(CallModuleDto dto) {
+        guiCommunicator.callNotifEnd(dto);
+    }
+
+    private void endCall(boolean muteOutgoingCall, boolean muteIncomingCall, CallModuleDto dto) {
+        if(isCalling()){
+            setCalling(false);
+            Mpris mpris = backgroundService.getModuleById(device.getId(), Mpris.class);
+            if(mpris != null){
+                mpris.playAll();
+            }
+            String callType = dto.getCallType();
+            if((callType.equalsIgnoreCase(NotificationTypes.OUTGOING.name()) && muteOutgoingCall) ||
+                    (callType.equalsIgnoreCase(NotificationTypes.INCOMING.name()) && muteIncomingCall) ||
+                    callType.equalsIgnoreCase(NotificationTypes.MISSED_IN.name())){
+                unMute();
+            }
+            guiCommunicator.callNotifEnd(dto);
+        }
+    }
+
+    private void inCall(boolean muteWhenOutcomingCall, boolean muteWhenCall, CallModuleDto dto) {
+        if(!isCalling()){
+            Mpris mpris = backgroundService.getModuleById(device.getId(), Mpris.class);
+            if(mpris != null) {
+                mpris.pauseAll();
+            }
+            String callType = dto.getCallType();
+            if((callType.equalsIgnoreCase(NotificationTypes.OUTGOING.name()) && muteWhenOutcomingCall) ||
+                    (callType.equalsIgnoreCase(NotificationTypes.INCOMING.name()) && muteWhenCall)){
+                mute();
+            }
+            setCalling(true);
+        }
+        guiCommunicator.callNotif(dto,device.getId());
+    }
+
+    public void mute(boolean mute){
+        if(mute){
+            mute();
+        }else {
+            unMute();
+        }
+    }
+
+    private void unMute() {
         muteUnmute(false);
         muted.clear();
     }
 
-    private void mute(NetworkPackageOld np) {
+    private void mute() {
         muteUnmute(true);
     }
 
     @Override
     public void endWork() {
-        if( backgroundService.getConnectedDevices().size() == 0) {
-            CALLING = false;
+        if(backgroundService.ifLastConnectedDeviceAreYou(device.getId())){
+            setCalling(false);
+            unMute();
         }
     }
 
-    public static void muteUnmute(boolean mute){
-        Mixer.Info [] mixers = AudioSystem.getMixerInfo();
-        for (Mixer.Info mixerInfo : mixers) {
+    @Synchronized
+    private static void muteUnmute(boolean mute){
+        for (Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);
-            Line.Info [] lineInfos = mixer.getTargetLineInfo(); // target, not source
-            for (Line.Info lineInfo : lineInfos) {
-                Line line = null;
-                boolean opened = true;
-                try {
-                    line = mixer.getLine(lineInfo);
-                    opened = line.isOpen() || line instanceof Clip;
-                    if (!opened) {
-                        line.open();
-                    }
-                    for (Control control : line.getControls()) {
-                        findMuteControlAndMute(control,control.toString(),mixerInfo.getName(),mute);
-                    }
-                }
-                catch (LineUnavailableException | IllegalArgumentException e) {
-                    e.printStackTrace();
-                }
-                finally {
-                    if (line != null && !opened) {
-                        line.close();
-                    }
+            for (Line.Info lineInfo : mixer.getTargetLineInfo() ) { // target, not source
+                Line line =  extractLine(lineInfo,mixer,mixerInfo.getName(),mute);
+                if (line != null && (!line.isOpen() || line instanceof Clip)) {
+                    line.close();
                 }
             }
+        }
+    }
+
+    private static Line extractLine(Line.Info lineInfo, Mixer mixer, String name, boolean mute) {
+        try {
+            Line line = mixer.getLine(lineInfo);
+            if (!(line.isOpen() || line instanceof Clip)) {
+                line.open();
+            }
+            for (Control control : line.getControls()) {
+                findMuteControlAndMute(control, name, mute);
+            }
+            return line;
+        }catch (LineUnavailableException | IllegalArgumentException e) {
+            log.error("error in muteUnmute",e);
+            return null;
         }
     }
 
@@ -141,57 +163,46 @@ public class CallModule extends Module {
     recursive descent to muteControl and set it true if mute arg true, false otherwise.
     if mute true add mixer arg to set, otherwise remove
     * */
-    private static void findMuteControlAndMute(Control control,String parentControlName,String mixer,boolean mute)
-    {
-        if (control instanceof CompoundControl)
-        {
+    private static void findMuteControlAndMute(Control control,String mixer,boolean mute) {
+        if (control instanceof CompoundControl) {
             Control[] controls = ((CompoundControl)control).getMemberControls();
-            for (Control c: controls)
-            {
-                 findMuteControlAndMute(c,parentControlName,mixer,mute);
+            for (Control c: controls) {
+                 findMuteControlAndMute(c,mixer,mute);
             }
         }else if(control instanceof BooleanControl && control.getType() == BooleanControl.Type.MUTE){
             boolean value = ((BooleanControl) control).getValue();
-            if(mute) {
-                if (!value) {
-                    String s =  mixer;
-                    muted.add(s);
-                    ((BooleanControl) control).setValue(true);
-                }
-            }else {
-                if(value){
-                    String s = mixer;
-                    if(muted.contains(s)){
-                        ((BooleanControl)control).setValue(false);
-                    }
-                }
+            if(mute && !value) {
+                muted.add(mixer);
+                ((BooleanControl) control).setValue(true);
+            } else if (value && muted.contains(mixer)) {
+                ((BooleanControl) control).setValue(false);
             }
         }
     }
 
-    public void sendMute(String id){
-        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), MUTE);
-        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void sendMute(){
+        sendCommand(api.MUTE);
     }
 
-    public void rejectCall(String id) {
-        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL);
-        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void rejectCall() {
+        sendCommand(api.DECLINE_CALL);
     }
 
-    public void answerCall(String id) {
-        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), ANSWER_CALL);
-        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void answerCall() {
+        sendCommand(api.ANSWER_CALL);
     }
 
-    public void rejectOutgoingCall(String id) {
-        NetworkPackageOld orCreatePackage =cacher.getOrCreatePackage(CallModule.class.getSimpleName(), DECLINE_CALL); //?
-        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void rejectOutgoingCall() {
+        sendCommand(api.DECLINE_CALL); // ??
     }
 
-    public void recall(String id, String num) {
-        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(CallModule.class.getSimpleName(), RECALL);
-        orCreatePackage.setValue("number",num);
-        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void recall(String number) {
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new CallModuleDto(api.RECALL.name(),number)));
     }
+
+    private void sendCommand(api mute) {
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new CallModuleDto(mute.name())));
+    }
+
+
 }

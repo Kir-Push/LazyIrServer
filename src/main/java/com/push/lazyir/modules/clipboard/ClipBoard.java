@@ -3,7 +3,7 @@ package com.push.lazyir.modules.clipboard;
 import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.modules.Module;
-import com.push.lazyir.modules.clipboard.rmi.ClipboardRmiServer;
+import com.push.lazyir.modules.clipboard.remote.ClipboardRmiServer;
 import com.push.lazyir.service.main.BackgroundService;
 import javax.inject.Inject;
 

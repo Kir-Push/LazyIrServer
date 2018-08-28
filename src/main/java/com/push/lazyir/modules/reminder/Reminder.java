@@ -1,100 +1,107 @@
 package com.push.lazyir.modules.reminder;
 
-import com.push.lazyir.devices.CacherOld;
-import com.push.lazyir.devices.NetworkPackageOld;
+import com.google.common.collect.ArrayListMultimap;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.notifications.notifications.Notification;
-import com.push.lazyir.modules.notifications.notifications.Notifications;
 import com.push.lazyir.modules.notifications.sms.Sms;
-import com.push.lazyir.modules.notifications.sms.SmsPack;
 import com.push.lazyir.service.main.BackgroundService;
 
 import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Reminder extends Module {
-
-    private final static String REMINDER_TYPE = "Reminder";
-    private final static String MISSED_CALLS = "MissedCalls";
-    private final static String UNREAD_MESSAGES = "UnreadMessages";
-    private final static String DISSMIS_ALL_CALLS = "dismissAllCalls";
-    private final static String DISSMIS_ALL_MESSAGES = "dismissAllMessages";
+    public enum api{
+        REMINDER_TYPE,
+        MISSED_CALLS,
+        UNREAD_MESSAGES,
+        DISSMIS_ALL_CALLS,
+        DISSMIS_ALL_MESSAGES
+    }
     private GuiCommunicator guiCommunicator;
 
     @Inject
-    public Reminder(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator) {
-        super(backgroundService, cacher);
+    public Reminder(BackgroundService backgroundService, MessageFactory messageFactory, GuiCommunicator guiCommunicator) {
+        super(backgroundService, messageFactory);
         this.guiCommunicator = guiCommunicator;
     }
 
     @Override
-    public void execute(NetworkPackageOld np) {
-        String data = np.getData();
-        switch (data){
+    public void execute(NetworkPackage np) {
+        ReminderDto dto = (ReminderDto) np.getData();
+        api command = Reminder.api.valueOf(dto.getCommand());
+        switch (command){
             case MISSED_CALLS:
-                missedCalls(np);
+                missedCalls(dto);
                 break;
             case UNREAD_MESSAGES:
-                unreadMessages(np);
+                unreadMessages(dto);
                 break;
             default:
                 break;
         }
     }
 
-    private void unreadMessages(NetworkPackageOld np) {
-        MessagesPack object = np.getObject(NetworkPackageOld.N_OBJECT, MessagesPack.class);
-        if(object != null){
-            Notifications notifications = object.getNotifications();
-            SmsPack smsPack = object.getSmsPack();
-            Notification notification = createNotification(notifications,smsPack);
-            guiCommunicator.show_notification(device.getId(),notification,object);
-        }
+    @Override
+    public void endWork() {
+        // nothing to do
     }
 
-    private Notification createNotification(Notifications notifications, SmsPack smsPack) {
-        List<Notification> notificationsList = null;
-        List<Sms> sms = null;
-        if(notifications != null) {
-            notificationsList = notifications.getNotifications();
-        }
-        if(smsPack != null) {
-            sms = smsPack.getSms();
-        }
-        int size = (notificationsList != null ? notificationsList.size() : 0) + (sms != null ? sms.size() : 0);
-        String text,title,pack,ticker,id,icon,type;
-        pack = "reminder";
-        type = "unreadMessages";
-        ticker = device.getName();
-        icon = null;
-        title = "You have " + size + " unread message on " + ticker;
-        id = "some Id";
+    private void unreadMessages(ReminderDto dto) {
+        Notification notification = createNotification( dto.getNotifications(),dto.getSmsList());
+        guiCommunicator.showNotification(device.getId(),notification,dto);
+    }
+
+    private Notification createNotification(List<Notification> notifications, List<Sms> smsPack) {
+        int size = (notifications != null ? notifications.size() : 0) + (smsPack != null ? smsPack.size() : 0);
+        String pack = "reminder";
+        String ticker = device.getName();
+        String title = "You have " + size + " unread messages on " + ticker;
+        String id = "some Id";
+        String type = "UNREAD_MESSAGES";
         StringBuilder textBuilder = new StringBuilder();
-        if(sms != null){
-            textBuilder.append("SMS From ");
-            HashMap<String, List<Sms>> stringListHashMap = collectSmsByNumber(sms);
-            for (String s : stringListHashMap.keySet()) {
-                List<Sms> messagesList = stringListHashMap.get(s);
-                Sms msg = messagesList.get(0);
-                String name = msg.getName();
-                if(name != null && !name.equalsIgnoreCase("null"))
+        if(smsPack != null){
+           appendSms(textBuilder,smsPack);
+        }
+        if(notifications != null){
+            appendNotifications(textBuilder,notifications);
+        }
+        String text = textBuilder.toString();
+        return new Notification(text,type,title,pack,ticker,id,null,null);
+    }
+
+    private void appendNotifications(StringBuilder textBuilder, List<Notification> notifications) {
+        ArrayListMultimap<String, Notification> multimap = collectNotificationByMessenger(notifications);
+        if(multimap.isEmpty()){
+            return;
+        }
+        textBuilder.append("Messengers messages: ");
+        multimap.keySet().forEach(key -> {
+            Notification notification = multimap.get(key).get(0);
+            textBuilder.append(key).append(" ").append(notification.getTitle()).append("\n");
+        });
+    }
+
+    private void appendSms(StringBuilder textBuilder,List<Sms> smsPack) {
+        textBuilder.append("SMS From ");
+        ArrayListMultimap<String, Sms> smsMultimap = collectSmsByNumber(smsPack);
+        for (String key : smsMultimap.keySet()) {
+            List<Sms> messages = smsMultimap.get(key);
+            Sms sms = messages.get(0);
+            String name = sms.getName();
+            if(name != null && !name.equalsIgnoreCase("null")) {
                 textBuilder.append(name);
-                long dat = 0;
-                for (Sms sms1 : messagesList){
-                    if(sms1.getDate() > dat)
-                        dat = sms1.getDate();
-                    if(icon == null)
-                        icon = sms1.getIcon();
-                }
-                LocalDateTime date =
-                        LocalDateTime.ofInstant(Instant.ofEpochMilli(dat), ZoneId.systemDefault());
-                textBuilder.append(" (").append(msg.getNumber()).append(") ").append(messagesList.size())
+            }
+            Optional<Sms> max = messages.stream().max(Comparator.comparing(Sms::getDate));
+            if(max.isPresent()) {
+                Sms message = max.get();
+                LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(message.getDate()), ZoneId.systemDefault());
+                textBuilder.append(" (").append(message.getNumber()).append(") ").append(messages.size())
                         .append(" messages, last: ").append(date.getYear()).append("/")
                         .append(date.getMonthValue()).append("/")
                         .append(date.getDayOfMonth()).append(" - (")
@@ -102,65 +109,35 @@ public class Reminder extends Module {
                         .append(date.getMinute()).append(")\n");
             }
         }
-        if(notificationsList != null){
-            HashMap<String, List<Notification>> listHashMap = collectNotificationByMessenger(notificationsList);
-            if(listHashMap.size() > 0) {
-                textBuilder.append("Messengers messages: ");
-                for (String s : listHashMap.keySet()) {
-                    List<Notification> notificationsLst = listHashMap.get(s);
-                    if (icon == null) {
-                        for (Notification notification : notificationsLst) {
-                            if (icon == null) {
-                                icon = notification.getIcon();
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                    textBuilder.append(s).append(" ").append(notificationsLst.get(notificationsLst.size() - 1).getTitle()).append("\n");
-                }
-            }
-        }
-        text = textBuilder.toString();
-        return new Notification(text,type,title,pack,ticker,id,icon,null);
     }
 
-    private void missedCalls(NetworkPackageOld np) {
-        MissedCalls object = np.getObject(NetworkPackageOld.N_OBJECT, MissedCalls.class);
-        if(object != null){
-            List<MissedCall> missedCalls = object.getMissedCalls();
-            if(missedCalls != null){
-            HashMap<String,List<MissedCall>> missedCallMap = collectByNumber(missedCalls);
-            Notification missedNotification = createNotification(missedCallMap,missedCalls.size());
-            guiCommunicator.show_notification(device.getId(),missedNotification);
-            }
+    private void missedCalls(ReminderDto dto) {
+        List<MissedCall> missedCalls = dto.getMissedCalls();
+        if(missedCalls != null && !missedCalls.isEmpty()){
+            ArrayListMultimap<String, MissedCall> multimap = collectByNumber(missedCalls);
+            Notification missedNotification = createNotification(multimap);
+            guiCommunicator.showNotification(device.getId(),missedNotification);
         }
-
     }
 
-    private Notification createNotification(HashMap<String, List<MissedCall>> missedCallMap, int size) {
-        String text,title,pack,ticker,id,icon,type;
-        pack = "reminder";
-        type = "missedCalls";
-        ticker = device.getName();
-        icon = null;
-        title = "You have " + size + " missed calls on " + ticker;
+    private Notification createNotification( ArrayListMultimap<String, MissedCall> missedCallMap) {
+        String pack = "reminder";
+        String ticker = device.getName();
+        String title = "You have " + missedCallMap.values().size() + " missed calls on " + ticker;
+        String type = "MISSED_CALLS";
         StringBuilder db = new StringBuilder();
         StringBuilder textBuilder = new StringBuilder();
-        for (List<MissedCall> missedCalls : missedCallMap.values()) {
-            if(missedCalls.size() == 0)
-                continue;
+        for (String key : missedCallMap.keySet()) {
+            List<MissedCall> missedCalls = missedCallMap.get(key);
             long dat = 0;
             for (MissedCall missedCall : missedCalls) {
                 db.append(missedCall.getId());
                 db.append(":::");
-                if(icon == null)
-                    icon = missedCall.getPicture();
-                if(missedCall.getDate() > dat)
+                if(missedCall.getDate() > dat) {
                     dat = missedCall.getDate();
+                }
             }
-            LocalDateTime date =
-                    LocalDateTime.ofInstant(Instant.ofEpochMilli(dat), ZoneId.systemDefault());
+            LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(dat), ZoneId.systemDefault());
             textBuilder.append("From ")
                     .append(missedCalls.get(0).getName()).append(" (")
                     .append(missedCalls.get(0).getNumber()).append(") ")
@@ -173,70 +150,63 @@ public class Reminder extends Module {
                     append(date.getSecond()).append(")\n");
 
         }
-        text = textBuilder.toString();
-        db = db.delete(db.length()-3,db.length());
-        id = db.toString();
-        return new Notification(text,type,title,pack,ticker,id,icon,null);
+        String text = textBuilder.toString();
+        int length = db.length();
+        String id = db.delete(length -3, length).toString();
+        return new Notification(text,type,title,pack,ticker,id,null,null);
     }
 
-    private HashMap<String, List<MissedCall>> collectByNumber(List<MissedCall> missedCalls) {
-        HashMap<String,List<MissedCall>> result = new HashMap<>();
-        for (MissedCall missedCall : missedCalls) {
-            List<MissedCall> missedCallsList = result.computeIfAbsent(missedCall.getNumber(), k -> new ArrayList<>());
-            missedCallsList.add(missedCall);
-        }
+    private ArrayListMultimap<String, MissedCall> collectByNumber(List<MissedCall> missedCalls) {
+        ArrayListMultimap<String,MissedCall> result = ArrayListMultimap.create();
+        missedCalls.forEach(missedCall -> result.put(missedCall.getNumber(),missedCall));
         return result;
     }
 
-    private HashMap<String, List<Notification>> collectNotificationByMessenger(List<Notification> notificationsList) {
-        HashMap<String, List<Notification>> result = new HashMap<>();
-        for (Notification notification : notificationsList) {
-            String[] split = notification.getPack().split(".");
-            String pack;
-            if(split.length == 0)
-              pack = notification.getPack();
-            else if(split.length == 1)
+    private ArrayListMultimap<String, Notification> collectNotificationByMessenger(List<Notification> notificationsList) {
+        ArrayListMultimap<String,Notification> result = ArrayListMultimap.create();
+        notificationsList.forEach(notification -> {
+            String pack = notification.getPack();
+            String[] split = pack.split(".");
+           if(split.length == 1) {
                 pack = split[0]; // todo all this you need to test, it may not work in many messengers
-            else
+            }else {
                 pack = split[1];
-            List<Notification> notifications = result.computeIfAbsent(pack, k -> new ArrayList<>());
-            notifications.add(notification);
-        }
+            }
+            result.put(pack,notification);
+        });
         return result;
     }
 
 
-    private HashMap<String, List<Sms>> collectSmsByNumber(List<Sms> missedMessage){
-        HashMap<String,List<Sms>> result = new HashMap<>();
-        for (Sms missedCall : missedMessage) {
-            String number = missedCall.getNumber();
-            List<Sms> missedMessages = result.computeIfAbsent(number == null ? missedCall.getName() : number, k -> new ArrayList<>());
-            missedMessages.add(missedCall);
-        }
+    private ArrayListMultimap<String, Sms> collectSmsByNumber(List<Sms> messagePack){
+        ArrayListMultimap<String,Sms> result = ArrayListMultimap.create();
+        messagePack.forEach(sms -> {
+            String number = sms.getNumber();
+            result.put(number == null ? sms.getName() : number,sms);
+        });
         return result;
     }
 
-    public void sendDissmisAllCalls(String id,String msg){
-        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(Reminder.class.getSimpleName(), DISSMIS_ALL_CALLS);
-        orCreatePackage.setValue(MISSED_CALLS,msg);
-        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
+    public void sendDissmisAllCalls(String msg){
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(), true, new ReminderDto(api.DISSMIS_ALL_CALLS.name(),msg)));
     }
 
-    public void sendDissmisAllMessages(String id, MessagesPack mspack) {
-        Notifications notifications = mspack.getNotifications();
-        SmsPack smsPack = mspack.getSmsPack();
-        for (Notification notification : notifications.getNotifications()) { // this info don't need anymore
+    public void sendDissmisAllMessages(ReminderDto mspack) {
+        List<Notification> notifications = mspack.getNotifications();
+        List<Sms> smsList = mspack.getSmsList();
+        notifications.forEach(notification -> {
             notification.setIcon(null);
             notification.setPicture(null);
             notification.setText(null);
-        }
-        for (Sms sms : smsPack.getSms()) {
+        });
+        smsList.forEach(sms ->{
             sms.setIcon(null);
             sms.setPicture(null);
             sms.setText(null);
-        }
-        NetworkPackageOld orCreatePackage = cacher.getOrCreatePackage(Reminder.class.getSimpleName(), DISSMIS_ALL_MESSAGES);
-        orCreatePackage.setObject(NetworkPackageOld.N_OBJECT,mspack);
-        backgroundService.sendToDevice(id,orCreatePackage.getMessage());
+        });
+        mspack.setMissedCalls(null);
+        mspack.setMissedCallStr(null);
+        mspack.setCommand(api.DISSMIS_ALL_MESSAGES.name());
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,mspack));
     }
 }

@@ -2,7 +2,6 @@ package com.push.lazyir.modules.dbus.strategies.win;
 
 import com.push.lazyir.modules.dbus.Player;
 import com.push.lazyir.service.managers.settings.SettingManager;
-import lombok.Cleanup;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
@@ -106,7 +105,7 @@ public class Vlc implements Strategy {
         if(line == null || line.length() == 0) {
             return null;
         }
-        @Cleanup InputSource inputSource = new InputSource(new StringReader(line.substring(line.indexOf("<?xml version="))));
+        InputSource inputSource = new InputSource(new StringReader(line.substring(line.indexOf("<?xml version="))));
         saxParser.parse(inputSource,handler);
         return handler.isEnded() ? handler.getPlayer() : null;
         }  catch (SAXException |  IOException e) {

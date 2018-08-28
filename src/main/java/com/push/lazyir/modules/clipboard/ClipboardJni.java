@@ -1,6 +1,7 @@
 package com.push.lazyir.modules.clipboard;
-import com.push.lazyir.modules.clipboard.rmi.ClientRegister;
-import com.push.lazyir.modules.clipboard.rmi.ClipboardRmiSeparateProcess;
+
+import com.push.lazyir.modules.clipboard.remote.ClientRegister;
+import com.push.lazyir.modules.clipboard.remote.ClipboardRmiSeparateProcess;
 
 import java.io.File;
 import java.net.URISyntaxException;

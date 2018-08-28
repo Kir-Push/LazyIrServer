@@ -8,7 +8,7 @@ import com.push.gui.entity.CustomNotification;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.utils.CustomBuilder;
 import com.push.gui.utils.GuiUtils;
-import com.push.lazyir.modules.notifications.call.NotificationTypes;
+import com.push.lazyir.modules.notifications.NotificationTypes;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.managers.settings.SettingManager;
 import com.theme.ThemePackagePresets;
@@ -69,9 +69,9 @@ public class Popup {
             }
         }
         CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController,(arg == null || arg.length == 0) ? null : arg[0]);
-        boolean incoming = notification.getType().equalsIgnoreCase(NotificationTypes.incoming.name());
-        boolean missed = notification.getType().equalsIgnoreCase(NotificationTypes.missedIn.name());
-        boolean outgoing = notification.getType().equalsIgnoreCase(NotificationTypes.outgoing.name());
+        boolean incoming = notification.getType().equalsIgnoreCase(NotificationTypes.INCOMING.name());
+        boolean missed = notification.getType().equalsIgnoreCase(NotificationTypes.MISSED_IN.name());
+        boolean outgoing = notification.getType().equalsIgnoreCase(NotificationTypes.OUTGOING.name());
         if(incoming || missed || outgoing){
             callNotifs.put(notification.getTitle(),build);
         }

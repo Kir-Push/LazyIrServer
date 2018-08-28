@@ -29,45 +29,42 @@ import com.push.lazyir.modules.touch.TouchControl;
 import com.push.lazyir.modules.touch.TouchControlDto;
 import com.push.lazyir.service.main.ModuleComponent;
 import com.push.lazyir.utils.entity.Pair;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by buhalo on 05.03.17.
- */
-
+@Slf4j
 public class ModuleFactory {
     private HashMap<String, Pair<Class,Class>> registeredModules = new HashMap<>();
     private ModuleComponent moduleComponent;
     private Method[] methods;
-    private Lock lock = new ReentrantLock();
 
-    public Module instantiateModule(Device dv, Class registeredModule)
-    {
-        lock.lock();
+
+    @Synchronized
+    private Module instantiateModule(Device dv, Class registeredModule) {
         try {
-            Module module = null;
             Method method = getMethod(registeredModule);
-            if(method == null)
+            if(method == null) {
+                log.error("NullPointerException Such method doesn't exist  " + registeredModule.getSimpleName());
                 throw new NullPointerException("Such method doesn't exist  " + registeredModule.getSimpleName());
-           method.setAccessible(true);
-            module =(Module) method.invoke(moduleComponent);
+            }
+            method.setAccessible(true);
+            Module module =(Module) method.invoke(moduleComponent);
             module.setDevice(dv);
             return module;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            lock.unlock();
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            log.error("error in instantiateModule - " + dv.getId() + " " + registeredModule,e);
         }
         return null;
     }
 
     private Method getMethod(Class registeredModule) {
-        if (methods == null)
+        if (methods == null) {
             methods = moduleComponent.getClass().getDeclaredMethods();
+        }
         Method method = null;
         for (Method mt : methods) {
             if(mt.getName().equals("provide"+registeredModule.getSimpleName())){
@@ -96,19 +93,24 @@ public class ModuleFactory {
         }
     }
 
-    public Module instantiateModuleByName(Device dv,String name)
-    {
+    public Module instantiateModuleByName(Device dv,String name) {
         Pair<Class, Class> entry = registeredModules.get(name);
+        if(entry == null){
+            return null;
+        }
         Class moduleClass = entry.getLeft();
         return instantiateModule(dv, moduleClass);
     }
-
 
     public void setModuleComponent(ModuleComponent moduleComponent) {
         this.moduleComponent = moduleComponent;
     }
 
    public Class getModuleDto(String type){
-        return registeredModules.get(type).getRight();
+       Pair<Class, Class> pair = registeredModules.get(type);
+       if(pair == null){
+           return null;
+       }
+       return pair.getRight();
    }
 }

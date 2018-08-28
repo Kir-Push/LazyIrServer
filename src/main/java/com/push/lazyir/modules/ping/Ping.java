@@ -1,25 +1,32 @@
 package com.push.lazyir.modules.ping;
 
-import com.push.lazyir.devices.CacherOld;
-import com.push.lazyir.devices.NetworkPackageOld;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.main.BackgroundService;
 
 import javax.inject.Inject;
 
 public class Ping extends Module{
+    public enum api{
+        PING
+    }
     @Inject
-    public Ping(BackgroundService backgroundService, CacherOld cacher) {
-        super(backgroundService, cacher);
+    public Ping(BackgroundService backgroundService, MessageFactory messageFactory) {
+        super(backgroundService, messageFactory);
     }
 
     @Override
-    public void execute(NetworkPackageOld np) {
+    public void execute(NetworkPackage np) {
+        //nothing here to do
+    }
 
+    @Override
+    public void endWork() {
+        //nothing here to do
     }
 
     public void sendPing(){
-        NetworkPackageOld ping = cacher.getOrCreatePackage(Ping.class.getSimpleName(), "Ping");
-        sendMsg(ping.getMessage());
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new PingDto(api.PING.name())));
     }
 }

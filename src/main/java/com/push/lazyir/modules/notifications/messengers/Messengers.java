@@ -1,140 +1,126 @@
 package com.push.lazyir.modules.notifications.messengers;
 
-import com.push.lazyir.devices.CacherOld;
-import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackageOld;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.dbus.Mpris;
+import com.push.lazyir.modules.notifications.NotificationTypes;
 import com.push.lazyir.modules.notifications.call.CallModule;
 import com.push.lazyir.modules.notifications.notifications.Notification;
 import com.push.lazyir.service.main.BackgroundService;
 
 import javax.inject.Inject;
 
-/**
- * Created by buhalo on 19.04.17.
- */
 public class Messengers extends Module {
-    private static final String ANSWER = "answer";
+    public enum api{
+        ANSWER
+    }
     private GuiCommunicator guiCommunicator;
 
     @Inject
-    public Messengers(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator) {
-        super(backgroundService, cacher);
+    public Messengers(BackgroundService backgroundService, MessageFactory messageFactory, GuiCommunicator guiCommunicator) {
+        super(backgroundService, messageFactory);
         this.guiCommunicator = guiCommunicator;
     }
 
     @Override
-    public void execute(NetworkPackageOld np) {
-        if(np.getData().equals(ANSWER)) {
-            Notification message = np.getObject(NetworkPackageOld.N_OBJECT, Notification.class);
-            guiCommunicator.show_notification(device.getId(),message);
+    public void execute(NetworkPackage np) {
+        MessengersDto dto = (MessengersDto) np.getData();
+        api command = api.valueOf(dto.getCommand());
+        if(command.equals(api.ANSWER)) {
+            Notification message = dto.getNotification();
+            guiCommunicator.showNotification(device.getId(),message);
         }
     }
 
     @Override
     public void endWork() {
-
+        //nothing here to do
     }
 
-    public void sendAnswer(String typeName,String text,String id)
-    {
-        NetworkPackageOld np =  cacher.getOrCreatePackage(Messengers.class.getSimpleName(),ANSWER);
-        np.setValue("typeName",typeName);
-        np.setValue("text",text);
-        backgroundService.sendToDevice(id,np.getMessage());
+    public void sendAnswer(String typeName,String text) {
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new MessengersDto(api.ANSWER.name(),text,typeName,null)));
     }
 
-    public boolean isCalling(Notification not, Device device, NetworkPackageOld np, boolean isReceive) {
-        if(checkForIncomingCall(np,not)) {
-            if(isReceive)
-                pauseAll(np.getId(),device);
-            else
-                playAll(np.getId(),device);
-            if(CallModule.muteWhenCall == 1){
-                CallModule.muteUnmute(isReceive);
+    public boolean isCalling(Notification not, boolean isReceive) {
+        if(checkForIncomingCall(not)) {
+            if(isReceive) {
+                pauseAll();
+            } else {
+                playAll();
+            }
+            if(CallModule.isMuteWhenCall()){
+                CallModule callModule = backgroundService.getModuleById(device.getId(), CallModule.class);
+                callModule.mute(isReceive);
             }
             return true;
-        }
-        else if(checkForOutcomingCall(np,not)){
-            if(isReceive)
-                pauseAll(np.getId(),device);
-            else
-                playAll(np.getId(),device);
-            if(CallModule.muteWhenOutcomingCall == 1){
-                CallModule.muteUnmute(isReceive);
+        } else if(checkForOutcomingCall(not)){
+            if(isReceive) {
+                pauseAll();
+            } else {
+                playAll();
+            }
+            if(CallModule.isMuteWhenOutcomingCall()){
+                CallModule callModule = backgroundService.getModuleById(device.getId(), CallModule.class);
+                callModule.mute(isReceive);
             }
             return true;
-        }else if(checkForGoingCall(np,not)){
-
-            return true;
-        }else{
+        }else {
             return false;
         }
     }
 
-    private void playAll(Device device) {
-        Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
+    private void playAll() {
+        Mpris mpris = backgroundService.getModuleById(device.getId(), Mpris.class);
         if (mpris != null)
             mpris.playAll();
     }
 
-    private void pauseAll(Device device){
-        Mpris mpris = (Mpris) device.getEnabledModules().get(Mpris.class.getSimpleName());
+    private void pauseAll(){
+        Mpris mpris = backgroundService.getModuleById(device.getId(), Mpris.class);
         if (mpris != null)
             mpris.pauseAll();
     }
 
-    private boolean checkForGoingCall(NetworkPackageOld np, Notification not) {
-        String type = getCallType( not.getPack(),not.getId(),not.getText());
-        if(type.equalsIgnoreCase("ongoing"))
-            return true;
-        return false;
+    private boolean checkForOutcomingCall(Notification not) {
+        NotificationTypes type = getCallType( not.getPack(),not.getText());
+        return type.equals(NotificationTypes.OUTGOING);
     }
 
-    private boolean checkForOutcomingCall(NetworkPackageOld np, Notification not) {
-        String type = getCallType( not.getPack(),not.getId(),not.getText());
-        if(type.equalsIgnoreCase("outcoming"))
-            return true;
-        return false;
+    private boolean checkForIncomingCall(Notification not) {
+        NotificationTypes type = getCallType( not.getPack(),not.getText());
+        return type.equals(NotificationTypes.INCOMING);
     }
 
-    private boolean checkForIncomingCall(NetworkPackageOld np, Notification not) {
-        String type = getCallType( not.getPack(),not.getId(),not.getText());
-        if(type.equalsIgnoreCase("incoming"))
-            return true;
-        return false;
-    }
-
-    private String getCallType(String pack,String id,String text){ //todo
+    private NotificationTypes getCallType(String pack,String text){ //todo, create and test detection whether notification call or not
         switch (pack){
             case "com.skype.raider":
-                if(id.equalsIgnoreCase("16") || text.equalsIgnoreCase("Ongoing call"))
-                    return "ongoing";
-                else  if(id.equalsIgnoreCase("??") || text.equalsIgnoreCase("Incoming call"))
-                    return "incoming";
-                else  if(id.equalsIgnoreCase("??") || text.equalsIgnoreCase("Outcoming call"))
-                    return "outcoming";
-                break;
+              return skypeCallType(text);
             case "com.whatsapp":
-                if(id.equalsIgnoreCase("??") || text.equalsIgnoreCase("Ongoing call"))
-                    return "ongoing";
-                else  if(id.equalsIgnoreCase("??") || text.equalsIgnoreCase("Incoming call"))
-                    return "incoming";
-                else  if(id.equalsIgnoreCase("??") || text.equalsIgnoreCase("Outcoming call"))
-                    return "outcoming";
-                break;
-            case "org.telegram.messenger":
-                if(id.equalsIgnoreCase("??") || text.equalsIgnoreCase("Ongoing call"))
-                    return "ongoing";
-                else  if(id.equalsIgnoreCase("??") || text.equalsIgnoreCase("Incoming call"))
-                    return "incoming";
-                else  if(id.equalsIgnoreCase("??") || text.equalsIgnoreCase("Outcoming call"))
-                    return "outcoming";
+              return whatsAppCallType(text);
+            case "org.telegram.MESSENGER":
+                return telegramCallType(text);
+            default:
                 break;
         }
-        return "none";
+        return NotificationTypes.MESSENGER;
+    }
+
+    private NotificationTypes telegramCallType(String text) {
+        return whatsAppCallType(text); // now it's same
+    }
+
+    private NotificationTypes whatsAppCallType(String text) {
+        if(text.equalsIgnoreCase("Incoming call") )
+            return NotificationTypes.INCOMING;
+        else if(text.equalsIgnoreCase("Outcoming call"))
+            return NotificationTypes.OUTGOING;
+        return NotificationTypes.MESSENGER;
+    }
+
+    private NotificationTypes skypeCallType(String text) {
+        return whatsAppCallType(text);
     }
 
 }

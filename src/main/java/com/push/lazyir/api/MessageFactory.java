@@ -35,7 +35,7 @@ public class MessageFactory {
             log.error("getMyId error - generated failback id: " + id,e);
         }
         cache = new MessageCache();
-        cache.warm(name,id,deviceType);
+        cache.warm();
     }
 
     public NetworkPackage parseMessage(String msg){

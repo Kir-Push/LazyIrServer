@@ -6,8 +6,8 @@ import com.push.gui.entity.CustomNotification;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.systray.JavaFXTrayIconSample;
 import com.push.lazyir.gui.GuiCommunicator;
-import com.push.lazyir.modules.notifications.call.NotificationTypes;
-import com.push.lazyir.modules.reminder.MessagesPack;
+import com.push.lazyir.modules.notifications.NotificationTypes;
+import com.push.lazyir.modules.reminder.ReminderDto;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
 import com.theme.TextTheme;
@@ -68,9 +68,9 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         windowTheme.width = calculatedWidth;
         windowTheme.height = calculatedHeight;
         notification.setWindowTheme(windowTheme);
-        if(notificationType.equals(NotificationTypes.incoming)){
+        if(notificationType.equals(NotificationTypes.INCOMING)){
             notification.setTextThemeCallColor();
-        }else if(notificationType.equals(NotificationTypes.missedIn)){
+        }else if(notificationType.equals(NotificationTypes.MISSED_IN)){
             notification.setTextThemeCallMiseedColor();
         }else{
             notification.setTextThemeColor(textTheme);
@@ -123,51 +123,50 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
     private void configNotification(CustomNotification notification, NotificationTypes type, String icon, NotificationDevice notificationDevice, Object... args) {
         if(icon != null && icon.length() > 0){
             notification.setIcon(icon, 100, 100);
-            return;
         }
         String id = (String) args[1];
         switch (type){
-            case sms:
-                notification.setIcon(guiUtils.getDefaultSmsIcon(100,100));
+            case SMS:
+                notification.setIfNull(guiUtils.getDefaultSmsIcon(100,100));
                 notification.setFirstButton(localizationManager.get("Reply"), action -> {
                     notification.hide();
                     Platform.runLater(() -> ((MainController) args[2]).openSmsDialog(notificationDevice, id));
                 });
                 notification.setTextTemeFont(textTheme);
                 break;
-            case incoming:
-                notification.setIcon(guiUtils.getDefaultPersonIcon(100,100));
+            case INCOMING:
+                notification.setIfNull(guiUtils.getDefaultPersonIcon(100,100));
                 notification.setFirstButton(localizationManager.get("Mute"),action->{
                     notification.hide();
-                    Platform.runLater(()-> guiCommunicator.muteCall(notificationDevice,id));
+                    Platform.runLater(()-> guiCommunicator.muteCall(id));
                 });
                 notification.setSecondButton(localizationManager.get("Reject"),action->{
                     notification.hide();
-                    Platform.runLater(()-> guiCommunicator.rejectCall(notificationDevice,id));
+                    Platform.runLater(()-> guiCommunicator.rejectCall(id));
                 });
                 notification.setTextThemeCallFont(textTheme);
                 break;
-            case missedCalls:
-                notification.setIcon(guiUtils.getDefaultMissedCallIcon(100,100));
+            case MISSED_CALLS:
+                notification.setIfNull(guiUtils.getDefaultMissedCallIcon(100,100));
                 notification.setFirstButton(localizationManager.get("DismissAll"),action -> {
                     notification.hide();
                     Platform.runLater(()-> guiCommunicator.dismissAllCalls(notificationDevice,id));
                 });
                 notification.setTextThemecallMissedFont(textTheme);
                 break;
-            case outgoing:
-                notification.setIcon(guiUtils.getDefaultOutgoingCall(100,100));
+            case OUTGOING:
+                notification.setIfNull(guiUtils.getDefaultOutgoingCall(100,100));
                 notification.setFirstButton(localizationManager.get("Reject"),action->{
                     notification.hide();
-                    Platform.runLater(()-> guiCommunicator.rejectOutgoingcall(notificationDevice,id));
+                    Platform.runLater(()-> guiCommunicator.rejectOutgoingcall(id));
                 });
                 notification.setTextTemeFont(textTheme);
                 break;
-            case unreadMessages:
-                notification.setIcon(guiUtils.getDefaultUnreadMessagesIcon(100,100));
+            case UNREAD_MESSAGES:
+                notification.setIfNull(guiUtils.getDefaultUnreadMessagesIcon(100,100));
                 notification.setFirstButton(localizationManager.get("DismissAll"),action -> {
                     notification.hide();
-                    Platform.runLater(()-> guiCommunicator.dissMissAllMessages(notificationDevice,id, (MessagesPack) args[3]));
+                    Platform.runLater(()-> guiCommunicator.dissMissAllMessages(id, (ReminderDto) args[3]));
                 });
                 notification.setSecondButton(localizationManager.get("ShowAll"),action ->{
                     notification.hide();
@@ -175,21 +174,21 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
                 });
                 notification.setTextTemeFont(textTheme);
                 break;
-            case messenger:
+            case MESSENGER:
                 notification.setFirstButton(localizationManager.get("Reply"),action->{
                     notification.hide();
                     Platform.runLater(()-> ((MainController) args[2]).openMessengerDialog(notificationDevice,id));
                 });
                 notification.setTextTemeFont(textTheme);
                 break;
-            case missedIn:
+            case MISSED_IN:
                 notification.setFirstButton(localizationManager.get("Recall"),action->{
                     notification.hide();
                     Platform.runLater(()-> guiCommunicator.recall(notificationDevice,id));
                 });
                 notification.setTextTemeFont(textTheme);
                 break;
-            case pair:
+            case PAIR:
                 notification.setFirstButton(localizationManager.get("Yes"),action->{
                     notification.hide();
                     Platform.runLater(()-> guiCommunicator.pairAnswer(id,true,notificationDevice.getTicker()));
@@ -201,7 +200,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
                 notification.setTextTemeFont(textTheme);
                 break;
             default:
-                notification.setIcon(guiUtils.getDefaultInfo(100,100));
+                notification.setIfNull(guiUtils.getDefaultInfo(100,100));
                 notification.setTextTemeFont(textTheme);
                 break;
         }

@@ -7,11 +7,10 @@ import com.push.gui.controllers.ApiController;
 import com.push.gui.controllers.MainController;
 import com.push.gui.utils.GuiUtils;
 import com.push.lazyir.api.DtoSerializer;
-import com.push.lazyir.devices.CacherOld;
 import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.ModuleFactory;
-import com.push.lazyir.modules.clipboard.rmi.ClipboardRmiServer;
+import com.push.lazyir.modules.clipboard.remote.ClipboardRmiServer;
 import com.push.lazyir.modules.dbus.websocket.ServerController;
 import com.push.lazyir.service.dto.NetworkDtoRegister;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
@@ -26,8 +25,8 @@ public class ServiceModule {
 
     @Provides
     @Singleton
-    public BackgroundService provideBackgroundService(SettingManager settingManager, LocalizationManager localizationManager, CacherOld cacher, ModuleFactory moduleFactory){
-        return new BackgroundService(settingManager,localizationManager,cacher,moduleFactory);
+    public BackgroundService provideBackgroundService(SettingManager settingManager, LocalizationManager localizationManager, MessageFactory messageFactory, ModuleFactory moduleFactory){
+        return new BackgroundService(settingManager,localizationManager,messageFactory,moduleFactory);
     }
 
     @Provides
@@ -92,7 +91,7 @@ public class ServiceModule {
 
     @Provides
     @Singleton
-    public ClipboardRmiServer provideClipboardRmiServer(BackgroundService backgroundService, MessageFactory messageFactory,SettingManager settingManager){
+    public ClipboardRmiServer provideClipboardRmiServer(BackgroundService backgroundService, MessageFactory messageFactory, SettingManager settingManager){
         return new ClipboardRmiServer(messageFactory,backgroundService,settingManager);
     }
 

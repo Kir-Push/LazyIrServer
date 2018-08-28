@@ -7,7 +7,6 @@ import com.push.gui.controllers.MainController;
 import com.push.gui.entity.PhoneDevice;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.main.DaggerServiceComponent;
-import com.push.lazyir.service.main.MainClass;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.service.main.ServiceComponent;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
@@ -49,7 +48,7 @@ public class JavaFXTrayIconSample extends Application {
         // sets up the tray icon (using awt code run on the swing thread).
         addAppToTray();
         mainWin.start(stage);
-        new Thread(() -> MainClass.main(backgroundService)).start();
+        new Thread(() -> backgroundService.startWork()).start();
     }
     /**
      * Sets up a system tray icon for the application.
@@ -88,6 +87,7 @@ public class JavaFXTrayIconSample extends Application {
                 Platform.exit();
                 System.exit(0);
                 tray.remove(trayIcon);
+
             });
             // setup the popup menu for the application.
             final java.awt.PopupMenu popup = new java.awt.PopupMenu();

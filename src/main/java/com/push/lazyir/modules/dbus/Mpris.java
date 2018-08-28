@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
 import java.util.*;
 
-import static com.push.lazyir.service.main.MainClass.*;
+import static com.push.lazyir.utils.Utility.*;
 
 @Slf4j
 public class Mpris extends Module {
@@ -140,19 +140,27 @@ public class Mpris extends Module {
     }
 
 
-    @Synchronized
     public void pauseAll() {
-        incrementCallers();
-        strategy.pauseAll();
-        browserStrategy.pauseAll();
+        pauseAllSynchronized();
     }
 
     private static void incrementCallers() {
         callersCount++;
     }
 
-    @Synchronized
     public void playAll() {
+       playAllSynchronized();
+    }
+
+    @Synchronized
+    private static void pauseAllSynchronized(){
+        incrementCallers();
+        strategy.pauseAll();
+        browserStrategy.pauseAll();
+    }
+
+    @Synchronized
+    private static void playAllSynchronized(){
         incrementCallers();
         if (callersCount > 0)
             return;

@@ -1,57 +1,53 @@
 package com.push.lazyir.service.main;
 
-
-import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.CacherOld;
+import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.ModuleFactory;
-import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackageOld;
 import com.push.lazyir.service.tcp.ConnectionThread;
+import com.push.lazyir.utils.exceptions.CreateSSLException;
+import lombok.Cleanup;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.*;
 import java.security.*;
+import java.security.cert.CertificateException;
 
-
-/**
- * Created by buhalo on 19.02.17.
- */
-
+@Slf4j
 public class TcpConnectionManager {
-    public final static String TCP_INTRODUCE = "tcpIntroduce";
-    public final static String TCP_PING = "ping pong";
-    public final static String TCP_PAIR_RESULT = "pairedresult";
-    public final static String RESULT = "result";
-    public final static String OK = "ok";
-    public final static String REFUSE = "refuse";
-    public final static String TCP_PAIR = "pair";
-    public final static String TCP_UNPAIR = "unpair";
-    public final static String TCP_SYNC = "sync";
-    public final static String ENABLED_MODULES = "enabledModulesConfig";
-
-    private int port;
-    private boolean tls;
-
+    public enum api {
+        TCP,
+        INTRODUCE,
+        PING,
+        PAIR_RESULT,
+        RESULT,
+        OK,
+        REFUSE,
+        PAIR,
+        UNPAIR,
+        SYNC,
+        ENABLED_MODULES
+    }
     private ServerSocket myServerSocket;
     private BackgroundService backgroundService;
     private GuiCommunicator guiCommunicator;
-    private CacherOld cacher;
+    private MessageFactory messageFactory;
     private ModuleFactory moduleFactory;
+    private PairService pairService;
 
-    public boolean isServerOn() {
-        return ServerOn;
-    }
+    @Getter @Setter
+    private boolean serverOn;
 
-    private volatile boolean ServerOn = false;
-
-    TcpConnectionManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, CacherOld cacher, ModuleFactory moduleFactory) {
+    TcpConnectionManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, MessageFactory messageFactory, ModuleFactory moduleFactory,PairService pairService) {
         this.backgroundService = backgroundService;
         this.guiCommunicator = guiCommunicator;
-        this.cacher = cacher;
+        this.messageFactory = messageFactory;
         this.moduleFactory = moduleFactory;
+        this.pairService = pairService;
     }
 
     private SSLContext createSSLContext(){
@@ -59,119 +55,108 @@ public class TcpConnectionManager {
             KeyStore keyStore = KeyStore.getInstance("jks");
             ClassLoader classLoader =getClass().getClassLoader();
             URL bimka = classLoader.getResource("bimka");
-            keyStore.load( bimka.openStream(),"bimkaSamokat".toCharArray());
+            if(bimka == null) {
+                return null;
+            }
+            char[] chars = "bimkaSamokat".toCharArray();
+            @Cleanup InputStream inputStream = bimka.openStream();
+            keyStore.load(inputStream, chars);
             // Create key manager
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-            keyManagerFactory.init(keyStore, "bimkaSamokat".toCharArray());
+            keyManagerFactory.init(keyStore, chars);
             KeyManager[] km = keyManagerFactory.getKeyManagers();
             // Create trust manager
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
             TrustManager[] tm = trustManagerFactory.getTrustManagers();
             // Initialize SSLContext
-             SSLContext sslContext = SSLContext.getInstance("TLS");
+             SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
              sslContext.init(km  ,  tm, null);
             return sslContext;
-        } catch (Exception e){
-            Loggout.e("Tcp", "getContext",e);
+        } catch (IOException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException | UnrecoverableKeyException | CertificateException e){
+            log.error("error while creating sslContext",e);
         }
         return null;
     }
 
 
-    void startServer()
-    {
-        port = Integer.parseInt(backgroundService.getSettingManager().get("TCP-port"));
-        tls = Boolean.parseBoolean(backgroundService.getSettingManager().get("TLS"));
-            try {
-                if(tls)
-                {
-                    SSLServerSocketFactory sslServerSocketFactory = createSSLContext().getServerSocketFactory();
-                    if(sslServerSocketFactory == null)
-                        backgroundService.crushed("startServer");
-                    myServerSocket = sslServerSocketFactory.createServerSocket(port);
-                }
-                else
-                    myServerSocket = new ServerSocket(port);
-                // you need clear folder when server created, because you may start multiple instances of app
-                // and you clear folder of other instance
-                // after server created(using one port) you know that only one instance running.
-                backgroundService.clearTempFolders();
-            } catch (Exception e) {
-                Loggout.e("Tcp", "startServer with port " + port + " failed ",e);
-                backgroundService.crushed("startServer");
+    void startServer() {
+        int port = Integer.parseInt(backgroundService.getSettingManager().get("TCP-port"));
+        boolean tls = Boolean.parseBoolean(backgroundService.getSettingManager().get("TLS"));
+        try {
+            if (tls) {
+                myServerSocket = startSSL(port);
             }
+            if (!tls || myServerSocket == null) {
+                myServerSocket = new ServerSocket(port);
+            }
+        } catch (IOException e) {
+            log.error("startServer with port " + port + " failed ", e);
+            backgroundService.crushed("startServer");
+        }
+        // you need clear folder when server created, because you may start multiple instances of app
+        // and you clear folder of other instance
+        // after server created(using one port) you know that only one instance running.
+        backgroundService.clearTempFolders();
+    }
+
+    private ServerSocket startSSL(int port){
+        try {
+            SSLContext sslContext = createSSLContext();
+            if (sslContext == null) {
+                throw new CreateSSLException("sslContext is null");
+            }
+            SSLServerSocketFactory sslServerSocketFactory = sslContext.getServerSocketFactory();
+            if (sslServerSocketFactory == null) {
+                throw new CreateSSLException("sslServerSocketFactory is null");
+            }
+            return sslServerSocketFactory.createServerSocket(port);
+        }catch (IOException | CreateSSLException e) {
+            log.error("startServer with port " + port + " failed ", e);
+            return null;
+        }
     }
 
 
 
-    void StopListening(Device dv) {
-        if(dv == null)
-        return;
-        dv.closeConnection();
+    void stopListening(Device dv) {
+        if(dv != null){
+            dv.closeConnection();
+        }
     }
 
     void startListening() {
         backgroundService.submitNewTask(() -> {
-            if(isServerOn()) {
-                Loggout.d("Tcp","Server already working");
+            if (isServerOn()) {
+                log.info("startListening - Server already working");
                 return;
             }
-            ServerOn = true;
-            while(isServerOn()) {
+            setServerOn(true);
+            while (isServerOn()) {
                 try {
-                Socket socket = myServerSocket.accept();
-                    backgroundService.submitNewTask((new ConnectionThread(socket,backgroundService,backgroundService.getSettingManager(),guiCommunicator,cacher,moduleFactory)));
-            } catch (IOException e) {
-                    Loggout.e("Tpc","Exception on accept connection ignoring +",e);
-                    if(myServerSocket.isClosed())
-                        ServerOn = false;
-            }}try {
-                myServerSocket.close();
-                ServerOn = false;
-                guiCommunicator.tcpClosed();
-                Loggout.d("Tcp","Closing server");
-            }catch (IOException e) {
-                Loggout.e("Tcp","error in closing server",e);
+                    Socket socket = myServerSocket.accept();
+                    ConnectionThread connection = new ConnectionThread(socket, backgroundService, backgroundService.getSettingManager(), guiCommunicator, messageFactory, moduleFactory,pairService);
+                    backgroundService.submitNewTask((connection));
+                } catch (IOException e) {
+                    log.error("exception in accept connection - ignoring", e);
+                    if (myServerSocket.isClosed()) {
+                        setServerOn(false);
+                    }
+                }
             }
+            closeServer();
         });
     }
 
-
-    void sendRequestPairDevice(String id)
-    {
-        NetworkPackageOld np = null;
+    private void closeServer(){
         try {
-            np = cacher.getOrCreatePackage(TCP_PAIR,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
-            backgroundService.sendToDevice(id,np.getMessage());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            setServerOn(false);
+            guiCommunicator.tcpClosed();
+            myServerSocket.close();
+            log.info("server closed");
+        }catch (IOException e) {
+            log.error("error in closeServer",e);
         }
-    }
-
-    void sendPairResult(String id, String result, String data) {
-        try {
-            NetworkPackageOld np =  cacher.getOrCreatePackage(TCP_PAIR_RESULT,String.valueOf(InetAddress.getLocalHost().getHostName().hashCode()));
-            np.setValue(RESULT,result);
-            backgroundService.sendToDevice(id,np.getMessage());
-            Device device = backgroundService.getConnectedDevices().get(id);
-            if(device != null)
-                device.savePairedState(result,data);
-            if(result.equals(OK)) {
-                ShareModule.sendSetupServerCommand(id,cacher,backgroundService);
-            }
-        } catch (UnknownHostException e) {
-            Loggout.e("Tcp","sendPairResult",e);
-        }
-
-    }
-
-    void sendUnpair(String id)
-    {
-        backgroundService.sendToDevice(id, cacher.getOrCreatePackage(TCP_UNPAIR,TCP_UNPAIR).getMessage());
-        Device device = backgroundService.getConnectedDevices().get(id);
-        if(device != null)
-        device.unpair();
     }
 
 }

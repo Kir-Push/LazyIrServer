@@ -105,11 +105,11 @@ public class GuiUtils {
     }
 
     public ImageIcon getDefaultOutgoingCall(int width,int height){
-        return getIconByFileName("outgoing",width,height);
+        return getIconByFileName("OUTGOING",width,height);
     }
 
     public Icon getDefaultUnreadMessagesIcon(int width, int height) {
-        return getIconByFileName("unreadMessages",width,height);
+        return getIconByFileName("UNREAD_MESSAGES",width,height);
     }
 
     public Icon getDefaultInfo(int width, int height) {

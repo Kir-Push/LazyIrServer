@@ -1,86 +1,85 @@
 package com.push.lazyir.modules.notifications.notifications;
 
-import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.CacherOld;
-import com.push.lazyir.devices.NetworkPackageOld;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.notifications.messengers.Messengers;
 import com.push.lazyir.service.main.BackgroundService;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-/**
- * Created by buhalo on 21.03.17.
- */
 public class ShowNotification extends Module {
-    public static final String RECEIVE_NOTIFICATION = "receiveNotification";
-    public static final String NOTIFICATION_CLASS = "notificationClass";
-    public static final String ALL_NOTIFS = "ALL NOTIFS";
-    public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
-    public static final String SHOW_NOTIFICATION = "ShowNotification";
-    public static final String REMOVE_NOTIFICATION = "removeNotification";
+    public enum api{
+        RECEIVE_NOTIFICATION,
+        ALL_NOTIFS,
+        NOTIFICATION_ID,
+        SHOW_NOTIFICATION,
+        REMOVE_NOTIFICATION
+    }
     private GuiCommunicator guiCommunicator;
 
     @Inject
-    public ShowNotification(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator) {
-        super(backgroundService, cacher);
+    public ShowNotification(BackgroundService backgroundService, MessageFactory messageFactory, GuiCommunicator guiCommunicator) {
+        super(backgroundService, messageFactory);
         this.guiCommunicator = guiCommunicator;
     }
 
     @Override
-    public void execute(NetworkPackageOld np) {
-        String data = np.getData();
-        Messengers messengers = backgroundService.getModuleById(device.getId(), Messengers.class);
-        try {
-                            if (RECEIVE_NOTIFICATION.equals(data)) {
-                                Notification not = np.getObject(NetworkPackageOld.N_OBJECT, Notification.class);
-                                if(messengers.isCalling(not,device,np,true)){
-
-                                }else
-                                guiCommunicator.show_notification(device.getId(),not);
-                            }
-                            else if(ALL_NOTIFS.equals(data))
-                            {
-                                Notifications notifications = np.getObject(NetworkPackageOld.N_OBJECT, Notifications.class);
-                                if(notifications.getNotifications().size() > 0) {
-                                    notifications.getNotifications().forEach(notification ->{
-//                                        if(notification != null) {
-//                                            if(notification.)
-//                                            notification.setType("notification");
-//                                        }
-                                    });
-                                    guiCommunicator.receive_notifications(device.getId(), notifications.getNotifications());
-                                }
-                                else{
-                                    guiCommunicator.receive_notifications(device.getId(), new ArrayList<>());
-                                }
-                            }else if(REMOVE_NOTIFICATION.equalsIgnoreCase(data)){
-                                Notification not = np.getObject(NetworkPackageOld.N_OBJECT, Notification.class);
-                                if(messengers.isCalling(not,device,np,false)){
-
-                                }
-                            }
-        } catch(NullPointerException e){
-            Loggout.e("ShowNotification", "execute ",e);
+    public void execute(NetworkPackage np) {
+        ShowNotificationDto dto = (ShowNotificationDto) np.getData();
+        api command = api.valueOf(dto.getCommand());
+        switch (command){
+            case RECEIVE_NOTIFICATION:
+                receiveNotifitication(dto);
+                break;
+            case ALL_NOTIFS:
+                allNotifications(dto);
+                break;
+            case REMOVE_NOTIFICATION:
+                removeNotification(dto);
+                break;
+            default:
+                break;
         }
-}
+    }
+
+    private void removeNotification(ShowNotificationDto dto) {
+        Messengers messengers = backgroundService.getModuleById(device.getId(), Messengers.class);
+        messengers.isCalling(dto.getNotification(),false);
+    }
+
+
+    private void allNotifications(ShowNotificationDto dto) {
+        List<Notification> notifications = dto.getNotifications();
+        if(!notifications.isEmpty()) {
+            guiCommunicator.receiveNotifications(device.getId(), notifications);
+        } else {
+            guiCommunicator.receiveNotifications(device.getId(), Collections.emptyList());
+        }
+    }
+
+    private void receiveNotifitication(ShowNotificationDto dto) {
+        Notification notification = dto.getNotification();
+        Messengers messengers = backgroundService.getModuleById(device.getId(), Messengers.class);
+        messengers.isCalling(notification,true);
+        guiCommunicator.showNotification(device.getId(),notification);
+    }
 
     @Override
     public void endWork() {
-
+        //nothing to do
     }
 
 
-    public void requestNotificationsFromDevice(String id) {
-      backgroundService.submitNewTask(()->{  backgroundService.sendToDevice(id,  cacher.getOrCreatePackage(SHOW_NOTIFICATION,ALL_NOTIFS).getMessage());});
+    public void requestNotificationsFromDevice() {
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new ShowNotificationDto(api.ALL_NOTIFS.name())));
     }
 
-    public void sendRemoveNotification(String ownerId, String notificationId) {
-        NetworkPackageOld np = cacher.getOrCreatePackage(SHOW_NOTIFICATION, REMOVE_NOTIFICATION);
-        np.setValue(NOTIFICATION_ID,notificationId);
-        System.out.println(ownerId + "  " + np.getMessage());
-      backgroundService.submitNewTask(()->{backgroundService.sendToDevice(ownerId,np.getMessage());});
+    public void sendRemoveNotification(String notificationId) {
+        ShowNotificationDto dto = new ShowNotificationDto(api.REMOVE_NOTIFICATION.name(), new Notification(notificationId));
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,dto));
     }
 }

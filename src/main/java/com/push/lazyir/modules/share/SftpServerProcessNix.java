@@ -1,8 +1,10 @@
 package com.push.lazyir.modules.share;
 
-import com.push.lazyir.Loggout;
-import com.push.lazyir.service.main.MainClass;
+import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.gui.GuiCommunicator;
+import lombok.Cleanup;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -13,33 +15,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by buhalo on 02.04.17.
- */
+import static com.push.lazyir.service.managers.settings.SettingManager.CURRENT_USERS_HOME_DIR;
+
+@Slf4j
 public class SftpServerProcessNix implements SftpServerProcess {
     private int port;
     private InetAddress ip;
     private String pass;
     private String userName;
-    private String programm = "sshfs";
     private String mountPoint;
     private PathWrapper externalMountPoint;
     private String id;
     private List<String> args = new ArrayList<>();
     private Process process;
-    private  String currentUsersHomeDir;
     private File currDeviceDir;
-    private String driveLetter;
-    private Process start;
-    private volatile boolean running;
-    private  int i = 1;
-    private Lock lock = new ReentrantLock();
+    private boolean running;
     private GuiCommunicator guiCommunicator;
+    private BackgroundService backgroundService;
+    private boolean errorInitialization;
 
-    public SftpServerProcessNix(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id, String currentUsersHomeDir, GuiCommunicator guiCommunicator) {
+    SftpServerProcessNix(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id, BackgroundService backgroundService) {
         this.port = port;
         this.ip = ip;
         this.pass = pass;
@@ -47,37 +43,36 @@ public class SftpServerProcessNix implements SftpServerProcess {
         this.mountPoint = mountPoint;
         this.externalMountPoint = externalMountPoint;
         this.id = id;
-        this.currentUsersHomeDir = currentUsersHomeDir;
-        this.guiCommunicator = guiCommunicator;
-        File dir = new File(currentUsersHomeDir);
-        if(!dir.exists())
-         dir.mkdir();
-        createDirForCurrentDevice();
-        configShhfs();
+        this.guiCommunicator = backgroundService.getGuiCommunicator();
+        this.backgroundService = backgroundService;
         try {
+            Files.createDirectory(Paths.get(CURRENT_USERS_HOME_DIR));
+            createDirForCurrentDevice();
+            configShhfs();
             createLinks();
         } catch (IOException e) {
-            e.printStackTrace();
+            errorInitialization = true;
+            log.error("Something goes wrong in SftpServerProcessNix",e);
         }
     }
 
     private void createDirForCurrentDevice() {
-        StringBuilder stringBuilder = new StringBuilder(currentUsersHomeDir);
-        stringBuilder.append(File.separator);
-        stringBuilder.append(id);
         Random random = new Random();
-        for(int i = 0;i<3;i++)
-        stringBuilder.append(random.nextInt(10));
-
-        currDeviceDir = new File(stringBuilder.toString());
-        if(currDeviceDir.exists())
+        String path = CURRENT_USERS_HOME_DIR + File.separator + id +
+                random.nextInt(10) +
+                random.nextInt(10) +
+                random.nextInt(10);
+        currDeviceDir = new File(path);
+        if(currDeviceDir.exists()) {
             createDirForCurrentDevice();
-        currDeviceDir.mkdir();
+        }else {
+            currDeviceDir.mkdir();
+        }
         currDeviceDir.deleteOnExit(); // что будет если sftp еще работает а jvm уже прекращает работу, не удалит ли он файла на телефоне? проверь
     }
 
     private void configShhfs(){
-        args.add(programm);
+        args.add("sshfs");
         args.add(userName + "@" + ip.getHostAddress() + ":" + "/");
         args.add(currDeviceDir.getPath());
         args.add("-p");
@@ -100,120 +95,112 @@ public class SftpServerProcessNix implements SftpServerProcess {
     private void createLinks() throws IOException {
         File file = new File(System.getProperty("user.home") + File.separator + "ConnectedDevices");
         boolean mkdir = true;
-        if (!file.exists())
+        if (!file.exists()) {
             mkdir = file.mkdir();
-
-        boolean devicePathmk = true;
-        File deviceLink;
+        }
         if (mkdir) {
-            deviceLink = new File(file.getPath() + File.separator + userName + id.substring(id.length() - 3, id.length()));
-            if (!deviceLink.exists())
-                devicePathmk = deviceLink.mkdir();
-            if (devicePathmk) {
-                File[] files = deviceLink.listFiles();
-                if (files != null)
-                    for (File file1 : files) {
-                        file1.delete();
+            File deviceLink = new File(file.getPath() + File.separator + userName + id.substring(id.length() - 3));
+            if (!deviceLink.exists()) {
+                deviceLink.mkdir();
+            } else {
+                deleteFiles(deviceLink.listFiles());
+            }
+            String deviceLinkPath = deviceLink.getPath();
+            Path mainStoragePath = Paths.get(deviceLinkPath + File.separator + "MainStorage");
+            Files.delete(mainStoragePath);
+            Files.createSymbolicLink(mainStoragePath, Paths.get(currDeviceDir.getPath() + File.separator + mountPoint));
+            if (externalMountPoint != null) {
+                List<String> paths = externalMountPoint.getPaths();
+                if (paths != null && !paths.isEmpty()) {
+                    for (int i = 0; i < paths.size(); i++) {
+                        Files.createSymbolicLink(Paths.get(deviceLinkPath + File.separator + "ExternalStorage" + i),
+                                Paths.get(currDeviceDir.getPath() + File.separator + paths.get(i)));
                     }
-
-                Paths.get(deviceLink.getPath() + File.separator + "MainStorage").toFile().delete();
-                Path mainStorageLink = Files.createSymbolicLink(Paths.get(deviceLink.getPath() + File.separator + "MainStorage"), Paths.get(currDeviceDir.getPath() + File.separator + mountPoint));
-                if (externalMountPoint != null && externalMountPoint.getPaths() != null && externalMountPoint.getPaths().size() > 0) {
-                    int count = 0;
-                    for (String s : externalMountPoint.getPaths()) {
-                        count++;
-                        Files.createSymbolicLink(Paths.get(deviceLink.getPath() + File.separator + "ExternalStorage" + count), Paths.get(currDeviceDir.getPath() + File.separator + s));
-                    }
-
                 }
             }
         }
-
-
     }
+
+    private void deleteFiles(File[] files) throws IOException {
+        if (files != null) {
+            for (File fl : files) {
+                Files.delete(fl.toPath());
+            }
+        }
+    }
+
+
 
     @Override
     public void run() {
-        if (running) {
+        if (running || errorInitialization) {
             return;
         }
-        String answer = null;
         try {
-            answer = connect();
             int tryCount = 5;
-            while ((answer != null && (answer.contains("refused") || answer.contains("Error")) || i != 0) && tryCount > 0) {
-                if (process != null)
+            while (tryCount > 0){
+                if (process != null) {
                     process.destroy();
-                try {
-                    Thread.sleep(500);
-                    answer = connect();
-                    Loggout.e("Second try sftp ", answer);
-                } catch (InterruptedException | IOException e) {
-                    Loggout.e("Sftp", "run second try", e);
-                    running = false;
-                    break;
                 }
-                tryCount--;
+                String answer = connect();
+                running = isProcessRunning(answer,process);
+                if(running){
+                    break;
+                }else{
+                    tryCount--;
+                    Thread.sleep(500);
+                }
             }
-            running = (i == 0);
         } catch (IOException | InterruptedException e) {
-            Loggout.e("sftp", "connect", e);
+            log.error("error in run", e);
+            Thread.currentThread().interrupt();
         }
-
         guiCommunicator.sftpConnectResult(running, id);
     }
 
+    private boolean isProcessRunning(String answer, Process process) {
+        return answer != null && !answer.contains("refused") && !answer.contains("Error") && process != null && process.isAlive();
+    }
+
     @Override
-    public String connect() throws IOException, InterruptedException {
-        lock.lock();
-        try{
+    @Synchronized
+    public String connect() throws IOException {
             ProcessBuilder pb = new ProcessBuilder(args);
-            BufferedWriter writer = null;
-            BufferedReader reader = null;
-            String answer = null;
             process = pb.start();
-            MainClass.startedProcesses.put(process.pid(),process);
+            backgroundService.getStartedProcesses().put(process.pid(),process); //todo
             process.getInputStream();
-            writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            @Cleanup BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            @Cleanup BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             writer.write(pass + "\n");
             writer.flush();
-            writer.close();
-            reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            answer = reader.readLine();
-            i = (process.waitFor(50, TimeUnit.MILLISECONDS)) ? 1 : 0;
-            try {
-                writer.close();
-                reader.close();
-            } catch (IOException e) {
-                Loggout.e("Sftp", "run second try", e);
-            }
-            return answer;
-        }finally{
-            lock.unlock();
-        }
+            return reader.readLine();
     }
     
 
     @Override
-    public void stopProcess()
-    {
-        lock.lock();
+    @Synchronized
+    public void stopProcess() {
+        Process unmount = null;
         try {
+            backgroundService.getStartedProcesses().remove(process.pid());
             List<String> closeArgs = new ArrayList<>();
             closeArgs.add("fusermount");
             closeArgs.add("-u");
-            closeArgs.add(currentUsersHomeDir);
+            closeArgs.add(CURRENT_USERS_HOME_DIR);
+
             ProcessBuilder pb = new ProcessBuilder(closeArgs);
-            try {
-                Process unmount = pb.start();
-                unmount.waitFor(200, TimeUnit.MILLISECONDS);
-            } catch (IOException | InterruptedException e) {
-                Loggout.e("Sftp", "stopProcess", e);
-            }
-            running = false;
+            unmount = pb.start();
+            unmount.waitFor(200, TimeUnit.MILLISECONDS);
+        }catch (IOException | InterruptedException e) {
+            log.error("error in stopProcess", e);
+            Thread.currentThread().interrupt();
+
         } finally {
+            running = false;
             process.destroy();
-            lock.unlock();
+            if(unmount != null){
+                unmount.destroy();
+            }
         }
     }
 

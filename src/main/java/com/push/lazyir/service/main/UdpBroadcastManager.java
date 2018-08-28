@@ -1,253 +1,137 @@
 package com.push.lazyir.service.main;
 
 
-
-import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.CacherOld;
-import com.push.lazyir.devices.Device;
-import com.push.lazyir.devices.NetworkPackageOld;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
-
-/**
- * Created by buhalo on 19.02.17.
- */
-
+@Slf4j
 public class UdpBroadcastManager  {
-
-    public static final String BROADCAST_INTRODUCE = "broadcast introduce";
-    public static final String BROADCAST_INTRODUCE_MSG = "I search Adventures";
-    private DatagramSocket socket;
-    private  DatagramSocket server;
-    private int send_period = 30000;
-
-    public static int port = 0;
-    private static volatile boolean listening = false;
-    public static volatile boolean exitedFromSend = true;
-    private static volatile boolean sending;
-
-    public final HashMap<String,Device> neighboors = new HashMap<>();
-    private Lock lock = new ReentrantLock();
-    private BackgroundService backgroundService;
-    private GuiCommunicator guiCommunicator;
-    private CacherOld cacher;
-
-    public UdpBroadcastManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, CacherOld cacher) {
-        this.backgroundService = backgroundService;
-        this.guiCommunicator = guiCommunicator;
-        this.cacher = cacher;
+    public enum api{
+        BROADCAST_INTRODUCE,
+        INTRODUCE
     }
 
-    public void configureManager()
-    {
+    private DatagramSocket socket;
+    private  DatagramSocket server;
+    @Getter @Setter
+    public int port;
+    @Getter @Setter
+    private boolean listening;
+    private BackgroundService backgroundService;
+    private GuiCommunicator guiCommunicator;
+    private MessageFactory messageFactory;
+
+    UdpBroadcastManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, MessageFactory messageFactory) {
+        this.backgroundService = backgroundService;
+        this.guiCommunicator = guiCommunicator;
+        this.messageFactory = messageFactory;
+    }
+
+    void configureManager() {
         try {
             socket = new DatagramSocket();
             socket.setReuseAddress(true);
         } catch (IOException e) {
-            Loggout.e("Udp","Error in udp configure method");
+            log.error("error in udp configure method",e);
         }
     }
 
-    public void startUdpListener(int port)
+    void startUdpListener(int port)
     {
-        lock.lock();
-        try {
-            if (listening) {
-                Loggout.d("Udp", "listening already working");
+            if (isListening()) {
+                log.info("udp listener already running - port: " + port);
                 return;
             }
-            try {
-                this.port = port;
-                server = new DatagramSocket(port);
-                server.setReuseAddress(true);
-            } catch (SocketException e) {
-                Loggout.e("Udp", "Error in StartListener", e);
-                return;
-            }
-            listening = true;
+            configServer(port);
+            setListening(true);
             backgroundService.submitNewTask(() -> {
-                Loggout.d("Udp", "start listening");
                 final int bufferSize = 1024 * 5;
                 byte[] data = new byte[bufferSize];
                 try {
-                    while (listening) {
+                    while (isListening()) {
                         DatagramPacket packet = new DatagramPacket(data, bufferSize);
                         server.receive(packet);
                         broadcastReceived(packet);
                         data = new byte[bufferSize];
                     }
                 } catch (Exception e) {
-                    Loggout.e("Udp", "UdpReceive exception ", e);
+                    log.error("udpReceive exception",e);
                     guiCommunicator.iamCrushedUdpListen();
                 } finally {
-                    Loggout.d("Udp", "Stopping UDP listener");
+                    log.info("stopping udp listener");
                     stopUdpListener();
                 }
             });
-        }finally {
-            lock.unlock();
+    }
+
+    private void configServer(int port) {
+        try {
+            this.port = port;
+            server = new DatagramSocket(port);
+            server.setReuseAddress(true);
+        } catch (SocketException e) {
+            log.error("error in startUdpListener", e);
         }
     }
 
-    private void sendBroadcast(final String message, final int port)
-    {
-        lock.lock();
-                try {
-                    List<InetAddress> broadcastAddress = getBroadcastAddress();
-                    for (InetAddress address : broadcastAddress) {
-                        byte[] sendData = message.getBytes();
-                        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
-                        Loggout.d("Udp", "Sending broadcast: " + message + " TO " + address);
-                        socket.send(sendPacket);
-                    }} catch(IOException e){
-                        Loggout.e("Udp","sendBroadcast error",e);
-                    }finally {
-                        lock.unlock();
-                }
-    }
 
-    private List<InetAddress> getBroadcastAddress() throws IOException {
-        List<InetAddress> list = new ArrayList<>();
-        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-        while (interfaces.hasMoreElements())
-        {
-            NetworkInterface networkInterface = interfaces.nextElement();
-            if (networkInterface.isLoopback())
-                continue;
-            for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses())
-            {
-                InetAddress broadcast = interfaceAddress.getBroadcast();
-                if (broadcast == null)
-                    continue;
-                list.add(broadcast);
-            }
-        }
-        return list;
-    }
-
-
-
-
-    private void broadcastReceived(DatagramPacket packet) throws UnknownHostException
-    {
+    private void broadcastReceived(DatagramPacket packet) throws UnknownHostException {
         String pck = new String(packet.getData(),packet.getOffset(),packet.getLength());
-        NetworkPackageOld np =  cacher.getOrCreatePackage(pck);
-        String myid = getMyId();
-       if(np.getType().equals(BROADCAST_INTRODUCE) && !np.getId().equals(myid))
-        {
-            Loggout.d("Udp","Broadcast data received: " + pck);
-            addToNeighboors(np);
-            if(backgroundService.getConnectedDevices().containsKey(np.getId()))
-            {
-                Loggout.d("Udp","Received package from existing conenction");
-            }
-            else
-            {
-                sendUdp(packet.getAddress(),port);
-            }
+        NetworkPackage np = messageFactory.parseMessage(pck);
+        String receivedId = np.getId();
+        String myId = getMyId();
+       if(np.getType().equals(api.BROADCAST_INTRODUCE.name()) && !receivedId.equals(myId)
+               && !backgroundService.getConnectedDevices().containsKey(receivedId)) {
+           sendUdp(packet.getAddress(),port);
         }
     }
 
-    public void sendUdp(InetAddress address, int port) {
-        lock.lock();
+    void sendUdp(InetAddress address, int port) {
+        String message = messageFactory.createMessage(api.INTRODUCE.name(), false, null);
+        byte[] bytes = message.getBytes();
+        DatagramPacket dp = new DatagramPacket(bytes, bytes.length, address, port);
         try {
-            NetworkPackageOld np =  cacher.getOrCreatePackage(BROADCAST_INTRODUCE, BROADCAST_INTRODUCE_MSG);
-            String fromTypeAndData = np.getMessage();
-            if (fromTypeAndData == null)
-                return;
-            byte[] bytes = fromTypeAndData.getBytes();
-            DatagramPacket dp = new DatagramPacket(bytes, bytes.length, address, port);
-            Loggout.d("Udp", "send udp " + dp);
-            try {
-                socket.send(dp);
-            } catch (IOException e) {
-                Loggout.e("Udp", "Exception in sendUdp",e);
-            }
-        }finally {
-            lock.unlock();
+            socket.send(dp);
+        } catch (IOException e) {
+            log.error("exception in sendUdp  - address: " + address + " port: " + port, e);
         }
     }
 
-    public void sendUdp(InetAddress address, int port,String message) {
-        lock.lock();
-        try {
-            if (message == null)
-                return;
-            byte[] bytes = message.getBytes();
-            DatagramPacket dp = new DatagramPacket(bytes, bytes.length, address, port);
-            Loggout.d("Udp", "send udp " + dp);
-            try {
-                socket.send(dp);
-            } catch (IOException e) {
-                Loggout.e("Udp", "Exception in sendUdp",e);
-            }
-        }finally {
-            lock.unlock();
+    private String getMyId() throws UnknownHostException {
+        return InetAddress.getLocalHost().getHostName();
+    }
+
+
+    @Synchronized
+    void stopUdpListener() {
+        setListening(false);
+        if (server != null) {
+            server.close();
         }
-    }
-
-    public void addToNeighboors(NetworkPackageOld np)
-    {
-    }
-
-    public String getMyId() throws UnknownHostException
-    {
-            return InetAddress.getLocalHost().getHostName();
-    }
-
-
-    public void stopUdpListener()
-    {
-        lock.lock();
-        try {
-            listening = false;
-            if (server != null)
-                server.close();
-            server = null;
-        }finally {
-            lock.unlock();
+        if(socket != null){
+            socket.close();
         }
+        socket = null;
+        server = null;
     }
 
-    public void onNetworkChange(int port)
-    {
-        Loggout.d("Udp","OnNetworkChange method start");
-        startUdpListener(port);
-        sendBroadcast(BROADCAST_INTRODUCE_MSG,port);
-    }
-
-
-    public boolean isSending() {return sending;}
-
-    public void startSending() {sending = true;}
-
-    public void stopSending()
-    {
-        sending = false;
-    }
-
-    public int getSend_period() {
-        return send_period;
-    }
-
-    public void setSend_period(int send_period) {
-        this.send_period = send_period;
-    }
-
-    public void connectRecconect(String id)  {
+    void connectRecconect()  {
         for (String allCachedThing : backgroundService.getSettingManager().getAllCachedThings()) {
             try {
                 sendUdp(InetAddress.getByName(allCachedThing),port);
             } catch (UnknownHostException e) {
-                Loggout.e("Udp","connect recconect error: " ,e);
+                log.error("error in udp connectRecconect method",e);
             }
         }
     }
+
 }

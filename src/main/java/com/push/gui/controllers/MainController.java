@@ -181,10 +181,10 @@ public class MainController {
             answer.setText("Answer");
             PhoneDevice selectedDevice = personList.getSelectionModel().getSelectedItem();
             switch (item.getType()) {
-                case "sms":
+                case "SMS":
                     answer.setOnAction(event -> openMessengerDialog(item, selectedDevice.getId()));
                     break;
-                case "messenger":
+                case "MESSENGER":
                     answer.setOnAction(event -> openMessengerDialog(item, selectedDevice.getId()));
                     break;
                 case "call":
@@ -276,7 +276,7 @@ public class MainController {
     }
 
     public void openMessengerDialog(NotificationDevice item, String deviceId) {
-        item.setType("messenger");
+        item.setType("MESSENGER");
         dialogs.showAnswerMessenger(deviceId,item);
     }
 

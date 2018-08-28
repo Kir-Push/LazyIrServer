@@ -4,7 +4,6 @@ import com.push.gui.controllers.ApiController;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.NotificationDevice;
 import com.push.gui.entity.PhoneDevice;
-import com.push.lazyir.Loggout;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;

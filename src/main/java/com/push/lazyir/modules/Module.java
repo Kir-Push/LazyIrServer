@@ -6,10 +6,6 @@ import com.push.lazyir.devices.Device;
 import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.service.main.BackgroundService;
 
-/**
- * Created by buhalo on 05.03.17.
- */
-
 public abstract class Module {
 
     protected Device device;
@@ -25,16 +21,10 @@ public abstract class Module {
     {
         this.device = dv;
     }
-
-
     public abstract void execute(NetworkPackage np);
-
-     public abstract void endWork();
-
-
+    public abstract void endWork();
     protected void sendMsg(String msg) {
         backgroundService.sendToDevice(device,msg);
     }
-
     protected void sendToAll(String msg) {backgroundService.sendToAllDevices(msg);}
 }

@@ -1,62 +1,49 @@
 package com.push.lazyir.modules.share;
 
-
-
-import com.push.lazyir.devices.CacherOld;
-import com.push.lazyir.devices.NetworkPackageOld;
+import com.push.lazyir.api.MessageFactory;
+import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.main.BackgroundService;
-import com.push.lazyir.service.main.MainClass;
+import com.push.lazyir.utils.Utility;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.file.Files;
 import java.util.concurrent.Future;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import static com.push.lazyir.service.managers.settings.SettingManager.currentUsersHomeDir;
+import static com.push.lazyir.service.managers.settings.SettingManager.CURRENT_USERS_HOME_DIR;
 
 
-/**
- * Created by buhalo on 05.03.17.
- */
+@Slf4j
 public class ShareModule extends Module {
-
-    private static final String SHARE_T = "ShareModule";
-    private static final String SETUP_SERVER_AND_SEND_ME_PORT = "setup server and send me port";
-    private static final String CONNECT_TO_ME_AND_RECEIVE_FILES = "connect to me and receive files"; // first arg port,second number of files - others files
-    private static final String PORT = "port";
-    private static final String RECCONECT = "recconect";
-
-    private int port = 9000;
-    private String userName;
-    private String pass;
-    private String mountPoint;
-    private PathWrapper externalMountPoint;
+    public enum api{
+        SETUP_SERVER_AND_SEND_ME_PORT,
+        CONNECT_TO_ME_AND_RECEIVE_FILES,
+        RECCONECT
+    }
     private Future futuresftp;
     private SftpServerProcess sftpServerProcess;
-    private Lock staticLock = new ReentrantLock();
     private GuiCommunicator guiCommunicator;
 
     @Inject
-    public ShareModule(BackgroundService backgroundService, CacherOld cacher, GuiCommunicator guiCommunicator) {
-        super(backgroundService, cacher);
+    public ShareModule(BackgroundService backgroundService, MessageFactory messageFactory, GuiCommunicator guiCommunicator) {
+        super(backgroundService, messageFactory);
         this.guiCommunicator = guiCommunicator;
     }
 
     @Override
-    public void execute(NetworkPackageOld np) {
-        staticLock.lock();
-        try {
-            if (np.getData().equals(CONNECT_TO_ME_AND_RECEIVE_FILES)) {
-                connectToSftpServer(np);
-            } else if (np.getData().equalsIgnoreCase(RECCONECT)) {
-                recconectToSftp(np);
-            }
-        }finally {
-            staticLock.unlock();
+    public void execute(NetworkPackage np) {
+        ShareModuleDto dto = (ShareModuleDto) np.getData();
+        api command = ShareModule.api.valueOf(dto.getCommand());
+        if(command.equals(api.CONNECT_TO_ME_AND_RECEIVE_FILES)){
+            connectToSftpServer(dto);
+        }else if (command.equals(api.RECCONECT)){
+            recconectToSftp(dto);
         }
     }
 
@@ -64,97 +51,74 @@ public class ShareModule extends Module {
     @Override
     public void endWork() {
         stopSftpServer();
-        clearFolders();
+        clearFolders(backgroundService,device.getId());
     }
 
 
     // when last device disconnected or close sftp connection, erase all folders in connectedDevicePath
-    private void clearFolders() {
-        staticLock.lock();
-        try{
-            int size = backgroundService.getConnectedDevices().size();
-            if(size == 0 || (backgroundService.getConnectedDevices().containsKey(device.getId()) && size == 1)) {
-                File file = new File(currentUsersHomeDir);
-                if(file.exists()){
-                   file.delete();
-                }
+    @Synchronized
+    private static void clearFolders(BackgroundService backgroundService,String id) {
+        try {
+            if(backgroundService.ifLastConnectedDeviceAreYou(id)){
+                Files.deleteIfExists(new File(CURRENT_USERS_HOME_DIR).toPath());
             }
-        }finally {
-            staticLock.unlock();
+        } catch (IOException e) {
+           log.error("error in clearFolders - " + CURRENT_USERS_HOME_DIR,e);
         }
     }
 
-    private void connectToSftpServer(NetworkPackageOld np) {
-        lock.lock();
-        try {
-            String value = np.getValue(PORT);
-            stopSftpServer();
-            port = Integer.parseInt(value);
-            userName = np.getValue("userName");
-            pass = np.getValue("pass");
-            mountPoint = np.getValue("mainDir");
-            externalMountPoint = np.getObject("externalPath",PathWrapper.class);
-            if(userName == null || pass == null) {
-                NetworkPackageOld tryMore =  cacher.getOrCreatePackage(SHARE_T,RECCONECT);
-                backgroundService.sendToDevice(device.getId(),tryMore.getMessage());
-                return;
-            }
-            sftpServerProcess = instantiateSftpServerProcess(port, device.getIp(),mountPoint,externalMountPoint, userName, pass,device.getId());
+    @Synchronized
+    private void connectToSftpServer(ShareModuleDto dto) {
+        if(sftpServerProcess.isRunning() && !futuresftp.isCancelled()){
+            return;
+        }
+        String userName = dto.getUserName();
+        String pass = dto.getPassword();
+        if (userName == null || pass == null) {
+            sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new ShareModuleDto(api.RECCONECT.name())));
+            return;
+        }
+        sftpServerProcess = instantiateSftpServerProcess(dto.getPort(), device.getIp(), dto.getMountPoint(), dto.getExternalMountPoint(), userName, pass, device.getId());
+        if(sftpServerProcess != null) {
             futuresftp = backgroundService.submitNewTask(sftpServerProcess);
-        }finally {
-          lock.unlock();
         }
     }
 
-    public void recconectToSftp(NetworkPackageOld np)
-    {
-        lock.lock();
-        try {
-            connectToSftpServer(np);
-        }finally {
-            lock.unlock();
-        }
+    private void recconectToSftp(ShareModuleDto dto) {
+        stopSftpServer();
+        connectToSftpServer(dto);
     }
 
+    @Synchronized
     private void stopSftpServer() {
-
-        lock.lock();
-        try{
-        if(sftpServerProcess != null && futuresftp != null) {
+        if(futuresftp != null) {
             futuresftp.cancel(true);
-        }}finally {
-            if(sftpServerProcess != null)
-                sftpServerProcess.stopProcess();
-            lock.unlock();
+        }
+        if(sftpServerProcess != null) {
+            sftpServerProcess.stopProcess();
         }
         guiCommunicator.sftpConnectResult(false,device.getId());
     }
 
     private SftpServerProcess instantiateSftpServerProcess(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id){
-        if(MainClass.isUnix())
-            return new SftpServerProcessNix(port, ip,mountPoint,externalMountPoint, userName, pass,id,currentUsersHomeDir, guiCommunicator);
-        else if(MainClass.isWindows())
-            return new SftpServerProcessWin(port, ip,mountPoint,externalMountPoint, userName, pass,id,currentUsersHomeDir);
+        if(Utility.isUnix()) {
+            return new SftpServerProcessNix(port, ip, mountPoint, externalMountPoint, userName, pass,id, backgroundService);
+        }
+        else if(Utility.isWindows()) {
+            return new SftpServerProcessWin(port, ip, mountPoint, externalMountPoint, userName, pass,id,guiCommunicator);
+        }
         return null;
     }
 
-    public static void sendSetupServerCommand(String dvID, CacherOld cacher, BackgroundService backgroundService)
-    {
-        NetworkPackageOld np =  cacher.getOrCreatePackage(SHARE_T,SETUP_SERVER_AND_SEND_ME_PORT);
+    public void sendSetupServerCommand() {
         String os;
-        if(MainClass.isWindows())
+        if(Utility.isWindows())
             os = "win";
-        else if(MainClass.isUnix())
+        else if(Utility.isUnix())
             os = "nix";
         else
             os = "hz";
-        np.setValue("os",os);
-        backgroundService.sendToDevice(dvID,np.getMessage());
-    }
-
-    public void sendSetupServerCommand(String dvID)
-    {
-        sendSetupServerCommand(dvID,cacher,backgroundService);
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new ShareModuleDto(api.SETUP_SERVER_AND_SEND_ME_PORT.name(),os)));
     }
 
 }

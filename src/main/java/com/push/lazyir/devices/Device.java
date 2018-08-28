@@ -56,11 +56,8 @@ public class Device {
 
     @Synchronized
     public void closeConnection() {
-        thread.closeConnection(this);
-    }
-
-    public void savePairedState( String result, String data){
-        this.thread.receivePairResult(id,result,data);
+        thread.setConnectionRun(false);
+        thread.clearResources();
     }
 
     private void enableModule(String name) {
@@ -73,15 +70,11 @@ public class Device {
     }
 
     public void sendMessage(String msg) {
-        if(isConnected())
+        if(isConnected()) {
             thread.printToOut(msg);
-    }
-
-    public void unpair(){
-        if(thread != null ){
-            thread.unpair();
         }
     }
+
 
     @Synchronized
     private void disableModule(String name){
@@ -98,17 +91,18 @@ public class Device {
     if enable(didn't contain in hashMap) - instantiate module
     * */
     @Synchronized
-    public void refreshEnabledModules(List<ModuleSetting> moduleSettingList){
-            if(!isConnected()){
-                return;
+    public void refreshEnabledModules(List<ModuleSetting> moduleSettingList) {
+        if (!isConnected()) {
+            return;
+        }
+        setEnabledModulesConfig(moduleSettingList);
+        moduleSettingList.forEach(module -> {
+            String moduleName = module.getName();
+            if (!module.isEnabled()) {
+                disableModule(moduleName);
+            } else {
+                enableModule(moduleName);
             }
-            setEnabledModulesConfig(moduleSettingList);
-            moduleSettingList.forEach(module -> {
-                String moduleName = module.getName();
-                if(!module.isEnabled()){
-                    disableModule(moduleName);
-                }else{
-                    enableModule(moduleName);
-                } });
+        });
     }
 }

@@ -1,108 +1,108 @@
 package com.push.lazyir.service.main;
 
 import com.push.gui.systray.JavaFXTrayIconSample;
-import com.push.lazyir.Loggout;
-import com.push.lazyir.devices.CacherOld;
+import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.devices.Device;
 import com.push.lazyir.devices.ModuleSetting;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.modules.ModuleFactory;
-import com.push.lazyir.modules.ping.Ping;
-import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
 import com.push.lazyir.service.managers.settings.SettingManager;
 import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Synchronized;
 
 import javax.inject.Inject;
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.*;
 
-/**
- * Created by buhalo on 12.03.17.
- */
 public class BackgroundService {
 
-
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final ConcurrentHashMap<String,Device> connectedDevices = new ConcurrentHashMap<>();
-
-    final ExecutorService executorService = Executors.newCachedThreadPool();
-
-    final ScheduledThreadPoolExecutor timerService = new ExtScheduledThreadPoolExecutor(5);
-
+    @Getter
+    private final ConcurrentHashMap<String, Device> connectedDevices = new ConcurrentHashMap<>();
+    @Getter
+    private final ConcurrentHashMap<Long, Process> startedProcesses = new ConcurrentHashMap<>();
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    @Getter
+    private final ScheduledThreadPoolExecutor timerService = new ExtScheduledThreadPoolExecutor(5);
+    private HashMap<String, ModuleSetting> myEnabledModules;
     private TcpConnectionManager tcp;
     private UdpBroadcastManager udp;
+    @Getter
     private SettingManager settingManager;
+    @Getter
     private LocalizationManager localizationManager;
-    private CacherOld cacher;
+    @Setter
+    @Getter  // need to set before init
     private GuiCommunicator guiCommunicator;
-    private ModuleFactory moduleFactory;
-    private JavaFXTrayIconSample javaFXTrayIconSample;
+    @Setter // need to set before init
     private ServiceComponent serviceComponent;
-
-    private static int port = 0;
-
-    private HashMap<String,ModuleSetting> myEnabledModules;
+    @Setter
+    @Getter
+    private JavaFXTrayIconSample javaFXTrayIconSample;
+    private ModuleFactory moduleFactory;
+    private MessageFactory messageFactory;
+    private int port;
 
 
     @Inject
-    public BackgroundService(SettingManager settingManager, LocalizationManager localizationManager, CacherOld cacher, ModuleFactory moduleFactory) {
+    public BackgroundService(SettingManager settingManager, LocalizationManager localizationManager, MessageFactory messageFactory, ModuleFactory moduleFactory) {
         this.settingManager = settingManager;
         this.localizationManager = localizationManager;
-        this.cacher = cacher;
+        this.messageFactory = messageFactory;
         this.moduleFactory = moduleFactory;
     }
 
-
-    public GuiCommunicator getGuiCommunicator() {
-        return guiCommunicator;
-    }
-    // need to call before init
-    public void setGuiCommunicator(GuiCommunicator guiCommunicator) {
-        this.guiCommunicator = guiCommunicator;
-    }
-
-    // need to call before init
-    public void setServiceComponent(ServiceComponent serviceComponent) {
-        this.serviceComponent = serviceComponent;
-    }
-
     // call first
-    public void init(){
+    public void init() {
         moduleFactory.setModuleComponent(serviceComponent.getModuleComponent());
         moduleFactory.registerModulesInit();
-        tcp = new TcpConnectionManager(this,guiCommunicator, cacher,moduleFactory);
-        udp = new UdpBroadcastManager(this,getGuiCommunicator(),cacher);
+        PairService pairService = new PairService(this, settingManager, guiCommunicator, messageFactory);
+        guiCommunicator.setPairService(pairService);
+        tcp = new TcpConnectionManager(this, guiCommunicator, messageFactory, moduleFactory, pairService);
+        udp = new UdpBroadcastManager(this, guiCommunicator, messageFactory);
+        settingManager.init(); // must always be called before localization manager,because localization manager depends on setting manager's
+        localizationManager.init();
         localizationManager.changeLanguage(settingManager.get("LANG"));
-        Loggout.refresh( settingManager.get("log-level"));
     }
 
-    public void configServices(){
+    public void configServices() {
         timerService.setRemoveOnCancelPolicy(true);
         timerService.setKeepAliveTime(10, TimeUnit.SECONDS);
         timerService.allowCoreThreadTimeOut(true);
-        ((ThreadPoolExecutor)executorService).setKeepAliveTime(10,TimeUnit.SECONDS);
-        ((ThreadPoolExecutor)executorService).allowCoreThreadTimeOut(true);
+        ((ThreadPoolExecutor) executorService).setKeepAliveTime(10, TimeUnit.SECONDS);
+        ((ThreadPoolExecutor) executorService).allowCoreThreadTimeOut(true);
+    }
+
+    public void startWork() {
+        addShutDownHook();
+        startTasks();
     }
 
     // start main tasks
-     void startTasks(){
+    private void startTasks() {
         startUdpListening();
         startTcpListening();
         connectCached();
     }
 
-    public void destroy(){
+    private void addShutDownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            startedProcesses.values().stream().filter(Objects::nonNull).forEach(Process::destroyForcibly);
+            destroy();
+        }));
+    }
+
+    private void destroy() {
         stopUdpListening();
         eraseTcpConnections();
     }
 
-    void crushed(String message){
+    void crushed(String message) {
         guiCommunicator.iamCrushed(message);
         System.exit(-1);
     }
@@ -113,177 +113,89 @@ public class BackgroundService {
     }
 
     private void connectCached() {
-      udp.connectRecconect("null");
+        udp.connectRecconect();
     }
 
-    private  void stopUdpListening() {
+    private void stopUdpListening() {
         udp.stopUdpListener();
     }
 
-    private  void startTcpListening() {
-            tcp.startServer();
-            tcp.startListening();
+    private void startTcpListening() {
+        tcp.startServer();
+        tcp.startListening();
     }
 
-    public Future<?> submitNewTask(Runnable runnable){
-            return executorService.submit(runnable);
+    public Future submitNewTask(Runnable runnable) {
+        return executorService.submit(runnable);
     }
 
     private void eraseTcpConnections() {
-        for (Device device : connectedDevices.values()) {
-            tcp.StopListening(device);
-        }
-
+        connectedDevices.values().stream().filter(Objects::nonNull).forEach(device -> tcp.stopListening(device));
     }
 
-    public  SettingManager getSettingManager(){return settingManager;}
-
-    public LocalizationManager getLocalizationManager(){return localizationManager;}
-
-    public  void sendToDevice(String id, String msg) {
-        sendToDevice(connectedDevices.get(id),msg);
+    public void sendToDevice(String id, String msg) {
+        sendToDevice(connectedDevices.get(id), msg);
     }
 
-    public  void sendToDevice(Device device, String msg) {
+    public void sendToDevice(Device device, String msg) {
         // separate thread maybe?
-        if(device != null && device.isConnected())
+        if (device != null && device.isConnected()) {
             device.sendMessage(msg);
-    }
-
-    public void sendToAllDevices(String message){
-        executorService.submit(()->{
-            if(connectedDevices.size() == 0) {
-                return;
-            }
-            for (Device device : connectedDevices.values()) {
-                if(device != null && device.isConnected())
-                    device.sendMessage(message);
-            }});
-    }
-
-    public  HashMap<String,ModuleSetting> getMyEnabledModules(){
-      lock.writeLock().lock();
-        try{
-            if(myEnabledModules == null){
-                updateMyEnabledModules();
-            }
-            return  myEnabledModules;
-        }finally {
-            lock.writeLock().unlock();
         }
     }
 
-    public void updateMyEnabledModules(){
-       lock.writeLock().lock();
-        try{
-           myEnabledModules = new HashMap<>();
-            for (ModuleSetting moduleSetting : settingManager.getMyEnabledModules()) {
-                myEnabledModules.put(moduleSetting.getName(),moduleSetting);
-            }
-        }finally {
-           lock.writeLock().unlock();
-        }
-    }
-
-
-    public  void sendRequestPair(String id){
-        tcp.sendRequestPairDevice(id);
-    }
-
-    public  void sendRequestUnPair(String id){
-        tcp.sendUnpair(id);
-    }
-
-    public  void pairResultFromGui(String id, String result, String data){
-       tcp.sendPairResult(id,result,data);
-    }
-
-    public  int getPort() {
-        if(port == 0)
-            port = Integer.parseInt(getSettingManager().get("TCP-port"));
-        return port;
-    }
-
-    public  boolean isServerOn(){
-        return tcp.isServerOn();
-    }
-
-    public  ScheduledThreadPoolExecutor getTimerService() {
-        return timerService;
-    }
-
-    /*
-    first close connection, after that sendUdp as you do when receive broadcast
-    * */
-    public  void reconnect(String id) {
-        submitNewTask(()->{
-            Device device = connectedDevices.get(id);
-            if(device == null)
+    public void sendToAllDevices(String message) {
+        executorService.submit(() -> {
+            if (connectedDevices.size() == 0) {
                 return;
-            InetAddress ip = device.getIp();
-            device.closeConnection();
-            udp.sendUdp(ip,getPort());
-        });
-    }
-
-    public void sendPing(String id) {
-        Device device = connectedDevices.get(id);
-        if(device == null)
-            return;
-        Ping module = (Ping) device.getEnabledModules().get(Ping.class.getSimpleName());
-        if(module != null)
-            module.sendPing();
-    }
-
-    public void unMount(String id) {
-        submitNewTask(()-> {
-            Device device = connectedDevices.get(id);
-            if (device == null)
-                return;
-            Module module = device.getEnabledModules().get(ShareModule.class.getSimpleName());
-            if (module != null) {
-                module.endWork();
             }
+            connectedDevices.values().stream()
+                    .filter(Objects::nonNull)
+                    .filter(Device::isConnected)
+                    .forEach(device -> device.sendMessage(message));
         });
-    }
-
-    public Map<String, Device> getConnectedDevices() {
-        return connectedDevices;
-    }
-
-    public  void mount(String id) {
-        getModuleById(id,ShareModule.class).sendSetupServerCommand(id);
-    }
-
-     void clearTempFolders(){
-        settingManager.clearFolders();
-    }
-
-    public  void sendUdpPing(InetAddress ip, int port, String message) {
-        udp.sendUdp(ip,port, message);
-    }
-
-
-    public <T extends Module> T getModuleById(String id, Class<T> module){
-        System.out.println("getModuleById " + id + "  " + module.getSimpleName());
-        Device device = connectedDevices.get(id);
-        System.out.println("Device null? " + device);
-
-        return (T)connectedDevices.get(id).getEnabledModules().get(module.getSimpleName());
     }
 
     @Synchronized
-    public boolean ifLastConnectedDeviceAreYou(String id){
+    public Map<String, ModuleSetting> getMyEnabledModules() {
+        if (myEnabledModules == null) {
+            updateMyEnabledModules();
+        }
+        return myEnabledModules;
+    }
+
+    private void updateMyEnabledModules() {
+        myEnabledModules = new HashMap<>();
+        settingManager.getMyEnabledModules().forEach(module -> myEnabledModules.put(module.getName(), module));
+    }
+
+    public int getPort() {
+        if (port == 0) {
+            port = Integer.parseInt(getSettingManager().get("TCP-port"));
+        }
+        return port;
+    }
+
+    public boolean isServerOn() {
+        return tcp.isServerOn();
+    }
+
+    void clearTempFolders() {
+        settingManager.clearFolders();
+    }
+
+    public <T extends Module> T getModuleById(String id, Class<T> module) {
+        Device device = connectedDevices.get(id);
+        if (device != null) {
+            return (T) device.getEnabledModules().get(module.getSimpleName());
+        }
+        return null;
+    }
+
+    @Synchronized
+    public boolean ifLastConnectedDeviceAreYou(String id) {
         Device device = connectedDevices.get(id);
         int size = connectedDevices.size();
         return ((device != null && device.getId().equals(id) && size == 1) || size == 0);
-    }
-
-    public JavaFXTrayIconSample getJavaFXTrayIconSample() {
-        return javaFXTrayIconSample;
-    }
-
-    public void setJavaFXTrayIconSample(JavaFXTrayIconSample javaFXTrayIconSample) {
-        this.javaFXTrayIconSample = javaFXTrayIconSample;
     }
 }

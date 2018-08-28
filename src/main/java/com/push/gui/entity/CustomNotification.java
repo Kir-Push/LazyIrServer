@@ -94,6 +94,12 @@ public class CustomNotification extends BorderLayoutNotification {
         }
     }
 
+    public void setIfNull(Icon icon){
+        if(iconlbl.getIcon() == null){
+            iconlbl.setIcon(icon);
+        }
+    }
+
     public void setFirstButton(String text,ActionListener action){
         mbutton.setText(text);
         mbutton.addActionListener(action);
