@@ -43,6 +43,7 @@ public class ClipboardRmiServer implements ClientRegister {
 
     @Override
     public void receiveClipboard(String text) {
+        System.out.println(text);
         String message = messageFactory.createMessage(ClipBoard.class.getSimpleName(), true, new ClipBoardDto(RECEIVE.name(), text));
         backgroundService.sendToAllDevices(message);
     }

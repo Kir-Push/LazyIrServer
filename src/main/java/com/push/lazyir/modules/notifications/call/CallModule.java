@@ -38,6 +38,8 @@ public class CallModule extends Module {
     private static ConcurrentSkipListSet<String> muted = new ConcurrentSkipListSet<>();
     private GuiCommunicator guiCommunicator;
     private SettingManager settingManager;
+    @Getter @Setter
+    private static boolean wasmuted;
 
 
     @Inject
@@ -116,17 +118,21 @@ public class CallModule extends Module {
     private void unMute() {
         muteUnmute(false);
         muted.clear();
+        setWasmuted(false);
     }
 
     private void mute() {
         muteUnmute(true);
+        setWasmuted(true);
     }
 
     @Override
     public void endWork() {
         if(backgroundService.ifLastConnectedDeviceAreYou(device.getId())){
             setCalling(false);
-            unMute();
+            if(isWasmuted()) {
+                unMute();
+            }
         }
     }
 
@@ -200,8 +206,8 @@ public class CallModule extends Module {
         sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new CallModuleDto(api.RECALL.name(),number)));
     }
 
-    private void sendCommand(api mute) {
-        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new CallModuleDto(mute.name())));
+    private void sendCommand(api cmd) {
+        sendMsg(messageFactory.createMessage(this.getClass().getSimpleName(),true,new CallModuleDto(cmd.name())));
     }
 
 

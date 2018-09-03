@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import static com.push.lazyir.service.main.TcpConnectionManager.*;
 import static com.push.lazyir.service.main.TcpConnectionManager.api.INTRODUCE;
@@ -38,7 +37,7 @@ import static com.push.lazyir.service.main.TcpConnectionManager.api.INTRODUCE;
 public class ConnectionThread implements Runnable {
 
         private Socket connection;
-        private String deviceId;
+        private String deviceId = "";
         @Setter
         private boolean connectionRun;
         private BufferedReader in;
@@ -93,10 +92,11 @@ public class ConnectionThread implements Runnable {
             while (isConnected()) {
 
                 String clientCommand = in.readLine();
+                System.out.println("Receive command +" + clientCommand);
                 if (!backgroundService.isServerOn() || clientCommand == null || !isConnected()) { // if server off, exit from read loop
                     return;
                 }
-                if(deviceId != null && clientCommand.equalsIgnoreCase(api.PING.name())){
+                if(!deviceId.equals("") && clientCommand.equalsIgnoreCase(api.PING.name())){
                     setDevicePing(true);
                     continue;
                 }
@@ -148,7 +148,7 @@ public class ConnectionThread implements Runnable {
         TcpDto dto = (TcpDto) np.getData();
         api command = TcpConnectionManager.api.valueOf(dto.getCommand());
         // when deviceId null, first command need to be introduce
-        if (deviceId == null && !command.equals(INTRODUCE)) {
+        if (deviceId.equals("") && (!command.equals(INTRODUCE))) {
             return;
         }
 
@@ -176,7 +176,7 @@ public class ConnectionThread implements Runnable {
 
     private void newConnectedDevice(NetworkPackage np) {
         // if device not null - you already know about device, so no introduction
-        if (deviceId != null) {
+        if (!deviceId.equals("")) {
             return;
         }
         TcpDto dto = (TcpDto) np.getData();
@@ -194,7 +194,7 @@ public class ConnectionThread implements Runnable {
         String pairData = dto.getData();
         String savedPairData = backgroundService.getSettingManager().get(deviceId);
         String pairState = (pairData != null && !pairData.equalsIgnoreCase("null") && pairData.equals(savedPairData)) ? api.OK.name() : api.REFUSE.name();
-        pairService.setPairStatus(deviceId, null, pairState);
+      //  pairService.setPairStatus(deviceId, pairData, pairState);
         pairService.sendPairAnswer(deviceId, pairState);
 
         ping();
@@ -226,7 +226,7 @@ public class ConnectionThread implements Runnable {
         TcpDto dto = (TcpDto) np.getData();
         List<ModuleSetting> moduleSettings = dto.getModuleSettings();
         Device device = backgroundService.getConnectedDevices().get(deviceId);
-        if(device != null) {
+        if(!deviceId.equals("")) {
             device.refreshEnabledModules(moduleSettings);
         }
     }
@@ -240,11 +240,11 @@ public class ConnectionThread implements Runnable {
 
     private void commandFromClient(NetworkPackage np) {
         try {
-            if (deviceId == null) {
+            if (deviceId.equals("")) {
                 return;
             }
             Device device = backgroundService.getConnectedDevices().get(deviceId);
-            if (device == null || !device.isPaired()) {
+            if (deviceId.equals("") || !device.isPaired()) {
                 return;
             }
             String moduleType = np.getType();
@@ -275,6 +275,7 @@ public class ConnectionThread implements Runnable {
         if (out == null) {
             return;
         }
+        System.out.println("Send  command: " + message);
         out.println(message);
         out.flush();
     }
@@ -293,10 +294,16 @@ public class ConnectionThread implements Runnable {
                 timerFuture.cancel(true);
             }
             clearResources();
-            if(device != null) {
+            if(!deviceId.equals("")) {
                 ConcurrentHashMap<String, Module> enabledModules = device.getEnabledModules();
                 if(enabledModules != null) {
-                    enabledModules.values().forEach(Module::endWork);
+                    for (Module module : enabledModules.values()) {
+                        try {
+                           module.endWork();
+                        }catch (Exception e){
+                            log.error("error in endMethod id; " + deviceId,e);
+                        }
+                    }
                 }
             }
             backgroundService.getConnectedDevices().remove(deviceId);

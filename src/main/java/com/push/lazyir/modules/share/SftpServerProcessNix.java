@@ -46,7 +46,9 @@ public class SftpServerProcessNix implements SftpServerProcess {
         this.guiCommunicator = backgroundService.getGuiCommunicator();
         this.backgroundService = backgroundService;
         try {
-            Files.createDirectory(Paths.get(CURRENT_USERS_HOME_DIR));
+            if(!Files.exists(Paths.get(CURRENT_USERS_HOME_DIR))) {
+                Files.createDirectory(Paths.get(CURRENT_USERS_HOME_DIR));
+            }
             createDirForCurrentDevice();
             configShhfs();
             createLinks();
@@ -107,8 +109,10 @@ public class SftpServerProcessNix implements SftpServerProcess {
             }
             String deviceLinkPath = deviceLink.getPath();
             Path mainStoragePath = Paths.get(deviceLinkPath + File.separator + "MainStorage");
-            Files.delete(mainStoragePath);
-            Files.createSymbolicLink(mainStoragePath, Paths.get(currDeviceDir.getPath() + File.separator + mountPoint));
+            if(Files.exists(mainStoragePath)) {
+                Files.delete(mainStoragePath);
+            }
+                Files.createSymbolicLink(mainStoragePath, Paths.get(currDeviceDir.getPath() + File.separator + mountPoint));
             if (externalMountPoint != null) {
                 List<String> paths = externalMountPoint.getPaths();
                 if (paths != null && !paths.isEmpty()) {

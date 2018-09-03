@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MessengersDto implements Dto {
+public class MessengersDto extends Dto {
     private String command;
     private String text;
     private String typeName;

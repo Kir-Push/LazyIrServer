@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SmsModuleDto implements Dto {
+public class SmsModuleDto extends Dto {
     private String command;
     private Sms sms;
 }

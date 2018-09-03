@@ -54,10 +54,14 @@ public class Mpris extends Module {
 
     @Synchronized
     private static void clearStrategies(){
-        strategy.endWork();
-        strategy = null;
-        browserStrategy.endWork();
-        browserStrategy = null;
+        if(strategy != null) {
+            strategy.endWork();
+            strategy = null;
+        }
+        if(browserStrategy != null) {
+            browserStrategy.endWork();
+            browserStrategy = null;
+        }
     }
 
     @Synchronized

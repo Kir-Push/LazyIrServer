@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class TcpDto implements Dto {
+public class TcpDto extends Dto {
     private String command;
     private String data;
     private String result;

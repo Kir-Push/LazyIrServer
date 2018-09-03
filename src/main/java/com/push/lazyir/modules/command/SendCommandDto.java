@@ -8,7 +8,13 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
-public class SendCommandDto implements Dto {
+public class SendCommandDto extends Dto {
     private String command;
+    private String id;
     private Set<Command> commands;
+
+    public SendCommandDto(String command, Set<Command> commands) {
+        this.command = command;
+        this.commands = commands;
+    }
 }

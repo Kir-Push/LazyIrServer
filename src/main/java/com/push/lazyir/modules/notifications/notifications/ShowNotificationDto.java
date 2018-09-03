@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ShowNotificationDto implements Dto {
+public class ShowNotificationDto extends Dto {
     private String command;
     private List<Notification> notifications;
     private Notification notification;

@@ -1,6 +1,7 @@
 package com.push.lazyir.service.main;
 
 
+import com.google.gson.JsonSyntaxException;
 import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
@@ -85,13 +86,17 @@ public class UdpBroadcastManager  {
 
 
     private void broadcastReceived(DatagramPacket packet) throws UnknownHostException {
-        String pck = new String(packet.getData(),packet.getOffset(),packet.getLength());
-        NetworkPackage np = messageFactory.parseMessage(pck);
-        String receivedId = np.getId();
-        String myId = getMyId();
-       if(np.getType().equals(api.BROADCAST_INTRODUCE.name()) && !receivedId.equals(myId)
-               && !backgroundService.getConnectedDevices().containsKey(receivedId)) {
-           sendUdp(packet.getAddress(),port);
+        try {
+            String pck = new String(packet.getData(), packet.getOffset(), packet.getLength());
+            NetworkPackage np = messageFactory.parseMessage(pck);
+            String receivedId = np.getId();
+            String myId = getMyId();
+            if (np.getType().equals(api.BROADCAST_INTRODUCE.name()) && !receivedId.equals(myId)
+                    && !backgroundService.getConnectedDevices().containsKey(receivedId)) {
+                sendUdp(packet.getAddress(), port);
+            }
+        }catch (JsonSyntaxException e){
+            log.error("error in parseMessage",e);
         }
     }
 

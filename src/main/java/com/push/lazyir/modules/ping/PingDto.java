@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PingDto implements Dto {
+public class PingDto extends Dto {
     String command;
 }

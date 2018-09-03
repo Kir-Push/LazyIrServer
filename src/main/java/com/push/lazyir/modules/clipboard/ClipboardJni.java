@@ -5,6 +5,8 @@ import com.push.lazyir.modules.clipboard.remote.ClipboardRmiSeparateProcess;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.rmi.RemoteException;
+
 public class ClipboardJni {
 
     private boolean listening = false;
@@ -28,8 +30,12 @@ public class ClipboardJni {
     public native void setClipboardText(String text);
 
     public static void clipboardChanged(String text) {
-        if(clientServer != null) {
-            clientServer.receiveClipboard(text);
+        try {
+            if (clientServer != null) {
+                clientServer.receiveClipboard(text);
+            }
+        }catch (RemoteException e){
+
         }
     }
 

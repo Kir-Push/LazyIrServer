@@ -8,6 +8,7 @@ import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.utils.Utility;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -60,7 +61,7 @@ public class ShareModule extends Module {
     private static void clearFolders(BackgroundService backgroundService,String id) {
         try {
             if(backgroundService.ifLastConnectedDeviceAreYou(id)){
-                Files.deleteIfExists(new File(CURRENT_USERS_HOME_DIR).toPath());
+                FileUtils.deleteDirectory(new File(CURRENT_USERS_HOME_DIR));
             }
         } catch (IOException e) {
            log.error("error in clearFolders - " + CURRENT_USERS_HOME_DIR,e);
@@ -69,7 +70,7 @@ public class ShareModule extends Module {
 
     @Synchronized
     private void connectToSftpServer(ShareModuleDto dto) {
-        if(sftpServerProcess.isRunning() && !futuresftp.isCancelled()){
+        if(sftpServerProcess != null && sftpServerProcess.isRunning() && !futuresftp.isCancelled()){
             return;
         }
         String userName = dto.getUserName();

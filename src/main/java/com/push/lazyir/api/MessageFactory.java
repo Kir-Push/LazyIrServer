@@ -52,7 +52,7 @@ public class MessageFactory {
 
     public String createMessage(String type,boolean isModule,Dto dto){
        String msg = getCachedMessage(type);
-       return msg != null ? msg : serialize(createNetworkPackage(type, isModule, dto));
+       return msg != null ? msg : serialize(createNetworkPackage(type,isModule,dto));
     }
 
     public String getCachedMessage(String type){

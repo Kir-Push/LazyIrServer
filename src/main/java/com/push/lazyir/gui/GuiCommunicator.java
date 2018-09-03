@@ -270,7 +270,10 @@ public class GuiCommunicator {
     }
 
     public void setGetRequestTimer(String id, int time) {
-        backgroundService.getModuleById(id,Memory.class).setGetRequestTimer(time);
+        Memory memoryModule = backgroundService.getModuleById(id, Memory.class);
+        if(memoryModule != null) {
+            memoryModule.setGetRequestTimer(time);
+        }
     }
 
     public void clearGetRequestTimer(){

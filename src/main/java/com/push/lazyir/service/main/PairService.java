@@ -48,7 +48,10 @@ public class PairService {
         Device device = backgroundService.getConnectedDevices().get(id);
         if(device != null) {
             device.setPaired(false);
-            backgroundService.getModuleById(id, ShareModule.class).endWork();
+            ShareModule module = backgroundService.getModuleById(id, ShareModule.class);
+            if(module != null) {
+                module.endWork();
+            }
         }
         settingManager.delete(id);
         guiCommunicator.devicePaired(id, false);

@@ -17,7 +17,6 @@ import java.util.*;
 
 public class Reminder extends Module {
     public enum api{
-        REMINDER_TYPE,
         MISSED_CALLS,
         UNREAD_MESSAGES,
         DISSMIS_ALL_CALLS,

@@ -10,5 +10,6 @@ public enum NotificationTypes {
     UNREAD_MESSAGES,
     SMS,
     MESSENGER,
-    PAIR
+    PAIR,
+    NOTIFICATION
 }

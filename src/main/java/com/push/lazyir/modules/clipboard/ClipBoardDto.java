@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ClipBoardDto implements Dto {
+public class ClipBoardDto extends Dto {
     private String command;
     private String text;
 }

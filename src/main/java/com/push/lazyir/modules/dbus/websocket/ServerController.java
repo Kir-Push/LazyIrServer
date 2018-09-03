@@ -38,8 +38,10 @@ public class ServerController{
     public void stopServer(){
         try{
             working = false;
-            dbusWebSocketServer.stop();
-            dbusWebSocketServer = null;
+            if(dbusWebSocketServer != null) {
+                dbusWebSocketServer.stop();
+                dbusWebSocketServer = null;
+            }
         } catch (IOException | InterruptedException e){
             log.error("stopServer interrupt AAA",e);
             if(Thread.interrupted()){

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class BatteryDto implements Dto {
+public class BatteryDto extends Dto {
     private String percentage;
     private String status;
 }

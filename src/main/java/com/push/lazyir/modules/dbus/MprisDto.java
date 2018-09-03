@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class MprisDto implements Dto {
+public class MprisDto extends Dto {
     private String command;
     private String player;
     private String jsIp;

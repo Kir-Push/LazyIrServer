@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemoryDto implements Dto {
+public class MemoryDto extends Dto {
     private String command;
     private CRTEntity crtEntity;
     private MemoryEntity memoryEntity;

@@ -32,13 +32,12 @@ public class SettingManager implements Manager {
         ClassLoader classLoader =getClass().getClassLoader();
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(classLoader.getResourceAsStream(s), "UTF-8"));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(modules.toPath()), "UTF-8"))) {
-            if (modules.createNewFile()) {
                 String read;
                 while((read = reader.readLine()) != null){
                     writer.write(read);
                 }
-            }
         }catch (IOException e){
+            System.out.println(e);
             log.error("error in copyFromBackupToActualXml from: "+ s + " to: " + modules.getAbsolutePath());
         }
     }
@@ -237,7 +236,7 @@ public class SettingManager implements Manager {
 
     private void createSettingsFiles(String baseProp, String settingFilePath) {
         settings = new File(settingFilePath + File.separator+ "settingFile.ini");
-        if(!settings.exists() || !settings.isDirectory()) {
+        if(!settings.exists()) {
             copyFromBackupToActual(baseProp,settings);
         }
     }
@@ -249,11 +248,11 @@ public class SettingManager implements Manager {
         if(!localization.exists()){
             localization.mkdir();
         }
-        if(!engLocF.exists() || !engLocF.isDirectory()){
+        if(!engLocF.exists()){
             String engLoc = "engLoc";
             copyFromBackupToActual(engLoc,engLocF);
         }
-        if(!rusLocF.exists() || !rusLocF.isDirectory()){
+        if(!rusLocF.exists()){
             String rusLoc = "russianLoc";
             copyFromBackupToActual(rusLoc,rusLocF);
         }

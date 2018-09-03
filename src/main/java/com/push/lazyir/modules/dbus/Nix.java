@@ -153,7 +153,7 @@ public class Nix implements OsStrategy {
         List<String> resultFromexec = getResultFromExec(metadata);
         int i = 1;
         while (i < resultFromexec.size()){
-            if(resultFromexec.get(i-1).contains("mpris:LENGTH")) {
+            if(resultFromexec.get(i-1).contains("mpris:length")) {
                 result.put(LENGTH,extractLength(resultFromexec.get(i)));
                 i++;
             } else if(resultFromexec.get(i-1).contains(TITLE)) {

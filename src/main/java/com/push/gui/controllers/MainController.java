@@ -299,6 +299,7 @@ public class MainController {
 
     void setAllToDefault(PhoneDevice id) {
         getMainApp().getConnectedDevices().remove(id);
+        personList.refresh();
        getMainApp().getNotificationsList().clear();
        setCpu(0);
        setRam(0,0,false);

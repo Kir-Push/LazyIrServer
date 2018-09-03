@@ -9,7 +9,8 @@ import javax.inject.Inject;
 
 public class Ping extends Module{
     public enum api{
-        PING
+        PING,
+        STOP
     }
     @Inject
     public Ping(BackgroundService backgroundService, MessageFactory messageFactory) {

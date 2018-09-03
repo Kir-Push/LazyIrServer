@@ -20,7 +20,7 @@ public class DtoSerializer implements JsonSerializer<Dto>, JsonDeserializer<Dto>
     @Override
     public Dto deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
         JsonObject jsonObject = json.getAsJsonObject();
-        String type = jsonObject.get("type").getAsString();
+        String type = jsonObject.get("className").getAsString();
         boolean isModule = jsonObject.get("isModule").getAsBoolean();
         if(isModule) {
             return context.deserialize(json,moduleFactory.getModuleDto(type));
@@ -31,6 +31,6 @@ public class DtoSerializer implements JsonSerializer<Dto>, JsonDeserializer<Dto>
 
     @Override
     public JsonElement serialize(Dto src, Type typeOfSrc, JsonSerializationContext context) {
-        return context.serialize(src,typeOfSrc);
+        return context.serialize(src);
     }
 }

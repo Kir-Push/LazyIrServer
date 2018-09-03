@@ -15,7 +15,6 @@ import lombok.Data;
  * dto type calculated {type + 'dto'}
  */
 @Data
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class NetworkPackage {
     private String id;
     private String name;
@@ -25,4 +24,16 @@ public class NetworkPackage {
     private Dto data;
 
 
+    NetworkPackage(String id, String name, String deviceType, String type, boolean isModule, Dto data) {
+        this.id = id;
+        this.name = name;
+        this.deviceType = deviceType;
+        this.type = type;
+        this.isModule = isModule;
+        this.data = data;
+        if(data != null){
+            data.setClassName(type);
+            data.setModule(isModule);
+        }
+    }
 }

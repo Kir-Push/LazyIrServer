@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CallModuleDto implements Dto {
+public class CallModuleDto extends Dto {
     private String command;
     private String callType;
     private String text;

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ShareModuleDto implements Dto {
+public class ShareModuleDto extends Dto {
     private String command;
     private String userName;
     private String password;

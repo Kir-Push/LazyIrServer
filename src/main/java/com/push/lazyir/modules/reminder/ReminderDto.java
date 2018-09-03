@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ReminderDto implements Dto {
+public class ReminderDto extends Dto {
     private String command;
     private String missedCallStr;
     private List<MissedCall> missedCalls;
