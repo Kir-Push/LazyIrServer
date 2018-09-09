@@ -111,7 +111,7 @@ public class GuiUtils {
     }
 
     public Icon getDefaultUnreadMessagesIcon(int width, int height) {
-        return getIconByFileName("UNREAD_MESSAGES",width,height);
+        return getIconByFileName("unreadMessages",width,height);
     }
 
     public Icon getDefaultInfo(int width, int height) {

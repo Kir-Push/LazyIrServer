@@ -71,7 +71,7 @@ public class Reminder extends Module {
             appendNotifications(textBuilder,notifications);
         }
         String text = textBuilder.toString();
-        return new Notification(text,type,title,pack,ticker,id,null,null);
+        return new Notification(text,title,pack,ticker,id,null,null,type);
     }
 
     private void appendNotifications(StringBuilder textBuilder, List<Notification> notifications) {
@@ -193,16 +193,20 @@ public class Reminder extends Module {
     public void sendDissmisAllMessages(ReminderDto mspack) {
         List<Notification> notifications = mspack.getNotifications();
         List<Sms> smsList = mspack.getSmsList();
-        notifications.forEach(notification -> {
-            notification.setIcon(null);
-            notification.setPicture(null);
-            notification.setText(null);
-        });
-        smsList.forEach(sms ->{
-            sms.setIcon(null);
-            sms.setPicture(null);
-            sms.setText(null);
-        });
+        if(notifications != null) {
+            notifications.forEach(notification -> {
+                notification.setIcon(null);
+                notification.setPicture(null);
+                notification.setText(null);
+            });
+        }
+        if(smsList != null) {
+            smsList.forEach(sms -> {
+                sms.setIcon(null);
+                sms.setPicture(null);
+                sms.setText(null);
+            });
+        }
         mspack.setMissedCalls(null);
         mspack.setMissedCallStr(null);
         mspack.setCommand(api.DISSMIS_ALL_MESSAGES.name());

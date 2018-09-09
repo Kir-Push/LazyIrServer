@@ -69,11 +69,15 @@ public class Popup {
             }
         }
         CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController,(arg == null || arg.length == 0) ? null : arg[0]);
-        boolean incoming = notification.getType().equalsIgnoreCase(NotificationTypes.INCOMING.name());
-        boolean missed = notification.getType().equalsIgnoreCase(NotificationTypes.MISSED_IN.name());
-        boolean outgoing = notification.getType().equalsIgnoreCase(NotificationTypes.OUTGOING.name());
-        if(incoming || missed || outgoing){
-            callNotifs.put(notification.getTitle(),build);
+        String type = notification.getType();
+        boolean incoming = false;
+        if(type != null) {
+            incoming = type.equalsIgnoreCase(NotificationTypes.INCOMING.name());
+            boolean missed = type.equalsIgnoreCase(NotificationTypes.MISSED_IN.name());
+            boolean outgoing = type.equalsIgnoreCase(NotificationTypes.OUTGOING.name());
+            if (incoming || missed || outgoing) {
+                callNotifs.put(notification.getTitle(), build);
+            }
         }
         double timeTemp = notTime;
         for(int i = 20;i<build.getText().length();i+=20){
