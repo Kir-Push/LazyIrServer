@@ -104,13 +104,15 @@ public class ApiController {
     public void setDeviceCRT(CRTEntity crt, String id) {
         Platform.runLater(()->{
             PhoneDevice deviceById = getDeviceById(id);
-            deviceById.setCpuLoad(crt.getCpuLoad());
-            deviceById.setFreeRam(crt.getFreeRam()/1024/1024);
-            deviceById.setTotalRam(crt.getFreeRamAll()/1024/1024);
-            deviceById.setLowMemory(crt.isLowMem());
-            deviceById.setTemp(crt.getTempC());
-            mainController.setCpu(crt.getCpuLoad());
-            mainController.setRam(crt.getFreeRam()/1024/1024,crt.getFreeRamAll()/1024/1024,crt.isLowMem());
+            if(deviceById != null && crt != null) {
+                deviceById.setCpuLoad(crt.getCpuLoad());
+                deviceById.setFreeRam(crt.getFreeRam() / 1024 / 1024);
+                deviceById.setTotalRam(crt.getFreeRamAll() / 1024 / 1024);
+                deviceById.setLowMemory(crt.isLowMem());
+                deviceById.setTemp(crt.getTempC());
+                mainController.setCpu(crt.getCpuLoad());
+                mainController.setRam(crt.getFreeRam() / 1024 / 1024, crt.getFreeRamAll() / 1024 / 1024, crt.isLowMem());
+            }
         });
     }
 

@@ -81,11 +81,17 @@ public class CustomNotification extends BorderLayoutNotification {
 
 
     public void setImage(String base64,int width,int heigh){
-        imglbl.setIcon(guiUtils.pictureFromBase64Swing(base64,width,heigh));
+        ImageIcon imageIcon = guiUtils.pictureFromBase64Swing(base64, width, heigh);
+        if(imageIcon != null) {
+            imglbl.setIcon(imageIcon);
+        }
     }
 
     public void setIcon(String base64,int width,int heigh){
-        iconlbl.setIcon(guiUtils.pictureFromBase64Swing(base64,width,heigh));
+        ImageIcon imageIcon = guiUtils.pictureFromBase64Swing(base64, width, heigh);
+        if(imageIcon != null) {
+            iconlbl.setIcon(imageIcon);
+        }
     }
 
     public void setIcon(Icon icon){

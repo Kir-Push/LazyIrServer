@@ -52,8 +52,13 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         String icon = notificationDevice.getIcon();
         String picture = notificationDevice.getPicture();
 
-        NotificationTypes notificationType = NotificationTypes.valueOf(notificationDevice.getType());
-
+        String type = notificationDevice.getType();
+        NotificationTypes notificationType;
+        if(type != null) {
+            notificationType = NotificationTypes.valueOf(type);
+        }else {
+            notificationType = NotificationTypes.NOTIFICATION;
+        }
         // handled by WindowNotification
         WindowTheme windowTheme = pack.getTheme(WindowTheme.class);
         windowTheme.opacity = 1;
@@ -121,6 +126,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
     }
 
     private void configNotification(CustomNotification notification, NotificationTypes type, String icon, NotificationDevice notificationDevice, Object... args) {
+                    notification.setCloseOnClick(true);
         if(icon != null && icon.length() > 0){
             notification.setIcon(icon, 100, 100);
         }

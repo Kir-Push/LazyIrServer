@@ -92,7 +92,6 @@ public class ConnectionThread implements Runnable {
             while (isConnected()) {
 
                 String clientCommand = in.readLine();
-                System.out.println("Receive command +" + clientCommand);
                 if (!backgroundService.isServerOn() || clientCommand == null || !isConnected()) { // if server off, exit from read loop
                     return;
                 }
@@ -194,7 +193,6 @@ public class ConnectionThread implements Runnable {
         String pairData = dto.getData();
         String savedPairData = backgroundService.getSettingManager().get(deviceId);
         String pairState = (pairData != null && !pairData.equalsIgnoreCase("null") && pairData.equals(savedPairData)) ? api.OK.name() : api.REFUSE.name();
-      //  pairService.setPairStatus(deviceId, pairData, pairState);
         pairService.sendPairAnswer(deviceId, pairState);
 
         ping();
@@ -214,9 +212,13 @@ public class ConnectionThread implements Runnable {
             timerFuture.cancel(true);
         }
         timerFuture = backgroundService.getTimerService().scheduleWithFixedDelay(()->{
-            setDevicePing(false);
             ping();
-        },0,20, TimeUnit.SECONDS);
+            Device device = backgroundService.getConnectedDevices().get(deviceId);
+            if(device != null && !device.isPinging()){
+                closeConnection(device);
+            }
+            setDevicePing(false);
+        },20,20, TimeUnit.SECONDS);
     }
 
     /*
@@ -234,7 +236,7 @@ public class ConnectionThread implements Runnable {
     private void setDevicePing(boolean answer){
         Device device = backgroundService.getConnectedDevices().get(deviceId);
         if (device != null) {
-            device.setAnswer(answer);
+            device.setPinging(answer);
         }
     }
 
@@ -275,7 +277,6 @@ public class ConnectionThread implements Runnable {
         if (out == null) {
             return;
         }
-        System.out.println("Send  command: " + message);
         out.println(message);
         out.flush();
     }
@@ -294,7 +295,7 @@ public class ConnectionThread implements Runnable {
                 timerFuture.cancel(true);
             }
             clearResources();
-            if(!deviceId.equals("")) {
+            if(!deviceId.equals("") && device != null) {
                 ConcurrentHashMap<String, Module> enabledModules = device.getEnabledModules();
                 if(enabledModules != null) {
                     for (Module module : enabledModules.values()) {

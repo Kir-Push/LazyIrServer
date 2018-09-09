@@ -10,7 +10,6 @@ import com.push.lazyir.api.DtoSerializer;
 import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.ModuleFactory;
-import com.push.lazyir.modules.clipboard.remote.ClipboardRmiServer;
 import com.push.lazyir.modules.dbus.websocket.ServerController;
 import com.push.lazyir.service.dto.NetworkDtoRegister;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
@@ -89,11 +88,6 @@ public class ServiceModule {
         return new ModuleFactory();
     }
 
-    @Provides
-    @Singleton
-    public ClipboardRmiServer provideClipboardRmiServer(BackgroundService backgroundService, MessageFactory messageFactory, SettingManager settingManager){
-        return new ClipboardRmiServer(messageFactory,backgroundService,settingManager);
-    }
 
     @Provides
     @Singleton

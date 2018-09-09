@@ -182,18 +182,17 @@ public class MainController {
             PhoneDevice selectedDevice = personList.getSelectionModel().getSelectedItem();
             switch (item.getType()) {
                 case "SMS":
-                    answer.setOnAction(event -> openMessengerDialog(item, selectedDevice.getId()));
-                    break;
                 case "MESSENGER":
                     answer.setOnAction(event -> openMessengerDialog(item, selectedDevice.getId()));
+                    listCellContents.add(answer,3,0);
                     break;
                 case "call":
                     answer.setOnAction(event -> recall(item, selectedDevice.getId()));
+                    listCellContents.add(answer,3,0);
                     break;
                 default:
                     break;
             }
-            listCellContents.add(answer,3,0);
         }
     }
 

@@ -65,11 +65,13 @@ public class GuiUtils {
         byte[] dencodedImg = Base64.getMimeDecoder().decode(base64);
         try {
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(dencodedImg));
-            return new ImageIcon(image.getScaledInstance(width,height,java.awt.Image.SCALE_SMOOTH));
+            if(image != null) {
+                return new ImageIcon(image.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));
+            }
         } catch (IOException e) {
             log.error(" pictureFromBase64Swing -width: "+ width + " height: "+height,e);
-           return null;
         }
+        return null;
     }
 
     public BufferedImage pictureFromBase64Swing(String base64){

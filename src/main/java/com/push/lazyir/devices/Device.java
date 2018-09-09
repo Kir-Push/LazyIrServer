@@ -26,7 +26,6 @@ public class Device {
     private boolean paired;
     private boolean listening;
     private boolean pinging;
-    private boolean answer;
     private ConcurrentHashMap<String, Module> enabledModules = new ConcurrentHashMap<>();
     private List<ModuleSetting> enabledModulesConfig;
     private ModuleFactory moduleFactory;
@@ -39,7 +38,6 @@ public class Device {
         this.paired = false;
         this.listening = true;
         this.pinging = false;
-        this.answer = false;
         this.deviceType = "phone";
         this.enabledModulesConfig = enabledModules;
         this.moduleFactory = moduleFactory;
