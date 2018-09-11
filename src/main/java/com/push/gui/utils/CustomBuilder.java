@@ -69,7 +69,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         setPicture(notification,picture);
 
         int calculatedWidth = calcNotifWidth(notification,width);
-        int calculatedHeight = calcNotifHeight(notification,height);
+        int calculatedHeight = calcNotifHeight(notification,height,notificationDevice);
         windowTheme.width = calculatedWidth;
         windowTheme.height = calculatedHeight;
         notification.setWindowTheme(windowTheme);
@@ -83,7 +83,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         return notification;
     }
 
-    private int calcNotifHeight(CustomNotification notification, double height) {
+    private int calcNotifHeight(CustomNotification notification, double height, NotificationDevice notificationDevice) {
         int iconHeigh = notification.getIconlbl().getPreferredSize().height;
         int rightPanelHeigh = notification.getRightpanel().getPreferredSize().height;
         int textHeigh = notification.getTextlbl().getPreferredSize().height;
@@ -100,8 +100,15 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
                 lastIndex += brLenght;
             }
         }
-        if(maxHeighCalculated > height/4)
-            maxHeighCalculated = (int)(height/4);
+        if(maxHeighCalculated > height/4) {
+            maxHeighCalculated = (int) (height / 4);
+        }
+        String notifText = notificationDevice.getText();
+        while(textHeigh > maxHeighCalculated){
+            notifText = notifText.substring(0,notifText.length()/2);
+            notification.setText(notifText,notificationDevice.getTitle(),notificationDevice.getOwnerName());
+            textHeigh = notification.getTextlbl().getPreferredSize().height;
+        }
         return maxHeighCalculated;
     }
 
