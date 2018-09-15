@@ -44,9 +44,9 @@ public class ServerController{
             }
         } catch (IOException | InterruptedException e){
             log.error("stopServer interrupt AAA",e);
-            if(Thread.interrupted()){
-                Thread.currentThread().interrupt();
-            }
+//            if(Thread.interrupted()){
+//                Thread.currentThread().interrupt();
+//            }
         }
     }
 

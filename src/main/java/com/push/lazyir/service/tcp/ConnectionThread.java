@@ -58,6 +58,7 @@ public class ConnectionThread implements Runnable {
             this.messageFactory = messageFactory;
             this.moduleFactory = moduleFactory;
             this.pairService = pairService;
+            log.debug("start thread " + Thread.currentThread() + " devicde ip: " + connection.getInetAddress());
            configSocket();
         }
 
@@ -295,6 +296,8 @@ public class ConnectionThread implements Runnable {
                 timerFuture.cancel(true);
             }
             clearResources();
+            backgroundService.getConnectedDevices().remove(deviceId);
+            guiCommunicator.deviceLost(deviceId);
             if(!deviceId.equals("") && device != null) {
                 ConcurrentHashMap<String, Module> enabledModules = device.getEnabledModules();
                 if(enabledModules != null) {
@@ -307,9 +310,6 @@ public class ConnectionThread implements Runnable {
                     }
                 }
             }
-            backgroundService.getConnectedDevices().remove(deviceId);
-            guiCommunicator.deviceLost(deviceId);
-            // calling after because can throw exception and remove from hashmap won't be done
         }catch (Exception e) {
             log.error("error in closeConnection id: " + deviceId,e);
         }
