@@ -152,7 +152,7 @@ public class Reminder extends Module {
         String text = textBuilder.toString();
         int length = db.length();
         String id = db.delete(length -3, length).toString();
-        return new Notification(text,type,title,pack,ticker,id,null,null);
+        return new Notification(text,title,pack,ticker,id,null,null,type);
     }
 
     private ArrayListMultimap<String, MissedCall> collectByNumber(List<MissedCall> missedCalls) {
