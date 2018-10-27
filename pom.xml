@@ -118,6 +118,38 @@ Style & Refactoring
             <version>2.6</version>
         </dependency>
 
+
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>11</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -150,7 +182,7 @@ Style & Refactoring
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.push.gui.systray.JavaFXTrayIconSample</mainClass>
+                            <mainClass>com.push.gui.NewMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -161,7 +193,7 @@ Style & Refactoring
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.push.gui.systray.JavaFXTrayIconSample</mainClass>
+                            <mainClass>com.push.gui.NewMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

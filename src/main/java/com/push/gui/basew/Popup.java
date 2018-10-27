@@ -79,14 +79,11 @@ public class Popup {
                 callNotifs.put(notification.getTitle(), build);
             }
         }
-        double timeTemp = notTime;
-        for(int i = 20;i<build.getText().length();i+=20){
-            timeTemp += 2;
-        }
-        Time time = Time.seconds(timeTemp);
-
+        Time time;
         if(incoming){
-           time = Time.seconds(callNotTime);
+            time = Time.seconds(callNotTime);
+        }else{
+            time = Time.seconds(notTime);
         }
         manager.addNotification(build, time);
 

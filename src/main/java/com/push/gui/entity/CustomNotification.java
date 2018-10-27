@@ -2,6 +2,7 @@ package com.push.gui.entity;
 
 import com.notification.types.BorderLayoutNotification;
 import com.push.gui.utils.GuiUtils;
+import com.push.lazyir.service.managers.settings.SettingManager;
 import com.theme.TextTheme;
 import com.theme.WindowTheme;
 import lombok.Data;
@@ -9,24 +10,48 @@ import lombok.Data;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Set;
 
 @Data
 public class CustomNotification extends BorderLayoutNotification {
+    private Font titleFont;
+    private Font textFont;
     private GuiUtils guiUtils;
+    private SettingManager settingManager;
     private JLabel iconlbl;
-    private JLabel textlbl;
+    private JTextArea textlbl;
+    private JTextArea titlelbl;
+    private JTextArea deviceLbl;
     private JLabel imglbl;
 
     private JPanel btnpanel;
+    private JPanel textpanel;
     private JButton mbutton;
     private JButton mbutton2;
     private TextTheme mtheme;
     private JPanel rightpanel;
 
-    public CustomNotification(GuiUtils guiUtils) {
+    public CustomNotification(GuiUtils guiUtils, SettingManager settingManager) {
         super();
+        this.settingManager = settingManager;
+        this.guiUtils = guiUtils;
+
+        String titleFontSize = settingManager.get("NotificationFontSize");
+        int size = 12;
+        if(titleFontSize != null){
+            size = Integer.parseInt(titleFontSize);
+        }
+        titleFont = new Font("Arial",Font.BOLD,size);
+        textFont = new Font("Arial",Font.PLAIN,size);
+
         iconlbl = new JLabel();
-        textlbl = new JLabel();
+        textlbl = new JTextArea();
+        titlelbl = new JTextArea();
+        deviceLbl = new JTextArea();
+        BorderLayout borderLayout = new BorderLayout();
+        borderLayout.setHgap(0);
+        borderLayout.setVgap(10);
+        textpanel = new JPanel(borderLayout);
         imglbl = new JLabel();
         mbutton = new JButton();
         mbutton2 = new JButton();
@@ -36,30 +61,37 @@ public class CustomNotification extends BorderLayoutNotification {
         btnpanel = new JPanel(gl);
         rightpanel.add(imglbl);
         rightpanel.add(btnpanel);
+        textlbl.setLineWrap(true);
+        textlbl.setWrapStyleWord(true);
+        titlelbl.setLineWrap(true);
+        titlelbl.setWrapStyleWord(true);
+        textpanel.add(titlelbl,BorderLayout.NORTH);
+        textpanel.add(textlbl,BorderLayout.CENTER);
+        textpanel.add(deviceLbl,BorderLayout.SOUTH);
+
         this.addComponent(iconlbl, BorderLayout.WEST);
-        this.addComponent(textlbl,BorderLayout.CENTER);
+        this.addComponent(textpanel,BorderLayout.CENTER);
         this.addComponent(rightpanel,BorderLayout.EAST);
-        this.guiUtils = guiUtils;
     }
 
     public void setTextTemeFont(TextTheme theme) {
-        textlbl.setFont(theme.subtitle);
+        titlelbl.setFont(titleFont);
+        textlbl.setFont(textFont);
         mbutton.setFont(theme.subtitle);
         mbutton2.setFont(theme.subtitle);
         mtheme = theme;
     }
 
     public void setTextThemeColor(TextTheme theme){
-        textlbl.setForeground(theme.titleColor);
-        textlbl.setBackground(theme.subtitleColor);
+        titlelbl.setForeground(theme.titleColor);
+        textlbl.setForeground(theme.subtitleColor);
         mbutton.setForeground(theme.subtitleColor);
         mbutton2.setForeground(theme.subtitleColor);
     }
 
     public void setTextThemeCallFont(TextTheme theme){
-        textlbl.setFont(theme.subtitle);
-        textlbl.setForeground(theme.titleColor);
-        textlbl.setBackground(theme.subtitleColor);
+        titlelbl.setFont(titleFont);
+        textlbl.setFont(textFont);
         mbutton.setFont(theme.title);
         mbutton2.setFont(theme.title);
     }
@@ -72,9 +104,8 @@ public class CustomNotification extends BorderLayoutNotification {
     }
 
     public void setTextThemecallMissedFont(TextTheme theme) {
-        textlbl.setFont(theme.subtitle);
-        textlbl.setForeground(theme.titleColor);
-        textlbl.setBackground(theme.subtitleColor);
+        titlelbl.setFont(titleFont);
+        textlbl.setFont(textFont);
         mbutton.setFont(theme.title);
     }
 
@@ -129,10 +160,9 @@ public class CustomNotification extends BorderLayoutNotification {
             text = "";
         if(dvName == null)
             dvName = "";
-        title = "<b>" + title + "</b><br/>";
-        dvName = "<br/><font size=\"2\">" + dvName +  "</font>";
-        text = "<html>" + title +  text.replaceAll("<","&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br/>") + dvName + "</html>";
+        titlelbl.setText(title);
         textlbl.setText(text);
+        deviceLbl.setText(dvName);
     }
 
     @Override

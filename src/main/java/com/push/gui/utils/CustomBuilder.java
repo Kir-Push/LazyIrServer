@@ -10,6 +10,7 @@ import com.push.lazyir.modules.notifications.NotificationTypes;
 import com.push.lazyir.modules.reminder.ReminderDto;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
+import com.push.lazyir.service.managers.settings.SettingManager;
 import com.theme.TextTheme;
 import com.theme.ThemePackage;
 import com.theme.WindowTheme;
@@ -24,30 +25,28 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
     private GuiUtils guiUtils;
     private GuiCommunicator guiCommunicator;
     private LocalizationManager localizationManager;
+    private SettingManager settingManager;
     private JavaFXTrayIconSample javaFXTrayIconSample;
     private TextTheme textTheme;
-    private int widthMagicNumber = 70;
-    private int heihhtMagicNumber = 20;
 
     public CustomBuilder(BackgroundService backgroundService, GuiUtils guiUtils) {
         this.guiUtils = guiUtils;
         this.guiCommunicator = backgroundService.getGuiCommunicator();
         this.localizationManager = backgroundService.getLocalizationManager();
         this.javaFXTrayIconSample = backgroundService.getJavaFXTrayIconSample();
+        this.settingManager = backgroundService.getSettingManager();
     }
 
     @Override
     public CustomNotification buildNotification(ThemePackage pack, Object[] args) {
-        CustomNotification notification = new CustomNotification(guiUtils);
-        Rectangle2D bounds = Screen.getPrimary().getBounds();
+        CustomNotification notification = new CustomNotification(guiUtils,settingManager);
+        Rectangle2D bounds = determineScreen();
         double width = bounds.getWidth();
         double height = bounds.getHeight();
         NotificationDevice notificationDevice = (NotificationDevice) args[0];
         if(notificationDevice == null) {
             return null;
         }
-
-        notification.setText(notificationDevice.getText(),notificationDevice.getTitle(),notificationDevice.getOwnerName());
 
         String icon = notificationDevice.getIcon();
         String picture = notificationDevice.getPicture();
@@ -80,51 +79,56 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         }else{
             notification.setTextThemeColor(textTheme);
         }
+        notification.setText(notificationDevice.getText(),notificationDevice.getTitle(),notificationDevice.getOwnerName());
         return notification;
     }
 
-    private int calcNotifHeight(CustomNotification notification, double height, NotificationDevice notificationDevice) {
-        int iconHeigh = notification.getIconlbl().getPreferredSize().height;
-        int rightPanelHeigh = notification.getRightpanel().getPreferredSize().height;
-        int textHeigh = notification.getTextlbl().getPreferredSize().height;
-        int localMax = (rightPanelHeigh > iconHeigh ? rightPanelHeigh : iconHeigh);
-        int maxHeighCalculated =textHeigh > localMax ? textHeigh : localMax;
-        maxHeighCalculated += heihhtMagicNumber;
-        String text = notification.getTextlbl().getText();
-        int lastIndex = 0;
-        int brLenght = "<br>".length();
-        while(lastIndex != -1){
-            lastIndex = text.indexOf("<br/>",lastIndex);
-            if(lastIndex != -1){
-                maxHeighCalculated += 5;
-                lastIndex += brLenght;
+    private Rectangle2D determineScreen() {
+        Rectangle2D bounds = Screen.getPrimary().getBounds();
+        String value = settingManager.get("notification-screen");
+        if(value != null) {
+            int screenNum = Integer.parseInt(value); // todo add in config this key, and in setting window add selection to screen
+            Screen screen = Screen.getScreens().get(screenNum);
+            if (screen != null && !bounds.intersects(screen.getBounds())) {
+                return screen.getBounds();
             }
         }
-        if(maxHeighCalculated > height/4) {
-            maxHeighCalculated = (int) (height / 4);
+        return bounds;
+    }
+
+    private int calcNotifHeight(CustomNotification notification, double height, NotificationDevice notificationDevice) {
+        String autoHeigh = settingManager.get("notification-height-auto");
+        int calculatedHeight = 140;
+        if(autoHeigh != null && autoHeigh.equalsIgnoreCase("true")){
+            calculatedHeight = (int) (height / 10);
+            if (calculatedHeight < 140) {
+                calculatedHeight = 140;
+            }
+        }else {
+            String notifHeight = settingManager.get("notification-height");
+            if (notifHeight != null) {
+                calculatedHeight = Integer.parseInt(notifHeight);
+            }
         }
-        String notifText = notificationDevice.getText();
-        while(textHeigh > maxHeighCalculated){
-            notifText = notifText.substring(0,notifText.length()/2);
-            notification.setText(notifText,notificationDevice.getTitle(),notificationDevice.getOwnerName());
-            textHeigh = notification.getTextlbl().getPreferredSize().height;
-        }
-        return maxHeighCalculated;
+        return calculatedHeight;
+
     }
 
     private int calcNotifWidth(CustomNotification notification, double width) {
-        int calculatedWidth = notification.getTextlbl().getPreferredSize().width + notification.getRightpanel().getPreferredSize().width + notification.getIconlbl().getPreferredSize().width + widthMagicNumber;
-        // if less than 1/7 part of screen
-        // set to 1/6 part of screen
-        //  if more than 1/3 part of screen
-        // set to 1/5 part of screen
-        if(calculatedWidth < width/7) {
-            calculatedWidth = (int) (width/6);
+        String autoWith = settingManager.get("notification-width-auto");
+        int calcultedWidth = 640;
+        if(autoWith != null && autoWith.equalsIgnoreCase("true")){
+            calcultedWidth = (int) width / 4;
+            if (calcultedWidth < 640) {
+                calcultedWidth = 640;
+            }
+        }else {
+            String notifWidth = settingManager.get("notification-width");
+            if (notifWidth != null) {
+                calcultedWidth = Integer.parseInt(notifWidth);
+            }
         }
-        else if(calculatedWidth > width/3) {
-            calculatedWidth = (int) width/5; // test with big text notifications
-        }
-        return calculatedWidth;
+        return calcultedWidth;
     }
 
     private void setPicture(CustomNotification notification, String picture) {
@@ -133,7 +137,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
     }
 
     private void configNotification(CustomNotification notification, NotificationTypes type, String icon, NotificationDevice notificationDevice, Object... args) {
-                    notification.setCloseOnClick(true);
+        notification.setCloseOnClick(true);
         if(icon != null && icon.length() > 0){
             notification.setIcon(icon, 100, 100);
         }
