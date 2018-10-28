@@ -67,8 +67,8 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         configNotification(notification,notificationType,icon,notificationDevice,args);
         setPicture(notification,picture);
 
-        int calculatedWidth = calcNotifWidth(notification,width);
-        int calculatedHeight = calcNotifHeight(notification,height,notificationDevice);
+        int calculatedWidth = calcNotifWidth(width);
+        int calculatedHeight = calcNotifHeight(height);
         windowTheme.width = calculatedWidth;
         windowTheme.height = calculatedHeight;
         notification.setWindowTheme(windowTheme);
@@ -96,39 +96,28 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         return bounds;
     }
 
-    private int calcNotifHeight(CustomNotification notification, double height, NotificationDevice notificationDevice) {
-        String autoHeigh = settingManager.get("notification-height-auto");
-        int calculatedHeight = 140;
-        if(autoHeigh != null && autoHeigh.equalsIgnoreCase("true")){
-            calculatedHeight = (int) (height / 10);
+    private int calcNotifHeight(double height) {
+        if(settingManager.getBool("notification-height-auto",true)){
+            int calculatedHeight = (int) (height / 10);
             if (calculatedHeight < 140) {
                 calculatedHeight = 140;
             }
+            return calculatedHeight;
         }else {
-            String notifHeight = settingManager.get("notification-height");
-            if (notifHeight != null) {
-                calculatedHeight = Integer.parseInt(notifHeight);
-            }
+           return settingManager.getInt("notification-height",140);
         }
-        return calculatedHeight;
-
     }
 
-    private int calcNotifWidth(CustomNotification notification, double width) {
-        String autoWith = settingManager.get("notification-width-auto");
-        int calcultedWidth = 640;
-        if(autoWith != null && autoWith.equalsIgnoreCase("true")){
-            calcultedWidth = (int) width / 4;
+    private int calcNotifWidth(double width) {
+        if(settingManager.getBool("notification-width-auto", true)){
+           int calcultedWidth = (int) width / 4;
             if (calcultedWidth < 640) {
                 calcultedWidth = 640;
             }
+            return calcultedWidth;
         }else {
-            String notifWidth = settingManager.get("notification-width");
-            if (notifWidth != null) {
-                calcultedWidth = Integer.parseInt(notifWidth);
-            }
+            return settingManager.getInt("notification-width",640);
         }
-        return calcultedWidth;
     }
 
     private void setPicture(CustomNotification notification, String picture) {

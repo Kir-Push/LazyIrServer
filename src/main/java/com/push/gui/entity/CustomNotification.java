@@ -10,7 +10,6 @@ import lombok.Data;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.Set;
 
 @Data
 public class CustomNotification extends BorderLayoutNotification {

@@ -275,7 +275,7 @@ public class MainController {
     }
 
     public void openMessengerDialog(NotificationDevice item, String deviceId) {
-        item.setType("MESSENGER");
+      //  item.setType("MESSENGER");
         dialogs.showAnswerMessenger(deviceId,item);
     }
 

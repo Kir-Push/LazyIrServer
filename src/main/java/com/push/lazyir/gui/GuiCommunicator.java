@@ -129,6 +129,7 @@ public class GuiCommunicator {
             NotificationDevice notificationDevice = new NotificationDevice(notification.getText(), notification.getType(),
                     notification.getTitle(), notification.getPack(), notification.getTicker(),
                     notification.getId(), notification.getIcon(), notification.getPicture());
+            System.out.println(notification);
             notificationDevice.setOwnerName(id);
             notificationDevices.add(notificationDevice);
         }

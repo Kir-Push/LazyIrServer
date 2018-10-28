@@ -37,7 +37,6 @@ public class SettingManager implements Manager {
                     writer.write(read);
                 }
         }catch (IOException e){
-            System.out.println(e);
             log.error("error in copyFromBackupToActualXml from: "+ s + " to: " + modules.getAbsolutePath());
         }
     }
@@ -131,6 +130,33 @@ public class SettingManager implements Manager {
     @Synchronized
     public String get(String key) {
         return properties.getProperty(key);
+    }
+
+    @Synchronized
+    public int getInt(String key,int defaultValue){
+        try {
+            String property = properties.getProperty(key);
+            if (property != null) {
+                return Integer.parseInt(property);
+            }
+        }catch (NumberFormatException e){
+            log.error("error in get int " + key,e);
+        }
+        return defaultValue;
+    }
+
+    @Synchronized
+    public boolean getBool(String key,boolean defaultValue){
+            String property = properties.getProperty(key);
+            if(property != null) {
+                if (property.equalsIgnoreCase("true")) {
+                    return true;
+                }
+                if (property.equalsIgnoreCase("false")) {
+                    return false;
+                }
+            }
+            return defaultValue;
     }
 
     @Synchronized

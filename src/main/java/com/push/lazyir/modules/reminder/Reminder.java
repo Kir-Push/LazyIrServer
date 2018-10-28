@@ -168,7 +168,7 @@ public class Reminder extends Module {
             String[] split = pack.split(".");
            if(split.length == 1) {
                 pack = split[0]; // todo all this you need to test, it may not work in many messengers
-            }else {
+            }else if(split.length > 1) {
                 pack = split[1];
             }
             result.put(pack,notification);
