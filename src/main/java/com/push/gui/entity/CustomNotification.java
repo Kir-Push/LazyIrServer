@@ -8,6 +8,7 @@ import com.theme.WindowTheme;
 import lombok.Data;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -54,16 +55,21 @@ public class CustomNotification extends BorderLayoutNotification {
         imglbl = new JLabel();
         mbutton = new JButton();
         mbutton2 = new JButton();
-        GridLayout gl = new GridLayout(0,1);
-        rightpanel = new JPanel();
-
-        btnpanel = new JPanel(gl);
-        rightpanel.add(imglbl);
-        rightpanel.add(btnpanel);
+        mbutton2.setBorder(null);
+        mbutton.setBorder(null);
+        rightpanel = new JPanel(new BorderLayout(5,0));
+        btnpanel = new JPanel(new BorderLayout(0,10));
+        JPanel jPanel = new JPanel(new BorderLayout());
+        jPanel.add(btnpanel,BorderLayout.SOUTH);
+        rightpanel.add(imglbl,BorderLayout.WEST);
+        rightpanel.add(jPanel,BorderLayout.EAST);
         textlbl.setLineWrap(true);
         textlbl.setWrapStyleWord(true);
         titlelbl.setLineWrap(true);
         titlelbl.setWrapStyleWord(true);
+        textlbl.setEditable(false);
+        titlelbl.setEditable(false);
+        deviceLbl.setEditable(false);
         textpanel.add(titlelbl,BorderLayout.NORTH);
         textpanel.add(textlbl,BorderLayout.CENTER);
         textpanel.add(deviceLbl,BorderLayout.SOUTH);
@@ -76,8 +82,10 @@ public class CustomNotification extends BorderLayoutNotification {
     public void setTextTemeFont(TextTheme theme) {
         titlelbl.setFont(titleFont);
         textlbl.setFont(textFont);
-        mbutton.setFont(theme.subtitle);
-        mbutton2.setFont(theme.subtitle);
+        mbutton.setFont(new Font("Arial",Font.ITALIC,12));
+        mbutton.setMargin(new Insets(0,0,0,0));
+        mbutton2.setMargin(new Insets(0,0,0,0));
+        mbutton2.setFont(new Font("Arial",Font.ITALIC,12));
         mtheme = theme;
     }
 
@@ -139,13 +147,14 @@ public class CustomNotification extends BorderLayoutNotification {
     public void setFirstButton(String text,ActionListener action){
         mbutton.setText(text);
         mbutton.addActionListener(action);
-        btnpanel.add(mbutton,0);
+        mbutton.setToolTipText("aga");
+        btnpanel.add(mbutton,BorderLayout.CENTER);
     }
 
     public void setSecondButton(String text,ActionListener action){
         mbutton2.setText(text);
         mbutton2.addActionListener(action);
-        btnpanel.add(mbutton2,1);
+        btnpanel.add(mbutton2,BorderLayout.SOUTH);
     }
 
     public String getText() {

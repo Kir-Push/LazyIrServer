@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.converter.IntegerStringConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.UnaryOperator;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 @Slf4j

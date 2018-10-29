@@ -86,7 +86,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
     private Rectangle2D determineScreen() {
         Rectangle2D bounds = Screen.getPrimary().getBounds();
         String value = settingManager.get("notification-screen");
-        if(value != null && !value.equalsIgnoreCase("primary")) {
+        if(value != null && !value.equalsIgnoreCase("null") && !value.equalsIgnoreCase("primary")) {
             int screenNum = Integer.parseInt(value); // todo add in config this key, and in setting window add selection to screen
             Screen screen = Screen.getScreens().get(screenNum);
             if (screen != null && !bounds.intersects(screen.getBounds())) {
@@ -98,9 +98,9 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
 
     private int calcNotifHeight(double height) {
         if(settingManager.getBool("notification-height-auto",true)){
-            int calculatedHeight = (int) (height / 10);
-            if (calculatedHeight < 140) {
-                calculatedHeight = 140;
+            int calculatedHeight = (int) (height / 12);
+            if (calculatedHeight < 120) {
+                calculatedHeight = 120;
             }
             return calculatedHeight;
         }else {
@@ -110,9 +110,9 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
 
     private int calcNotifWidth(double width) {
         if(settingManager.getBool("notification-width-auto", true)){
-           int calcultedWidth = (int) width / 4;
-            if (calcultedWidth < 640) {
-                calcultedWidth = 640;
+           int calcultedWidth = (int) width / 5;
+            if (calcultedWidth < 512) {
+                calcultedWidth = 512;
             }
             return calcultedWidth;
         }else {
