@@ -8,18 +8,33 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 @Slf4j
 public class SettingsWindow {
     private boolean opened;
     private SettingManager settingManager;
     private LocalizationManager localizationManager;
+    UnaryOperator<TextFormatter.Change> filter = change -> {
+        String text = change.getText();
+
+        if (text.matches("[0-9]*")) {
+            return change;
+        }
+
+        return null;
+    };
 
     @Inject
     public SettingsWindow(SettingManager settingManager, LocalizationManager localizationManager) {
@@ -53,24 +68,28 @@ public class SettingsWindow {
             mainPortInput.setTooltip(new Tooltip(localizationManager.get("settingMainPortTooltipInput")));
             mainPortInput.setEditable(true);
             mainPortInput.setText(settingManager.get("TCP-port"));
+            mainPortInput.setTextFormatter( ( new TextFormatter<>(filter)));
 
             Label notifTime = (Label) scene.lookup("#notifTime");
             notifTime.setText(localizationManager.get("settingNotTime"));
             TextField notifTimeInput = (TextField) scene.lookup("#notifTimeInput");
             notifTimeInput.setEditable(true);
             notifTimeInput.setText(settingManager.get("Notif-time"));
+            notifTimeInput.setTextFormatter( ( new TextFormatter<>(filter)));
 
             Label callNotifTime = (Label) scene.lookup("#callnotifTime");
             callNotifTime.setText(localizationManager.get("settingCallNotTime"));
             TextField callNotifTimeInput = (TextField) scene.lookup("#callnotifTimeInput");
             callNotifTimeInput.setEditable(true);
             callNotifTimeInput.setText(settingManager.get("Call-Notif-time"));
+            callNotifTimeInput.setTextFormatter( ( new TextFormatter<>(filter)));
 
             Label maxnotifs = (Label) scene.lookup("#maxnotifs");
             maxnotifs.setText(localizationManager.get("settingsMaxNot"));
             TextField maxNotifsInput = (TextField) scene.lookup("#maxnotifsInput");
             maxNotifsInput.setEditable(true);
             maxNotifsInput.setText(settingManager.get("maxNotifOnScreen"));
+            maxNotifsInput.setTextFormatter( new TextFormatter<>(filter));
 
             Label muteIncome = (Label) scene.lookup("#incomCall");
             muteIncome.setText(localizationManager.get("settingsIncomeMute"));
@@ -87,6 +106,7 @@ public class SettingsWindow {
             vlcPort.setText(localizationManager.get("settingsVlcPorts"));
             TextField vlcPortInput = (TextField) scene.lookup("#vlcportInput");
             vlcPortInput.setEditable(true);
+            vlcPortInput.setTextFormatter( new TextFormatter<>(filter));
             vlcPortInput.setText(settingManager.get("Vlc-port"));
 
             Label vlcPass = (Label) scene.lookup("#vlcPass");
@@ -94,6 +114,42 @@ public class SettingsWindow {
             TextField vlcPassInput = (TextField) scene.lookup("#vlcpassInput");
             vlcPassInput.setEditable(true);
             vlcPassInput.setText(settingManager.get("Vlc-pass"));
+
+            Label notificationFontSize = (Label) scene.lookup("#NotificationFontSize");
+            notificationFontSize.setText(localizationManager.get("NotificationFontSize"));
+            TextField fontSizeField = (TextField) scene.lookup("#fontSizeField");
+            fontSizeField.setEditable(true);
+            fontSizeField.setText(settingManager.get("NotificationFontSize"));
+            fontSizeField.setTextFormatter( ( new TextFormatter<>(filter)));
+
+            ((Label) scene.lookup("#notificationHeight")).setText(localizationManager.get("notificationHeight"));
+            ((Label) scene.lookup("#notificationWidth")).setText(localizationManager.get("notificationWidth"));
+            TextField heightField = (TextField) scene.lookup("#HeightField");
+            heightField.setEditable(true);
+            heightField.setText(settingManager.get("notification-height"));
+            heightField.setTextFormatter( ( new TextFormatter<>(filter)));
+            TextField widthField = (TextField) scene.lookup("#NotificationField");
+            widthField.setEditable(true);
+            widthField.setText(settingManager.get("notification-width"));
+            widthField.setTextFormatter( ( new TextFormatter<>(filter)));
+            CheckBox heightAuto = (CheckBox) scene.lookup("#heightAuto");
+            heightAuto.setSelected(settingManager.getBool("notification-height-auto",true));
+            heightAuto.setTooltip(new Tooltip(localizationManager.get("heigh-auto-tooltip")));
+            CheckBox widthAuto = (CheckBox) scene.lookup("#widthAuto");
+            widthAuto.setSelected(settingManager.getBool("notification-width-auto",true));
+            widthAuto.setTooltip(new Tooltip(localizationManager.get("width-auto-tooltip")));
+
+
+            Label notifScreen = (Label) scene.lookup("#notificationScreen");
+            notifScreen.setText(localizationManager.get("notificationScreen"));
+            ComboBox<String> screenBox = (ComboBox) scene.lookup("#screenBox");
+            Set<String> screens = new HashSet<>();
+            screens.add("primary");
+            ObservableList<Screen> screenObservableList = Screen.getScreens();
+            IntStream.range(0, screenObservableList.size()).forEach(i -> screens.add(String.valueOf(i+1)));
+            screenBox.setItems(FXCollections.observableArrayList(screens));
+
+
             Label lang = (Label) scene.lookup("#lang");
             lang.setText(localizationManager.get("settingsLang"));
             ComboBox<String> langs = (ComboBox) scene.lookup("#langBox");
@@ -115,6 +171,15 @@ public class SettingsWindow {
                 settingManager.saveValue("Call-Notif-time",callNotifTimeInput.getText());
                 settingManager.saveValue("Notif-time",notifTimeInput.getText());
                 settingManager.saveValue("TCP-port",mainPortInput.getText());
+                settingManager.saveValue("NotificationFontSize",fontSizeField.getText());
+                settingManager.saveValue("notification-width",widthField.getText());
+                settingManager.saveValue("notification-height",heightField.getText());
+                settingManager.saveValue("notification-width-auto",widthAuto.isSelected() ? "true" : "false");
+                settingManager.saveValue("notification-height-auto",heightAuto.isSelected() ? "true" : "false");
+                String screen = screenBox.getValue();
+                if(screen != null) {
+                    settingManager.saveValue("notification-screen",screen);
+                }
             });
             stage.setOnCloseRequest(event -> setOpened(false));
             stage.setScene(scene);

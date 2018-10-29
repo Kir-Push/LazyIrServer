@@ -9,7 +9,7 @@
     <version>1.0</version>
     <packaging>jar</packaging>
     <properties>
-        <jdk.version>10</jdk.version>
+        <jdk.version>11</jdk.version>
     </properties>
     <name>LazyIrServer</name>
 

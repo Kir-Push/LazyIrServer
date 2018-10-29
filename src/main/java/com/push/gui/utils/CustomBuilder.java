@@ -86,7 +86,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
     private Rectangle2D determineScreen() {
         Rectangle2D bounds = Screen.getPrimary().getBounds();
         String value = settingManager.get("notification-screen");
-        if(value != null) {
+        if(value != null && !value.equalsIgnoreCase("primary")) {
             int screenNum = Integer.parseInt(value); // todo add in config this key, and in setting window add selection to screen
             Screen screen = Screen.getScreens().get(screenNum);
             if (screen != null && !bounds.intersects(screen.getBounds())) {

@@ -7,27 +7,37 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="466.0" prefWidth="478.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
+<AnchorPane prefHeight="466.0" prefWidth="478.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
    <children>
-      <Label id="mainPort" layoutX="51.0" layoutY="22.0" prefHeight="20.0" prefWidth="115.0" text="Tcp &amp; Udp port" />
-      <TextField id="mainPortInput" layoutX="258.0" layoutY="19.0" prefHeight="26.0" prefWidth="84.0" />
-      <Label id="notifTime" layoutX="51.0" layoutY="60.0" prefHeight="20.0" prefWidth="151.0" text="Notification show time" />
-      <TextField id="notifTimeInput" layoutX="258.0" layoutY="57.0" prefHeight="26.0" prefWidth="84.0" />
-      <Label id="callnotifTime" layoutX="51.0" layoutY="93.0" prefHeight="20.0" prefWidth="175.0" text="Call notification show time" />
-      <TextField id="callnotifTimeInput" layoutX="258.0" layoutY="90.0" prefHeight="26.0" prefWidth="84.0" />
-      <Label id="maxnotifs" layoutX="51.0" layoutY="126.0" prefHeight="20.0" prefWidth="175.0" text="Max notif's on screen" />
-      <TextField id="maxnotifsInput" layoutX="258.0" layoutY="123.0" prefHeight="26.0" prefWidth="84.0" />
-      <Label id="incomCall" layoutX="51.0" layoutY="161.0" prefHeight="20.0" prefWidth="175.0" text="Mute when incoming call" />
-      <Label id="muteOutCall" layoutX="51.0" layoutY="190.0" prefHeight="20.0" prefWidth="175.0" text="Mute when outgoing call" />
-      <CheckBox id="incomingCallcheck" layoutX="288.0" layoutY="162.0" mnemonicParsing="false" />
-      <CheckBox id="outgoingCallcheck" layoutX="288.0" layoutY="191.0" mnemonicParsing="false" />
-      <Label id="vlcPort" layoutX="51.0" layoutY="233.0" prefHeight="20.0" prefWidth="151.0" text="vlc Port (win only)" />
-      <TextField id="vlcportInput" layoutX="258.0" layoutY="230.0" prefHeight="26.0" prefWidth="84.0" />
-      <Label id="vlcPass" layoutX="51.0" layoutY="281.0" prefHeight="20.0" prefWidth="151.0" text="vlc Pass (win only)" />
-      <TextField id="vlcpassInput" layoutX="258.0" layoutY="278.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="mainPort" layoutX="19.0" layoutY="8.0" prefHeight="20.0" prefWidth="115.0" text="Tcp &amp; Udp port" />
+      <TextField id="mainPortInput" layoutX="197.0" layoutY="8.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="notifTime" layoutX="19.0" layoutY="41.0" prefHeight="20.0" prefWidth="151.0" text="Notification show time" />
+      <TextField id="notifTimeInput" layoutX="197.0" layoutY="41.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="callnotifTime" layoutX="19.0" layoutY="79.0" prefHeight="20.0" prefWidth="175.0" text="Call notification show time" />
+      <TextField id="callnotifTimeInput" layoutX="197.0" layoutY="79.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="maxnotifs" layoutX="19.0" layoutY="112.0" prefHeight="20.0" prefWidth="175.0" text="Max notif's on screen" />
+      <TextField id="maxnotifsInput" layoutX="197.0" layoutY="112.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="incomCall" layoutX="19.0" layoutY="151.0" prefHeight="20.0" prefWidth="175.0" text="Mute when incoming call" />
+      <Label id="muteOutCall" layoutX="19.0" layoutY="180.0" prefHeight="20.0" prefWidth="175.0" text="Mute when outgoing call" />
+      <CheckBox id="incomingCallcheck" layoutX="230.0" layoutY="155.0" mnemonicParsing="false" />
+      <CheckBox id="outgoingCallcheck" layoutX="230.0" layoutY="184.0" mnemonicParsing="false" />
+      <Label id="vlcPort" layoutX="19.0" layoutY="209.0" prefHeight="20.0" prefWidth="151.0" text="vlc Port (win only)" />
+      <TextField id="vlcportInput" layoutX="197.0" layoutY="209.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="vlcPass" layoutX="19.0" layoutY="245.0" prefHeight="20.0" prefWidth="151.0" text="vlc Pass (win only)" />
+      <TextField id="vlcpassInput" layoutX="197.0" layoutY="245.0" prefHeight="26.0" prefWidth="84.0" />
       <Button id="save" layoutX="368.0" layoutY="426.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="96.0" text="Save &amp; Exit" />
-      <Label layoutX="19.0" layoutY="430.0" prefHeight="18.0" prefWidth="239.0" text="You need restart app after changes" />
-      <Label id="lang" layoutX="51.0" layoutY="331.0" prefHeight="20.0" prefWidth="151.0" text="language" />
-      <ComboBox id="langBox" layoutX="258.0" layoutY="328.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label layoutX="111.0" layoutY="443.0" prefHeight="18.0" prefWidth="239.0" text="You need restart app after changes" />
+      <Label id="lang" layoutX="294.0" layoutY="11.0" prefHeight="20.0" prefWidth="74.0" text="language" />
+      <ComboBox id="langBox" layoutX="374.0" layoutY="8.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="notificationScreen" layoutX="19.0" layoutY="286.0" text="notification-screen" />
+      <ComboBox id="screenBox" layoutX="197.0" layoutY="281.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="NotificationFontSize" layoutX="20.0" layoutY="322.0" text="Notification Font Size" />
+      <TextField id="fontSizeField" layoutX="196.0" layoutY="317.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="notificationHeight" layoutX="20.0" layoutY="355.0" text="Notification height" />
+      <TextField id="HeightField" layoutX="196.0" layoutY="350.0" prefHeight="26.0" prefWidth="84.0" />
+      <Label id="notificationWidth" layoutX="19.0" layoutY="390.0" text="Notification width" />
+      <TextField id="NotificationField" layoutX="195.0" layoutY="385.0" prefHeight="26.0" prefWidth="84.0" />
+      <CheckBox id="heightAuto" layoutX="161.0" layoutY="354.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="4.0" />
+      <CheckBox id="widthAuto" layoutX="161.0" layoutY="389.0" mnemonicParsing="false" />
    </children>
 </AnchorPane>
