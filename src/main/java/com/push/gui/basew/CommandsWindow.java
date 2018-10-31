@@ -49,8 +49,9 @@ public class CommandsWindow {
 
     public void showWindow(String id){
         try {
-            if(isOpened())
+            if(isOpened()) {
                 return;
+            }
             setUserId(id);
             setOpened(true);
 
@@ -145,7 +146,10 @@ public class CommandsWindow {
             }
             if(newValue.equals(" ") || newValue.equals("")){
                 items.remove(row);
+                tempDeleteList.add(new Command(cge.getProducer(), cge.getDevice(), oldValue, cge.getCmd(),
+                        cge.getOwnerId(), cge.getType()));
                 tableView.refresh();
+
             }
             else if(oldValue.equals(" ") && (row == table.getItems().size()-1)) {
                 cge.setCommandName(newValue);

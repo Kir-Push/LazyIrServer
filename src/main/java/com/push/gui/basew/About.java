@@ -38,7 +38,7 @@ public class About {
             imageView.setImage(guiUtils.getImage("information",128,128));
 
             Label appName =(Label) scene.lookup("#appName");
-            appName.setText("LazyDroid 1.0");
+            appName.setText("LazyIr 1.0");
 
             Label credits = (Label) scene.lookup("#credits");
             String creditsText = localizationMng.get("aboutCredits");
