@@ -8,7 +8,6 @@ import com.theme.WindowTheme;
 import lombok.Data;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -16,53 +15,37 @@ import java.awt.event.ActionListener;
 public class CustomNotification extends BorderLayoutNotification {
     private Font titleFont;
     private Font textFont;
+    private Font buttonFont;
     private GuiUtils guiUtils;
     private SettingManager settingManager;
-    private JLabel iconlbl;
-    private JTextArea textlbl;
-    private JTextArea titlelbl;
-    private JTextArea deviceLbl;
-    private JLabel imglbl;
+    private JLabel iconlbl = new JLabel();;
+    private JTextArea textlbl = new JTextArea();
+    private JTextArea titlelbl = new JTextArea();
+    private JTextArea deviceLbl = new JTextArea();
+    private JLabel imglbl = new JLabel();
+    private Insets zeroInset = new Insets(0,0,0,0);
 
-    private JPanel btnpanel;
-    private JPanel textpanel;
-    private JButton mbutton;
-    private JButton mbutton2;
+    private JPanel btnpanel = new JPanel(new BorderLayout(0,10));;
+    private JPanel textpanel = new JPanel( new BorderLayout());;
+    private JButton mbutton = new JButton();
+    private JButton mbutton2 = new JButton();
     private TextTheme mtheme;
-    private JPanel rightpanel;
+    private JPanel rightpanel = new JPanel(new BorderLayout(5,0));
 
     public CustomNotification(GuiUtils guiUtils, SettingManager settingManager) {
         super();
         this.settingManager = settingManager;
         this.guiUtils = guiUtils;
-
-        String titleFontSize = settingManager.get("NotificationFontSize");
-        int size = 12;
-        if(titleFontSize != null){
-            size = Integer.parseInt(titleFontSize);
-        }
-        titleFont = new Font("Arial",Font.BOLD,size);
-        textFont = new Font("Arial",Font.PLAIN,size);
-
-        iconlbl = new JLabel();
-        textlbl = new JTextArea();
-        titlelbl = new JTextArea();
-        deviceLbl = new JTextArea();
-        BorderLayout borderLayout = new BorderLayout();
-        borderLayout.setHgap(0);
-        borderLayout.setVgap(10);
-        textpanel = new JPanel(borderLayout);
-        imglbl = new JLabel();
-        mbutton = new JButton();
-        mbutton2 = new JButton();
+        int titleFontSize = settingManager.getInt("NotificationFontSize",12);
+        titleFont = new Font("Poor Story Regular",Font.PLAIN,titleFontSize + 4);
+        textFont = new Font("Roboto",Font.PLAIN,titleFontSize);
+        buttonFont = new Font("Poor Story Regular",Font.PLAIN,titleFontSize);
         mbutton2.setBorder(null);
         mbutton.setBorder(null);
-        rightpanel = new JPanel(new BorderLayout(5,0));
-        btnpanel = new JPanel(new BorderLayout(0,10));
-        JPanel jPanel = new JPanel(new BorderLayout());
-        jPanel.add(btnpanel,BorderLayout.SOUTH);
+        JPanel panelPad = new JPanel(new BorderLayout());
+        panelPad.add(btnpanel,BorderLayout.SOUTH);
         rightpanel.add(imglbl,BorderLayout.WEST);
-        rightpanel.add(jPanel,BorderLayout.EAST);
+        rightpanel.add(panelPad,BorderLayout.EAST);
         textlbl.setLineWrap(true);
         textlbl.setWrapStyleWord(true);
         titlelbl.setLineWrap(true);
@@ -73,7 +56,6 @@ public class CustomNotification extends BorderLayoutNotification {
         textpanel.add(titlelbl,BorderLayout.NORTH);
         textpanel.add(textlbl,BorderLayout.CENTER);
         textpanel.add(deviceLbl,BorderLayout.SOUTH);
-
         this.addComponent(iconlbl, BorderLayout.WEST);
         this.addComponent(textpanel,BorderLayout.CENTER);
         this.addComponent(rightpanel,BorderLayout.EAST);
@@ -82,10 +64,10 @@ public class CustomNotification extends BorderLayoutNotification {
     public void setTextTemeFont(TextTheme theme) {
         titlelbl.setFont(titleFont);
         textlbl.setFont(textFont);
-        mbutton.setFont(new Font("Arial",Font.ITALIC,12));
-        mbutton.setMargin(new Insets(0,0,0,0));
-        mbutton2.setMargin(new Insets(0,0,0,0));
-        mbutton2.setFont(new Font("Arial",Font.ITALIC,12));
+        mbutton.setFont(buttonFont);
+        mbutton.setMargin(zeroInset);
+        mbutton2.setMargin(zeroInset);
+        mbutton2.setFont(buttonFont);
         mtheme = theme;
     }
 
@@ -97,25 +79,21 @@ public class CustomNotification extends BorderLayoutNotification {
     }
 
     public void setTextThemeCallFont(TextTheme theme){
-        titlelbl.setFont(titleFont);
-        textlbl.setFont(textFont);
-        mbutton.setFont(theme.title);
-        mbutton2.setFont(theme.title);
+        setTextTemeFont(theme);
     }
 
 
-    public void setTextThemeCallColor(){
-        /**
-         * Implement later
-         */
+    public void setTextThemeCallColor(TextTheme theme){
+        setTextThemeColor(theme);
     }
 
     public void setTextThemecallMissedFont(TextTheme theme) {
-        titlelbl.setFont(titleFont);
-        textlbl.setFont(textFont);
-        mbutton.setFont(theme.title);
+        setTextTemeFont(theme);
     }
 
+    public void setTextThemeCallMiseedColor(TextTheme theme){
+        setTextThemeColor(theme);
+    }
 
 
     public void setImage(String base64,int width,int heigh){
@@ -147,7 +125,6 @@ public class CustomNotification extends BorderLayoutNotification {
     public void setFirstButton(String text,ActionListener action){
         mbutton.setText(text);
         mbutton.addActionListener(action);
-        mbutton.setToolTipText("aga");
         btnpanel.add(mbutton,BorderLayout.CENTER);
     }
 
@@ -176,16 +153,11 @@ public class CustomNotification extends BorderLayoutNotification {
     @Override
     public void setWindowTheme(WindowTheme theme) {
         super.setWindowTheme(theme);
-
         if (mtheme != null) {
             // the WindowNotification is going to automatically give all our labels with the set foreground color, but
             // we want to change this to the title color of the font
             iconlbl.setForeground(mtheme.titleColor);
         }
-    }
-
-    public void setTextThemeCallMiseedColor(){
-        mbutton.setForeground(Color.GREEN);
     }
 
 }

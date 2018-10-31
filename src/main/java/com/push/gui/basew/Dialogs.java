@@ -40,13 +40,16 @@ public class Dialogs {
 
         TextArea textArea = (TextArea) scene.lookup("#messageText");
         textArea.setText(notification.getText());
-        if(notification.getPicture() != null) {
+            String icon = notification.getIcon();
+            if(icon != null) {
             ImageView imageView = (ImageView) scene.lookup("#messageImg");
-            imageView.setImage(guiUtils.pictureFromBase64(notification.getIcon()));
+            imageView.setImage(guiUtils.pictureFromBase64(icon));
         }
+        textArea.setWrapText(true);
+        textArea.setEditable(false);
 
         TextArea answerText = (TextArea) scene.lookup("#answerText");
-
+        answerText.setWrapText(true);
         String typName = notification.getPack() + ":" + notification.getTitle();
         String name = notification.getTitle();
 

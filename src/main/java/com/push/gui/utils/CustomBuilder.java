@@ -17,9 +17,12 @@ import com.theme.WindowTheme;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
+import java.io.IOException;
 
+@Slf4j
 public class CustomBuilder implements NotificationBuilder<CustomNotification> {
 
     private GuiUtils guiUtils;
@@ -36,6 +39,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         this.javaFXTrayIconSample = backgroundService.getJavaFXTrayIconSample();
         this.settingManager = backgroundService.getSettingManager();
     }
+
 
     @Override
     public CustomNotification buildNotification(ThemePackage pack, Object[] args) {
@@ -73,9 +77,9 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         windowTheme.height = calculatedHeight;
         notification.setWindowTheme(windowTheme);
         if(notificationType.equals(NotificationTypes.INCOMING)){
-            notification.setTextThemeCallColor();
+            notification.setTextThemeCallColor(textTheme);
         }else if(notificationType.equals(NotificationTypes.MISSED_IN)){
-            notification.setTextThemeCallMiseedColor();
+            notification.setTextThemeCallMiseedColor(textTheme);
         }else{
             notification.setTextThemeColor(textTheme);
         }
@@ -87,7 +91,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
         Rectangle2D bounds = Screen.getPrimary().getBounds();
         String value = settingManager.get("notification-screen");
         if(value != null && !value.equalsIgnoreCase("null") && !value.equalsIgnoreCase("primary")) {
-            int screenNum = Integer.parseInt(value); // todo add in config this key, and in setting window add selection to screen
+            int screenNum = Integer.parseInt(value);
             Screen screen = Screen.getScreens().get(screenNum);
             if (screen != null && !bounds.intersects(screen.getBounds())) {
                 return screen.getBounds();
@@ -122,7 +126,7 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
 
     private void setPicture(CustomNotification notification, String picture) {
         if(picture != null && picture.length() > 0)
-            notification.setImage(picture,150,150);
+            notification.setImage(picture,100,100);
     }
 
     private void configNotification(CustomNotification notification, NotificationTypes type, String icon, NotificationDevice notificationDevice, Object... args) {
@@ -173,10 +177,6 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
                 notification.setFirstButton(localizationManager.get("DismissAll"),action -> {
                     notification.hide();
                     Platform.runLater(()-> guiCommunicator.dissMissAllMessages(id, (ReminderDto) args[3]));
-                });
-                notification.setSecondButton(localizationManager.get("ShowAll"),action ->{
-                    notification.hide();
-                    Platform.runLater(()-> javaFXTrayIconSample.showStage());
                 });
                 notification.setTextTemeFont(textTheme);
                 break;

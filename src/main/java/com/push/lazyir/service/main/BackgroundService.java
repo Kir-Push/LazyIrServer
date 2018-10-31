@@ -13,13 +13,17 @@ import com.push.lazyir.utils.ExtScheduledThreadPoolExecutor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import java.awt.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.*;
 
+@Slf4j
 public class BackgroundService {
 
     @Getter
@@ -68,6 +72,19 @@ public class BackgroundService {
         settingManager.init(); // must always be called before localization manager,because localization manager depends on setting manager's
         localizationManager.init();
         localizationManager.changeLanguage(settingManager.get("LANG"));
+        loadFonts();
+    }
+
+    private void loadFonts() {
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont( Font.createFont(Font.PLAIN,   this.getClass().getClassLoader().getResourceAsStream("fonts/PoorStory-Regular.ttf")));
+            ge.registerFont(Font.createFont(Font.PLAIN, this.getClass().getClassLoader().getResourceAsStream("fonts/Roboto-Bold.ttf")));
+            ge.registerFont( Font.createFont(Font.PLAIN,   this.getClass().getClassLoader().getResourceAsStream("fonts/Roboto-Regular.ttf")));
+            ge.registerFont( Font.createFont(Font.PLAIN, this.getClass().getClassLoader().getResourceAsStream("fonts/Roboto-Italic.ttf")));
+        } catch (IOException |FontFormatException e) {
+            log.error("error in loadFonts",e);
+        }
     }
 
     public void configServices() {

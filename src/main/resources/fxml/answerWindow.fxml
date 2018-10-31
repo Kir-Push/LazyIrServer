@@ -8,20 +8,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="272.0" prefWidth="502.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
+<AnchorPane prefHeight="209.0" prefWidth="394.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.push.gui.controllers.DialogController">
    <children>
       <VBox layoutY="2.0" prefHeight="282.0" prefWidth="502.0" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox prefHeight="146.0" prefWidth="600.0">
                <children>
-                  <ImageView id="messageImg" fitHeight="105.0" fitWidth="124.0" pickOnBounds="true" preserveRatio="true" />
-                  <TextArea id="messageText" editable="false" prefHeight="167.0" prefWidth="605.0" />
+                  <ImageView id="messageImg" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                  <TextArea id="messageText" editable="false" prefHeight="123.0" prefWidth="402.0" />
                </children>
             </HBox>
-            <TextArea id="answerText" prefHeight="117.0" prefWidth="502.0" />
-            <ButtonBar id="buttonBar" prefHeight="26.0" prefWidth="502.0">
+            <TextArea id="answerText" prefHeight="164.0" prefWidth="394.0" />
+            <ButtonBar id="buttonBar" prefHeight="9.0" prefWidth="394.0">
               <buttons>
-                <Button id="answerBtn" mnemonicParsing="false" text="Answer" />
+                <Button id="answerBtn" mnemonicParsing="false" prefHeight="15.0" text="Answer" />
               </buttons>
             </ButtonBar>
          </children>

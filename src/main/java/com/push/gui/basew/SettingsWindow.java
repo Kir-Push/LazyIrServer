@@ -24,13 +24,11 @@ public class SettingsWindow {
     private boolean opened;
     private SettingManager settingManager;
     private LocalizationManager localizationManager;
-    UnaryOperator<TextFormatter.Change> filter = change -> {
+    private UnaryOperator<TextFormatter.Change> filter = change -> {
         String text = change.getText();
-
         if (text.matches("[0-9]*")) {
             return change;
         }
-
         return null;
     };
 
