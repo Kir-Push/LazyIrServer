@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.sound.sampled.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+
 @Slf4j
 public class CallModule extends Module {
     public enum api{
@@ -53,8 +54,10 @@ public class CallModule extends Module {
     public void execute(NetworkPackage np) {
         CallModuleDto dto = (CallModuleDto) np.getData();
         api command = api.valueOf(dto.getCommand());
-        boolean muteOutgoingCall = Boolean.parseBoolean(settingManager.get("muteWhenOutcomingCall"));
-        boolean muteIncomingCall = Boolean.parseBoolean(settingManager.get("muteWhenCall"));
+        boolean muteOutgoingCall = settingManager.getBool("muteWhenOutcomingCall",false);
+        boolean muteIncomingCall = settingManager.getBool("muteWhenCall",false);
+        boolean mediaPauseIncomingCall = settingManager.getBool("mediaPauseIncomingCall",false);
+        boolean mediaPauseOutcomingCall = settingManager.getBool("mediaPauseOtcomingCall",false);
         switch (command) {
             case CALL:
                 inCall(muteOutgoingCall, muteIncomingCall, dto);
@@ -84,7 +87,7 @@ public class CallModule extends Module {
             String callType = dto.getCallType();
             if((callType.equalsIgnoreCase(NotificationTypes.OUTGOING.name()) && muteOutgoingCall) ||
                     (callType.equalsIgnoreCase(NotificationTypes.INCOMING.name()) && muteIncomingCall) ||
-                    callType.equalsIgnoreCase(NotificationTypes.MISSED_IN.name())){
+                    callType.equalsIgnoreCase(NotificationTypes.MISSED_IN.name()) && muteIncomingCall){
                 unMute();
             }
             guiCommunicator.callNotifEnd(dto);
@@ -124,6 +127,14 @@ public class CallModule extends Module {
     private void mute() {
         muteUnmute(true);
         setWasmuted(true);
+    }
+
+    private void hitMediaPauseButton(){
+        //todo windows
+    }
+
+    private void hitMediaPlayButton(){
+        //todo windows
     }
 
     @Override
@@ -199,7 +210,7 @@ public class CallModule extends Module {
     }
 
     public void rejectOutgoingCall() {
-        sendCommand(api.DECLINE_CALL); // ??
+        rejectCall();
     }
 
     public void recall(String number) {

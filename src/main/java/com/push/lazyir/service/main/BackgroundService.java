@@ -18,9 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
 import java.awt.*;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.*;
 
 @Slf4j
@@ -28,6 +30,8 @@ public class BackgroundService {
 
     @Getter
     private final ConcurrentHashMap<String, Device> connectedDevices = new ConcurrentHashMap<>();
+    @Getter
+    private final Set<InetAddress> neighbours = ConcurrentHashMap.newKeySet();
     @Getter
     private final ConcurrentHashMap<Long, Process> startedProcesses = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newCachedThreadPool();

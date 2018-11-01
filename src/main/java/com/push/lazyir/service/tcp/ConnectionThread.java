@@ -81,6 +81,7 @@ public class ConnectionThread implements Runnable {
         } catch (IOException e) {
             log.error("error in configureSSLSocket", e);
             clearResources();
+            removeFromNeighbours();
             return;
         }
         try (BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -190,6 +191,7 @@ public class ConnectionThread implements Runnable {
         Device device = new Device(deviceId, np.getName(), connection.getInetAddress(), this, dto.getModuleSettings(), moduleFactory);
         device.enableModules();
         backgroundService.getConnectedDevices().put(deviceId, device);
+        removeFromNeighbours();
 
         String pairData = dto.getData();
         String savedPairData = backgroundService.getSettingManager().get(deviceId);
@@ -297,7 +299,6 @@ public class ConnectionThread implements Runnable {
             }
             clearResources();
             backgroundService.getConnectedDevices().remove(deviceId);
-            guiCommunicator.deviceLost(deviceId);
             if(!deviceId.equals("") && device != null) {
                 ConcurrentHashMap<String, Module> enabledModules = device.getEnabledModules();
                 if(enabledModules != null) {
@@ -314,6 +315,8 @@ public class ConnectionThread implements Runnable {
             log.error("error in closeConnection id: " + deviceId,e);
         }
         finally {
+            removeFromNeighbours();
+            guiCommunicator.deviceLost(deviceId);
             if(log.isDebugEnabled()) {
                 log.debug(String.format("%s stopped connection", deviceId));
             }
@@ -334,6 +337,12 @@ public class ConnectionThread implements Runnable {
             }
         }catch (IOException e){
             log.error("error in clearResources",e);
+        }
+    }
+
+    private void removeFromNeighbours(){
+        if(connection != null) {
+            backgroundService.getNeighbours().remove(connection.getInetAddress());
         }
     }
 }

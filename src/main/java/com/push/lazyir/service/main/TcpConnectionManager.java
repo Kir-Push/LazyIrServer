@@ -135,8 +135,14 @@ public class TcpConnectionManager {
             while (isServerOn()) {
                 try {
                     Socket socket = myServerSocket.accept();
-                    ConnectionThread connection = new ConnectionThread(socket, backgroundService, backgroundService.getSettingManager(), guiCommunicator, messageFactory, moduleFactory,pairService);
-                    backgroundService.submitNewTask((connection));
+                    InetAddress inetAddress = socket.getInetAddress();
+                    if(!backgroundService.getNeighbours().contains(inetAddress)) {
+                        backgroundService.getNeighbours().add(inetAddress);
+                        ConnectionThread connection = new ConnectionThread(socket, backgroundService, backgroundService.getSettingManager(), guiCommunicator, messageFactory, moduleFactory, pairService);
+                        backgroundService.submitNewTask((connection));
+                    }else{
+                        socket.close();
+                    }
                 } catch (IOException e) {
                     log.error("exception in accept connection - ignoring", e);
                     if (myServerSocket.isClosed()) {

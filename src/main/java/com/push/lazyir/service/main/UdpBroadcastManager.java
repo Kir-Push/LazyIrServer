@@ -66,7 +66,7 @@ public class UdpBroadcastManager  {
                     }
                 } catch (Exception e) {
                     log.error("udpReceive exception",e);
-                    guiCommunicator.iamCrushedUdpListen();
+                    throw new RuntimeException("Something goes wrong in udpBroadcastListener",e);
                 } finally {
                     log.info("stopping udp listener");
                     stopUdpListener();
@@ -92,7 +92,7 @@ public class UdpBroadcastManager  {
             String receivedId = np.getId();
             String myId = getMyId();
             if (np.getType().equals(api.BROADCAST_INTRODUCE.name()) && !receivedId.equals(myId)
-                    && !backgroundService.getConnectedDevices().containsKey(receivedId)) {
+                    && !backgroundService.getConnectedDevices().containsKey(receivedId) && !backgroundService.getNeighbours().contains(packet.getAddress())) {
                 sendUdp(packet.getAddress(), port);
             }
         }catch (JsonSyntaxException e){
@@ -100,7 +100,7 @@ public class UdpBroadcastManager  {
         }
     }
 
-    void sendUdp(InetAddress address, int port) {
+    private void sendUdp(InetAddress address, int port) {
         String message = messageFactory.createMessage(api.INTRODUCE.name(), false, null);
         byte[] bytes = message.getBytes();
         DatagramPacket dp = new DatagramPacket(bytes, bytes.length, address, port);
