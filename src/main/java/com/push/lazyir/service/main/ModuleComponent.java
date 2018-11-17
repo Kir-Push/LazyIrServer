@@ -13,6 +13,7 @@ import com.push.lazyir.modules.ping.Ping;
 import com.push.lazyir.modules.reminder.Reminder;
 import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.modules.touch.TouchControl;
+import com.push.lazyir.modules.touch.KeyboardControl;
 import com.push.lazyir.utils.annotations.ModuleScope;
 import dagger.Subcomponent;
 
@@ -33,4 +34,5 @@ public interface ModuleComponent {
     Reminder provideReminder();
     ShareModule provideShareModule();
     TouchControl provideTouchControl();
+    KeyboardControl provideKeyboardControl();
 }

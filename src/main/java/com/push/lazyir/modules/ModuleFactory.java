@@ -27,6 +27,8 @@ import com.push.lazyir.modules.share.ShareModule;
 import com.push.lazyir.modules.share.ShareModuleDto;
 import com.push.lazyir.modules.touch.TouchControl;
 import com.push.lazyir.modules.touch.TouchControlDto;
+import com.push.lazyir.modules.touch.KeyboardControl;
+import com.push.lazyir.modules.touch.KeyboardDto;
 import com.push.lazyir.service.main.ModuleComponent;
 import com.push.lazyir.utils.entity.Pair;
 import lombok.Synchronized;
@@ -90,6 +92,7 @@ public class ModuleFactory {
             registeredModules.put("Reminder",new Pair<>(Reminder.class, ReminderDto.class));
             registeredModules.put("Memory",new Pair<>(Memory.class, MemoryDto.class));
             registeredModules.put("Ping",new Pair<>(Ping.class, PingDto.class));
+            registeredModules.put("KeyboardControl",new Pair<>(KeyboardControl.class, KeyboardDto.class));
         }
     }
 

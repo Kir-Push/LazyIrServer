@@ -146,6 +146,12 @@ public class SettingManager implements Manager {
     }
 
     @Synchronized
+    public String getString(String key,String defaultValue){
+        String property = properties.getProperty(key);
+        return property == null ? defaultValue : property;
+    }
+
+    @Synchronized
     public boolean getBool(String key,boolean defaultValue){
             String property = properties.getProperty(key);
             if(property != null) {

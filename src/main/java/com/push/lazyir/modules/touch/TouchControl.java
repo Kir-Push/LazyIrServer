@@ -12,7 +12,7 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 
 @Slf4j
-public class TouchControl extends Module {
+public class TouchControl extends Touch {
     public enum api{
         MOVE,
         CLICK,
@@ -24,24 +24,12 @@ public class TouchControl extends Module {
         LONGCLICK,
         LONGRELEASE
     }
-    private static Robot robot;
 
     @Inject
     public TouchControl(BackgroundService backgroundService, MessageFactory messageFactory)  {
         super(backgroundService, messageFactory);
-        initRobot();
     }
 
-    @Synchronized
-    private static void initRobot() {
-        try {
-            if(robot == null) {
-                robot = new Robot();
-            }
-        } catch (AWTException e) {
-            log.error("robotCreate",e);
-        }
-    }
 
     @Override
     public void execute(NetworkPackage np) {
@@ -114,19 +102,10 @@ public class TouchControl extends Module {
     private void moveMouse(int x,int y) {
         PointerInfo a = MouseInfo.getPointerInfo();
         Point pt = a.getLocation();
-        int currX = (int) (pt.getX() + x);
-        int currY = (int) (pt.getY() + y);
-        int xDiff = Math.abs(x);
-        int yDiff = Math.abs(y);
-        if(xDiff > 5 || yDiff > 5) {
-            moveSmooth(x,y,(int)pt.getX(),(int)pt.getY());
-        } else {
-            move(currX, currY);
-        }
+        moveSmooth(x,y,(int)pt.getX(),(int)pt.getY());
     }
 
     private void moveSmooth(int x, int y, int ptx, int pty) {
-        //todo
         move(ptx+x,pty+y);
     }
 

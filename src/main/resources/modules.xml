@@ -54,6 +54,12 @@
         <workOnly>true</workOnly>
     </module>
     <module>
+        <name>KeyboardControl</name>
+        <enabled>true</enabled>
+        <ignored>*</ignored>
+        <workOnly>true</workOnly>
+    </module>
+    <module>
         <name>CallModule</name>
         <enabled>true</enabled>
         <ignored>*</ignored>
