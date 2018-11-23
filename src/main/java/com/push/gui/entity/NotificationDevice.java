@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class NotificationDevice {
     private StringProperty text;
@@ -119,5 +121,23 @@ public class NotificationDevice {
 
     public void setOwnerName(String ownerName) {
         this.ownerName.set(ownerName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NotificationDevice that = (NotificationDevice) o;
+        return Objects.equals(text.toString(), that.text.toString()) &&
+                Objects.equals(title.toString(), that.title.toString()) &&
+                Objects.equals(icon.toString(), that.icon.toString()) &&
+                Objects.equals(picture.toString(), that.picture.toString()) &&
+                Objects.equals(ownerId.toString(), that.ownerId.toString()) &&
+                Objects.equals(ownerName.toString(), that.ownerName.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, title, icon, picture, ownerId, ownerName);
     }
 }

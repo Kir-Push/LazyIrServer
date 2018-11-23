@@ -43,14 +43,14 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
 
     @Override
     public CustomNotification buildNotification(ThemePackage pack, Object[] args) {
-        CustomNotification notification = new CustomNotification(guiUtils,settingManager);
-        Rectangle2D bounds = determineScreen();
-        double width = bounds.getWidth();
-        double height = bounds.getHeight();
         NotificationDevice notificationDevice = (NotificationDevice) args[0];
         if(notificationDevice == null) {
             return null;
         }
+        CustomNotification notification = new CustomNotification(guiUtils,settingManager,notificationDevice);
+        Rectangle2D bounds = determineScreen();
+        double width = bounds.getWidth();
+        double height = bounds.getHeight();
 
         String icon = notificationDevice.getIcon();
         String picture = notificationDevice.getPicture();

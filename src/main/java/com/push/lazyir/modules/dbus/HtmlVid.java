@@ -6,10 +6,9 @@ import com.push.lazyir.modules.dbus.websocket.ServerController;
 import java.util.List;
 
 /**
- * stategy for htmlVideo in browser
+ * strategy for htmlVideo in browser
  *  work though websocket
  */
-//todo rewrite corresponding in javascript
 public class HtmlVid implements OsStrategy {
     private SetMultimap<String, String> pausedPlayersBrowser = MultimapBuilder.hashKeys().hashSetValues().build();
     private ServerController serverController;

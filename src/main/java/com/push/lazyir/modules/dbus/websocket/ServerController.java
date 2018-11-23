@@ -1,5 +1,6 @@
 package com.push.lazyir.modules.dbus.websocket;
 
+import com.google.common.collect.ListMultimap;
 import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.modules.dbus.MprisDto;
 import com.push.lazyir.modules.dbus.Player;
@@ -43,15 +44,15 @@ public class ServerController{
                 dbusWebSocketServer = null;
             }
         } catch (IOException | InterruptedException e){
-            log.error("stopServer interrupt AAA",e);
-//            if(Thread.interrupted()){
-//                Thread.currentThread().interrupt();
-//            }
+            log.error("stopServer interrupt",e);
         }
     }
 
     public List<Player> getAll(){
-        return new ArrayList<>( dbusWebSocketServer.getPlayersHashMap().values());
+        ListMultimap<InetSocketAddress, Player> playersHashMap = dbusWebSocketServer.getPlayersHashMap();
+        ArrayList<Player> players = new ArrayList<>(playersHashMap.values());
+        playersHashMap.clear();
+        return players;
     }
 
 

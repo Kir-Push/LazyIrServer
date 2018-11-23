@@ -59,9 +59,10 @@ public class DbusWebSocketServer extends WebSocketServer {
 
 
     private void parseMessage(InetSocketAddress ip,String message) {
-        NetworkPackage np = messageFactory.parseMessage(message); //todo in javascript set command to MprisDto, that gson can desearize
+        NetworkPackage np = messageFactory.parseMessage(message);
         List<Player> players = ((MprisDto)np.getData()).getPlayers();
         if(players != null && !players.isEmpty()) {
+            players.forEach(player -> player.setIp(ip.toString()));
             playersHashMap.putAll(ip,players);
         }
         else {

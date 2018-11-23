@@ -63,8 +63,11 @@ public class Popup {
         }
         // if you have many than maxNotifOnScreen notif on screen remove all oldest
         List<Notification> notifications = manager.getNotifications();
+        if(checkForDuplicates(notifications,notification)){
+            return;
+        }
         if(notifications.size() >= maxNotifOnScreen){
-            for(int i = (maxNotifOnScreen-1);i<notifications.size();i++) {
+            for(int i = 0;i<=notifications.size() - maxNotifOnScreen;i++) {
                 notifications.get(i).removeFromManager();
             }
         }
@@ -87,6 +90,16 @@ public class Popup {
         }
         manager.addNotification(build, time);
 
+    }
+
+    private boolean checkForDuplicates(List<Notification> notifications, NotificationDevice notif) {
+        for (Notification notification : notifications) {
+            NotificationDevice dv = ((CustomNotification)notification).getNotificationDevice();
+            if(dv.equals(notif)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void callEnd(String callerNumber) {

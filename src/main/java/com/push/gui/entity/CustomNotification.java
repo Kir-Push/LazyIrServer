@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 
 @Data
 public class CustomNotification extends BorderLayoutNotification {
+    private NotificationDevice notificationDevice;
     private Font titleFont;
     private Font textFont;
     private Font buttonFont;
@@ -32,8 +33,9 @@ public class CustomNotification extends BorderLayoutNotification {
     private TextTheme mtheme;
     private JPanel rightpanel = new JPanel(new BorderLayout(5,0));
 
-    public CustomNotification(GuiUtils guiUtils, SettingManager settingManager) {
+    public CustomNotification(GuiUtils guiUtils, SettingManager settingManager,NotificationDevice notificationDevice) {
         super();
+        this.notificationDevice = notificationDevice;
         this.settingManager = settingManager;
         this.guiUtils = guiUtils;
         int titleFontSize = settingManager.getInt("NotificationFontSize",12);
@@ -60,6 +62,7 @@ public class CustomNotification extends BorderLayoutNotification {
         this.addComponent(textpanel,BorderLayout.CENTER);
         this.addComponent(rightpanel,BorderLayout.EAST);
     }
+
 
     public void setTextTemeFont(TextTheme theme) {
         titlelbl.setFont(titleFont);
