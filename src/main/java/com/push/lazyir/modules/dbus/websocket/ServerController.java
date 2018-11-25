@@ -38,13 +38,14 @@ public class ServerController{
     @Synchronized
     public void stopServer(){
         try{
-            working = false;
             if(dbusWebSocketServer != null) {
                 dbusWebSocketServer.stop();
-                dbusWebSocketServer = null;
             }
         } catch (IOException | InterruptedException e){
             log.error("stopServer interrupt",e);
+        } finally {
+            dbusWebSocketServer = null;
+            working = false;
         }
     }
 
