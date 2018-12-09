@@ -3,6 +3,9 @@ package com.push.lazyir.modules.dbus;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 import com.push.lazyir.modules.dbus.websocket.ServerController;
+import com.push.lazyir.service.main.BackgroundService;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,12 +81,29 @@ public class HtmlVid implements OsStrategy {
 
     @Override
     public void pauseAll() {
-        serverController.getAll().stream()
-                .filter(pl -> pl.getStatus().equalsIgnoreCase("playing"))
-                .forEach(pl -> {
-                    serverController.sendStatus(pl.getIp(), "pause", pl.getId());
-                    pausedPlayersBrowser.put(pl.getIp(), pl.getId());
-                });
+        new Thread(()->{
+            int count = 10;
+            List<Player> allPlayers = new ArrayList<>();
+            try {
+                serverController.sendGetInfo();
+                Thread.sleep(100);
+                allPlayers = serverController.getAll();
+            while(count > 0 && allPlayers.size() == 0){
+                serverController.sendGetInfo();
+                    Thread.sleep(100);
+                allPlayers = serverController.getAll();
+                count--;
+            }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            allPlayers.stream()
+                    .filter(pl -> pl.getStatus().equalsIgnoreCase("playing"))
+                    .forEach(pl -> {
+                        serverController.sendStatus(pl.getIp(), "pause", pl.getId());
+                        pausedPlayersBrowser.put(pl.getIp(), pl.getId());
+                    });
+        }).start();
     }
 
     @Override
