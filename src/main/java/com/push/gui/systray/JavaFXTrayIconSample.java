@@ -11,6 +11,7 @@ import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.service.main.ServiceComponent;
 import com.push.lazyir.service.managers.settings.LocalizationManager;
 import javafx.application.*;
+import javafx.scene.image.Image;
 import javafx.stage.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,6 +63,9 @@ public class JavaFXTrayIconSample extends Application {
                 log.debug("No system tray support, application exiting.");
                 Platform.exit();
             }
+            // add title image
+            Image titleImage = new Image(JavaFXTrayIconSample.class.getClassLoader().getResource("icons/phone.png").toExternalForm());
+            stage.getIcons().add(titleImage);
             // set up a system tray icon.
             java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
             java.awt.Image image = ImageIO.read(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("icons/phone.png")));

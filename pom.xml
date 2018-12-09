@@ -12,6 +12,12 @@
         <jdk.version>11</jdk.version>
     </properties>
     <name>LazyIrServer</name>
+    <repositories>
+        <repository>
+            <id>projectlombok.org</id>
+            <url>https://projectlombok.org/edge-releases</url>
+        </repository>
+    </repositories>
 
 <!--
 Json
@@ -98,13 +104,18 @@ Style & Refactoring
             <version>26.0-jre</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>org.projectlombok</groupId>-->
+            <!--<artifactId>lombok</artifactId>-->
+            <!--<version>1.18.2</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.2</version>
+            <version>edge-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-
 
         <dependency>
             <groupId>com.google.dagger</groupId>
@@ -120,7 +131,7 @@ Style & Refactoring
 
 
 
-        <dependency>
+       <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
             <version>11</version>

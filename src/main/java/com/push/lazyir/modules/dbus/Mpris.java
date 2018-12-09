@@ -25,6 +25,7 @@ public class Mpris extends Module {
         OPENURI,
         SETPOSITION,
         VOLUME,
+        REPEAT,
         ALLPLAYERS
     }
     private static int callersCount = 0;
@@ -119,6 +120,9 @@ public class Mpris extends Module {
                 break;
             case VOLUME:
                 tempStrategy.setVolume(dto);
+                break;
+            case REPEAT:
+                tempStrategy.loop(dto);
                 break;
             default:
                 break;
