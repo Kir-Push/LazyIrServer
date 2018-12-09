@@ -78,6 +78,7 @@ public class CallModule extends Module {
     }
 
     private void endCall(boolean muteOutgoingCall, boolean muteIncomingCall, CallModuleDto dto) {
+
         if(isCalling()){
             setCalling(false);
             Mpris mpris = backgroundService.getModuleById(device.getId(), Mpris.class);

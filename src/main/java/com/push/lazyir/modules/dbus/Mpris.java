@@ -156,6 +156,8 @@ public class Mpris extends Module {
         callersCount++;
     }
 
+    private static void decrementCallers() {callersCount--;}
+
     public void playAll() {
        playAllSynchronized();
     }
@@ -169,7 +171,7 @@ public class Mpris extends Module {
 
     @Synchronized
     private static void playAllSynchronized(){
-        incrementCallers();
+        decrementCallers();
         if (callersCount > 0)
             return;
         strategy.playAll();
