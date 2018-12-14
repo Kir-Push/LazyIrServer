@@ -54,10 +54,7 @@ public class SftpServerProcessWin implements SftpServerProcess {
     private void fillArgs(){
         args.add("cmd");
         args.add("/c");
-        args.add(programm);
-        args.add(driveLetter);
-        args.add("\\\\sshfs\\" + userName + "@" + ip.getHostAddress() + "!" + port + mountPoint);
-        args.add(pass);
+        args.add(programm + " " + driveLetter + " " + "\"\\\\sshfs\\" + userName + "@" + ip.getHostAddress() + "!" + port + mountPoint + "\"" + " " + pass);
     }
 
     @Override

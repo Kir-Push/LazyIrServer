@@ -90,6 +90,7 @@ public class HtmlVid implements OsStrategy {
                 allPlayers = serverController.getAll();
             while(count > 0 && allPlayers.size() == 0){
                 serverController.sendGetInfo();
+
                     Thread.sleep(100);
                 allPlayers = serverController.getAll();
                 count--;
