@@ -106,28 +106,28 @@ public class ApiController {
             PhoneDevice deviceById = getDeviceById(id);
             if(deviceById != null && crt != null) {
                 deviceById.setCpuLoad(crt.getCpuLoad());
-                deviceById.setFreeRam(crt.getFreeRam() / 1024 / 1024);
-                deviceById.setTotalRam(crt.getFreeRamAll() / 1024 / 1024);
+                deviceById.setFreeRam(crt.getFreeRam() / 1048576);
+                deviceById.setTotalRam(crt.getFreeRamAll() / 1048576);
                 deviceById.setLowMemory(crt.isLowMem());
                 deviceById.setTemp(crt.getTempC());
                 mainController.setCpu(crt.getCpuLoad());
-                mainController.setRam(crt.getFreeRam() / 1024 / 1024, crt.getFreeRamAll() / 1024 / 1024, crt.isLowMem());
+                mainController.setRam(crt.getFreeRam() / 1048576, crt.getFreeRamAll() / 1048576, crt.isLowMem());
             }
         });
     }
 
     public void setDeviceMemory(MemoryEntity entity,String id){
         List<MemPair> extMem = entity.getExtMem();
-        long mainMem = entity.getMainMem() / 1024 / 1024; // to mb
-        long mainMemFree = entity.getMainMemFree() / 1024 / 1024;
+        long mainMem = entity.getMainMem() / 1048576; // to mb
+        long mainMemFree = entity.getMainMemFree() / 1048576;
         long extTotal = 0;
         long extFree = 0;
         for (MemPair memPair : extMem) {
             extTotal += memPair.getAllMem();
             extFree += memPair.getFreeMem();
         }
-        long finalExtFree = extFree / 1024 / 1024; // effectively final hack
-        long finalExtTotal = extTotal / 1024 / 1024;
+        long finalExtFree = extFree / 1048576; // effectively final hack
+        long finalExtTotal = extTotal / 1048576;
         Platform.runLater(()->{
             PhoneDevice deviceById = getDeviceById(id);
             deviceById.setFreeSpace(mainMemFree);
