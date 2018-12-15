@@ -8,6 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class KeyboardDto extends Dto {
     private String command;
+    private String id;
     private char keycode;
     private String symbol;
 

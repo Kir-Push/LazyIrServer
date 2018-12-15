@@ -7,7 +7,6 @@ import com.push.lazyir.service.managers.settings.SettingManager;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
-import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 import static com.push.lazyir.modules.touch.KeyboardControl.api.CHANGE_LANG;
@@ -38,16 +37,23 @@ public class KeyboardControl extends Touch {
 
     @Synchronized
     private static void determineWhatToDo(KeyboardDto dto, KeyboardControl keyboardControl) {
-        api command = api.valueOf(dto.getCommand());
+       api command = api.valueOf(dto.getCommand());
         switch (command){
             case PRESS:
-                keyboardControl.pressKeycode(dto.getKeycode());
+                if(Character.isUpperCase(dto.getKeycode())){
+                    keyboardControl.pressKeycodeUp(dto.getKeycode());
+                }else {
+                    keyboardControl.pressKeycode(dto.getKeycode());
+                }
                 break;
             case KEYS_UP:
                 keyboardControl.pressKeycodeUp(dto.getKeycode());
                 break;
             case CHANGE_LANG:
-                keyboardControl.pressSpecialKey(CHANGE_LANG.name());
+                keyboardControl.changeLand(CHANGE_LANG.name());
+                break;
+            case SPECIAL_KEYS:
+                keyboardControl.pushSpecialKey(dto.getSymbol());
                 break;
             default:
                 break;
@@ -55,7 +61,43 @@ public class KeyboardControl extends Touch {
 
     }
 
-    private void pressSpecialKey(String symbol) {
+    private void pushSpecialKey(String symbol) {
+        pressSpecialKey(symbol,true);
+        pressSpecialKey(symbol,false);
+    }
+
+    private void pressSpecialKey(String symbol,boolean press) {
+        switch (symbol.toLowerCase()) {
+            case "alt":
+                pressOrRelease(KeyEvent.VK_ALT,press);
+                break;
+            case "ctrl":
+                pressOrRelease(KeyEvent.VK_CONTROL,press);
+                break;
+            case "shift":
+                pressOrRelease(KeyEvent.VK_SHIFT,press);
+                break;
+            case "caps":
+                pressOrRelease(KeyEvent.VK_CAPS_LOCK,press);
+                break;
+            case "tab":
+                pressOrRelease(KeyEvent.VK_TAB,press);
+                break;
+            case "space":
+                pressOrRelease(KeyEvent.VK_SPACE,press);
+                break;
+            case "backspace":
+                pressOrRelease(KeyEvent.VK_BACK_SPACE,press);
+                break;
+            case "enter":
+                pressOrRelease(KeyEvent.VK_ENTER,press);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void changeLand(String symbol) {
         String specialKeys = settingManager.getString(symbol, "alt+shift");
         String[] split = specialKeys.split("\\+");
         pressOrReleaseKeys(split,true);
@@ -65,28 +107,7 @@ public class KeyboardControl extends Touch {
 
     private void pressOrReleaseKeys(String[] split,boolean press) {
         for (String s : split) {
-            switch (s.toLowerCase()) {
-                case "alt":
-                    pressOrRelease(KeyEvent.VK_ALT,press);
-                    break;
-                case "ctrl":
-                    pressOrRelease(KeyEvent.VK_CONTROL,press);
-                    break;
-                case "shift":
-                    pressOrRelease(KeyEvent.VK_SHIFT,press);
-                    break;
-                case "caps":
-                    pressOrRelease(KeyEvent.VK_CAPS_LOCK,press);
-                    break;
-                case "tab":
-                    pressOrRelease(KeyEvent.VK_TAB,press);
-                    break;
-                case "space":
-                    pressOrRelease(KeyEvent.VK_SPACE,press);
-                    break;
-                default:
-                    break;
-            }
+           pressSpecialKey(s,press);
         }
     }
 
@@ -106,8 +127,8 @@ public class KeyboardControl extends Touch {
     }
 
     private void pressKeycode(char key) {
-        KeyStroke ks = KeyStroke.getKeyStroke(key, 0);
-        int keyCode = ks.getKeyCode();
+        java.awt.event.KeyEvent.getExtendedKeyCodeForChar(key);
+        int keyCode =   java.awt.event.KeyEvent.getExtendedKeyCodeForChar(key);
         robot.keyPress(keyCode);
         robot.keyRelease(keyCode);
     }
