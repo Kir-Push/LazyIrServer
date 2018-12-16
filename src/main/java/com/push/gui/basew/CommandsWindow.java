@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 @Slf4j
@@ -41,10 +42,12 @@ public class CommandsWindow {
             if (commands == null ||(getUsedId() != null && !getUsedId().equals(id)))
                 return;
             list.addAll(commands);
-            Command cge = list.get(commands.size() - 1);
-            cge.setCommandName(" ");
-            cge.setCmd(" ");
+            list.add(new Command("","",generateTempId()));
             setUserId(id);
+    }
+
+    private int generateTempId() {
+        return new Random().nextInt(10);
     }
 
     public void showWindow(String id){
@@ -64,27 +67,18 @@ public class CommandsWindow {
             setCloseButtonAction( ((Button) scene.lookup("#cls")),stage);
 
             TableView<Command> table = (TableView)scene.lookup("#table");
-            TableColumn<Command,String> name = new TableColumn<>("Name");
-            TableColumn<Command,String> command = new TableColumn<>("NetworkPackage");
+            TableColumn<Command,String> name = new TableColumn<>("name");
+            TableColumn<Command,String> command = new TableColumn<>("command");
 
             name.setEditable(true);
-            name.setCellValueFactory(new PropertyValueFactory<>("command_name"));
+            name.setCellValueFactory(new PropertyValueFactory<>("commandName"));
             name.setCellFactory(TextFieldTableCell.<Command> forTableColumn());
-            setNameEditAction(name,table);
+            setNameEditAction(name);
 
             command.setEditable(true);
             command.setCellFactory(TextFieldTableCell.<Command> forTableColumn());
             command.setCellValueFactory(new PropertyValueFactory<>("cmd"));
-            command.setOnEditCommit(value -> {
-                String oldValue = value.getOldValue();
-                String newValue = value.getNewValue();
-                int row = value.getTablePosition().getRow();
-                Command commandGuiEntity = value.getTableView().getItems().get(row);
-                commandGuiEntity.setCmd(newValue);
-                if(!oldValue.equals(newValue)){
-                    tempUpdateList.add(commandGuiEntity);
-                }
-            });
+           setCommandEditAction(command);
 
             table.setEditable(true);
             table.setItems(list);
@@ -110,8 +104,8 @@ public class CommandsWindow {
             backgroundService.submitNewTask(()->{
                 SendCommand sendCommand = backgroundService.getModuleById(id, SendCommand.class);
                 sendCommand.sendDeleteCommands(tempDeleteList);
-                sendCommand.sendAddCommands(tempNewList);
-                sendCommand.sendUpdateCommands(tempNewList);
+               sendCommand.sendAddCommands(tempNewList);
+               sendCommand.sendUpdateCommands(tempUpdateList);
                 clearResources();
             });
             clearList();
@@ -128,44 +122,40 @@ public class CommandsWindow {
         });
     }
 
-    private void setNameEditAction(TableColumn<Command, String> name, TableView<Command> table){
+    private void setCommandEditAction(  TableColumn<Command,String> command){
+        command.setOnEditCommit(value -> {
+            String oldValue = value.getOldValue();
+            String newValue = value.getNewValue();
+            Command commandGuiEntity =    value.getRowValue();
+            commandGuiEntity.setCmd(newValue);
+            if(!oldValue.equals(newValue) && !tempNewList.contains(commandGuiEntity)){
+                tempUpdateList.add(commandGuiEntity);
+            }
+            value.getTableView().refresh();
+        });
+    }
+
+    private void setNameEditAction(TableColumn<Command, String> name){
         name.setOnEditCommit(value->{
             TableView<Command> tableView = value.getTableView();
-            String oldValue = value.getOldValue();
             String newValue = value.getNewValue();
             int row = value.getTablePosition().getRow();
             ObservableList<Command> items = tableView.getItems();
-            Command cge = items.get(row);
-
-            for(int i =0;i<items.size();i++){
-                if(i != row && items.get(i).getCommandName().equals(newValue)){
-                    cge.setCommandName(oldValue);
-                    tableView.refresh();
-                    return;
+            Command cge  = value.getRowValue();
+            if(row != items.size()-1){ // if it's not last row - which are empty row
+                if(newValue.equals(" ") || newValue.equals("")){
+                    items.remove(row);
+                    tempDeleteList.add(new Command("","",cge.getId()));
+                }else{
+                    cge.setCommandName(newValue);
+                    tempUpdateList.add(cge);
                 }
-            }
-            if(newValue.equals(" ") || newValue.equals("")){
-                items.remove(row);
-                tempDeleteList.add(new Command(cge.getProducer(), cge.getDevice(), oldValue, cge.getCmd(),
-                        cge.getOwnerId(), cge.getType()));
-                tableView.refresh();
-
-            }
-            else if(oldValue.equals(" ") && (row == table.getItems().size()-1)) {
+            }else if(!newValue.equals(" ") && !newValue.equals("")){
                 cge.setCommandName(newValue);
                 tempNewList.add(cge);
-                list.add(new Command(cge.getProducer(), cge.getDevice()," "," ",
-                        cge.getOwnerId(), cge.getType()));
+                list.add(new Command("","",generateTempId()));
             }
-            else if(!oldValue.equals(newValue)){
-                Command guiEntity = new Command(cge.getProducer(), cge.getDevice(), oldValue, cge.getCmd(),
-                        cge.getOwnerId(), cge.getType());
-                if(!tempNewList.contains(guiEntity)) {
-                    tempDeleteList.add(guiEntity);
-                }
-                cge.setCommandName(newValue);
-                tempNewList.add(cge);
-            }
+            tableView.refresh();
         });
     }
     private void clearResources() {
