@@ -39,9 +39,9 @@ public class CustomNotification extends BorderLayoutNotification {
         this.settingManager = settingManager;
         this.guiUtils = guiUtils;
         int titleFontSize = settingManager.getInt("NotificationFontSize",12);
-        titleFont = new Font("Poor Story Regular",Font.PLAIN,titleFontSize + 4);
-        textFont = new Font("Roboto",Font.PLAIN,titleFontSize);
-        buttonFont = new Font("Poor Story Regular",Font.PLAIN,titleFontSize);
+        titleFont = new Font("DejaVu Sans",Font.PLAIN,titleFontSize + 4);
+        textFont = new Font("DejaVu Sans",Font.PLAIN,titleFontSize);
+        buttonFont = new Font("DejaVu Sans",Font.PLAIN,titleFontSize);
         mbutton2.setBorder(null);
         mbutton.setBorder(null);
         JPanel panelPad = new JPanel(new BorderLayout());

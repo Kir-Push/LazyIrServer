@@ -144,7 +144,11 @@ public class GuiCommunicator {
     }
 
     public void showSms(String id, Sms sms) {
-        NotificationDevice notification = new NotificationDevice(sms.getText(), "SMS", sms.getName(), SmsModule.class.getSimpleName(), sms.getNumber(), sms.getNumber(), sms.getIcon(), sms.getPicture());
+        String name = sms.getName();
+        if(name == null || name.isEmpty()) {
+            name = sms.getNumber();
+        }
+        NotificationDevice notification = new NotificationDevice(sms.getText(), "SMS", name, SmsModule.class.getSimpleName(), sms.getNumber(), sms.getNumber(), sms.getIcon(), sms.getPicture());
         notification.setOwnerName(backgroundService.getConnectedDevices().get(id).getName());
         apiController.showNotification(id, notification);
     }
