@@ -21,6 +21,7 @@ public class ClipBoard extends Module implements ClipboardOwner {
   private static String lastClipboard = "";
   private static boolean clipboardSet;
   private static FlavorListener flavorListener;
+  private static boolean imSet;
 
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
@@ -41,12 +42,18 @@ public class ClipBoard extends Module implements ClipboardOwner {
         if(!clipboardSet) {
             flavorListener = listener -> {
                 try {
-                    String clipboardText = (String) SYSTEM_CLIPBOARD.getData(DataFlavor.stringFlavor);
-                    if(!clipboardText.equals(lastClipboard)) {
-                        SYSTEM_CLIPBOARD.setContents(new StringSelection(clipboardText), null);
-                        lastClipboard = clipboardText;
-                        receiveClipboard(clipboardText,messageFactory,backgroundService);
+                    Transferable content = SYSTEM_CLIPBOARD.getContents(backgroundService);
+                    String clipboardText = content.getTransferData(DataFlavor.stringFlavor).toString();
+                    if(!imSet){
+                        SYSTEM_CLIPBOARD.setContents(content, null);
+                        imSet = true;
+                        if(!clipboardText.equals(lastClipboard)) {
+                            receiveClipboard(clipboardText,messageFactory,backgroundService);
+                        }
+                    }else {
+                        imSet = false;
                     }
+                    lastClipboard = clipboardText;
                 }catch (IOException | UnsupportedFlavorException e){
                     log.error("error in clipboardListener",e);
                 }
