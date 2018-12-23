@@ -69,6 +69,7 @@ public class ClipBoard extends Module implements ClipboardOwner {
     public void endWork() {
         if(backgroundService.ifLastConnectedDeviceAreYou(device.getId())){
             SYSTEM_CLIPBOARD.removeFlavorListener(flavorListener);
+            clipboardSet = false;
         }
     }
 
