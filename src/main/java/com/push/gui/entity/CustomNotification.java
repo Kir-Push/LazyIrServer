@@ -19,19 +19,20 @@ public class CustomNotification extends BorderLayoutNotification {
     private Font buttonFont;
     private GuiUtils guiUtils;
     private SettingManager settingManager;
-    private JLabel iconlbl = new JLabel();;
+    private JLabel iconlbl = new JLabel();
     private JTextArea textlbl = new JTextArea();
     private JTextArea titlelbl = new JTextArea();
     private JTextArea deviceLbl = new JTextArea();
     private JLabel imglbl = new JLabel();
     private Insets zeroInset = new Insets(0,0,0,0);
 
-    private JPanel btnpanel = new JPanel(new BorderLayout(0,10));;
-    private JPanel textpanel = new JPanel( new BorderLayout());;
+    private JPanel btnpanel = new JPanel(new BorderLayout(0,10));
+    private JPanel textpanel = new JPanel( new BorderLayout());
     private JButton mbutton = new JButton();
     private JButton mbutton2 = new JButton();
     private TextTheme mtheme;
     private JPanel rightpanel = new JPanel(new BorderLayout(5,0));
+    private static final String FONT = "DejaVu Sans";
 
     public CustomNotification(GuiUtils guiUtils, SettingManager settingManager,NotificationDevice notificationDevice) {
         super();
@@ -39,9 +40,9 @@ public class CustomNotification extends BorderLayoutNotification {
         this.settingManager = settingManager;
         this.guiUtils = guiUtils;
         int titleFontSize = settingManager.getInt("NotificationFontSize",12);
-        titleFont = new Font("DejaVu Sans",Font.PLAIN,titleFontSize + 4);
-        textFont = new Font("DejaVu Sans",Font.PLAIN,titleFontSize);
-        buttonFont = new Font("DejaVu Sans",Font.PLAIN,titleFontSize);
+        titleFont = new Font(FONT,Font.PLAIN,titleFontSize + 4);
+        textFont = new Font(FONT,Font.PLAIN,titleFontSize);
+        buttonFont = new Font(FONT,Font.PLAIN,titleFontSize);
         mbutton2.setBorder(null);
         mbutton.setBorder(null);
         JPanel panelPad = new JPanel(new BorderLayout());

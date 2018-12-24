@@ -6,6 +6,6 @@ public class DialogController {
 
     @FXML
     private void initialize() {
-        // Инициализация таблицы адресатов с двумя столбцами.
+        // so it actually don't needed
     }
 }

@@ -3,7 +3,7 @@ package com.push.lazyir.modules.dbus;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 import com.push.lazyir.modules.dbus.websocket.ServerController;
-import com.push.lazyir.service.main.BackgroundService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import java.util.List;
  * strategy for htmlVideo in browser
  *  work though websocket
  */
+@Slf4j
 public class HtmlVid implements OsStrategy {
     private SetMultimap<String, String> pausedPlayersBrowser = MultimapBuilder.hashKeys().hashSetValues().build();
     private ServerController serverController;
@@ -88,22 +89,24 @@ public class HtmlVid implements OsStrategy {
                 serverController.sendGetInfo();
                 Thread.sleep(100);
                 allPlayers = serverController.getAll();
-            while(count > 0 && allPlayers.size() == 0){
+            while(count > 0 && allPlayers.isEmpty()){
                 serverController.sendGetInfo();
-
-                    Thread.sleep(100);
+                Thread.sleep(100);
                 allPlayers = serverController.getAll();
                 count--;
             }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("error in pauseAll",e);
+                Thread.currentThread().interrupt();
+
+            }finally {
+                allPlayers.stream()
+                        .filter(pl -> pl.getStatus().equalsIgnoreCase("playing"))
+                        .forEach(pl -> {
+                            serverController.sendStatus(pl.getIp(), "pause", pl.getId());
+                            pausedPlayersBrowser.put(pl.getIp(), pl.getId());
+                        });
             }
-            allPlayers.stream()
-                    .filter(pl -> pl.getStatus().equalsIgnoreCase("playing"))
-                    .forEach(pl -> {
-                        serverController.sendStatus(pl.getIp(), "pause", pl.getId());
-                        pausedPlayersBrowser.put(pl.getIp(), pl.getId());
-                    });
         }).start();
     }
 

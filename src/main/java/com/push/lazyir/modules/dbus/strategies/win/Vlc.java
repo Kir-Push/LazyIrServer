@@ -204,7 +204,7 @@ public class Vlc implements Strategy {
                 "Accept-Language: ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4,lv;q=0.2");
         out.println("");
         out.flush();
-        if (!command.equalsIgnoreCase("requests/status.xml")){
+        if (!"requests/status.xml".equalsIgnoreCase(command)){
             getLine();
         }
     }

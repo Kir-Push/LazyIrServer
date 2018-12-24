@@ -173,7 +173,7 @@ public class GuiCommunicator {
     }
 
     public void batteryStatus(String percenstage, String status, Device device) {
-        boolean charging = status.equalsIgnoreCase("true");
+        boolean charging = "true".equalsIgnoreCase(status);
         apiController.setBatteryStatus(device.getId(),Integer.parseInt(percenstage),charging);
     }
 

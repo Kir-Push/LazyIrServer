@@ -58,8 +58,7 @@ public class ConnectionThread implements Runnable {
             this.messageFactory = messageFactory;
             this.moduleFactory = moduleFactory;
             this.pairService = pairService;
-            log.debug("start thread " + Thread.currentThread() + " devicde ip: " + connection.getInetAddress());
-           configSocket();
+            configSocket();
         }
 
     private void configSocket() throws SocketException {
@@ -78,6 +77,9 @@ public class ConnectionThread implements Runnable {
     public void run() {
         try {
             configureSSLSocket();
+            if(log.isDebugEnabled()) {
+                log.debug(String.format("start thread %s device ip: %s", Thread.currentThread(), connection.getInetAddress()));
+            }
         } catch (IOException e) {
             log.error("error in configureSSLSocket", e);
             clearResources();
@@ -97,7 +99,7 @@ public class ConnectionThread implements Runnable {
                 if (!backgroundService.isServerOn() || clientCommand == null || !isConnected()) { // if server off, exit from read loop
                     return;
                 }
-                if(!deviceId.equals("") && clientCommand.equalsIgnoreCase(api.PING.name())){
+                if(!"".equals(deviceId) && clientCommand.equalsIgnoreCase(api.PING.name())){
                     setDevicePing(true);
                     continue;
                 }
@@ -149,7 +151,7 @@ public class ConnectionThread implements Runnable {
         TcpDto dto = (TcpDto) np.getData();
         api command = TcpConnectionManager.api.valueOf(dto.getCommand());
         // when deviceId null, first command need to be introduce
-        if (deviceId.equals("") && (!command.equals(INTRODUCE))) {
+        if ("".equals(deviceId) && (!command.equals(INTRODUCE))) {
             return;
         }
 
@@ -177,7 +179,7 @@ public class ConnectionThread implements Runnable {
 
     private void newConnectedDevice(NetworkPackage np) {
         // if device not null - you already know about device, so no introduction
-        if (!deviceId.equals("")) {
+        if (!"".equals(deviceId)) {
             return;
         }
         TcpDto dto = (TcpDto) np.getData();
@@ -231,7 +233,7 @@ public class ConnectionThread implements Runnable {
         TcpDto dto = (TcpDto) np.getData();
         List<ModuleSetting> moduleSettings = dto.getModuleSettings();
         Device device = backgroundService.getConnectedDevices().get(deviceId);
-        if(!deviceId.equals("")) {
+        if(!"".equals(deviceId)) {
             device.refreshEnabledModules(moduleSettings);
         }
     }
@@ -245,11 +247,11 @@ public class ConnectionThread implements Runnable {
 
     private void commandFromClient(NetworkPackage np) {
         try {
-            if (deviceId.equals("")) {
+            if ("".equals(deviceId)) {
                 return;
             }
             Device device = backgroundService.getConnectedDevices().get(deviceId);
-            if (deviceId.equals("") || !device.isPaired()) {
+            if ("".equals(deviceId) || !device.isPaired()) {
                 return;
             }
             String moduleType = np.getType();
@@ -302,13 +304,7 @@ public class ConnectionThread implements Runnable {
             if(!deviceId.equals("") && device != null) {
                 ConcurrentHashMap<String, Module> enabledModules = device.getEnabledModules();
                 if(enabledModules != null) {
-                    for (Module module : enabledModules.values()) {
-                        try {
-                           module.endWork();
-                        }catch (Exception e){
-                            log.error("error in endMethod id; " + deviceId,e);
-                        }
-                    }
+                    enabledModules.values().forEach(this::tryEndModule);
                 }
             }
         }catch (Exception e) {
@@ -320,6 +316,14 @@ public class ConnectionThread implements Runnable {
             if(log.isDebugEnabled()) {
                 log.debug(String.format("%s stopped connection", deviceId));
             }
+        }
+    }
+
+    private void tryEndModule(Module module){
+        try {
+            module.endWork();
+        }catch (Exception e){
+            log.error("error in endMethod id; " + deviceId,e);
         }
     }
 

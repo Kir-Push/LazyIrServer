@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+
 /*
 must be always initialized after setting's manager, because he create non existing file's, directories and so on.
 * */
@@ -16,7 +14,7 @@ must be always initialized after setting's manager, because he create non existi
 public class LocalizationManager {
 
     private String currLang;
-    private HashMap<String,String> localStrings = new HashMap<>();
+    private Map<String,String> localStrings = new HashMap<>();
 
 //    https://native2ascii.net/
     @Synchronized

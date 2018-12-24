@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import java.awt.event.KeyEvent;
 
 import static com.push.lazyir.modules.touch.KeyboardControl.api.CHANGE_LANG;
+import static java.awt.event.KeyEvent.getExtendedKeyCodeForChar;
 
 @Slf4j
 public class KeyboardControl extends Touch {
@@ -127,8 +128,8 @@ public class KeyboardControl extends Touch {
     }
 
     private void pressKeycode(char key) {
-        java.awt.event.KeyEvent.getExtendedKeyCodeForChar(key);
-        int keyCode =   java.awt.event.KeyEvent.getExtendedKeyCodeForChar(key);
+        getExtendedKeyCodeForChar(key);
+        int keyCode =   getExtendedKeyCodeForChar(key);
         robot.keyPress(keyCode);
         robot.keyRelease(keyCode);
     }

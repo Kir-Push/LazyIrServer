@@ -14,6 +14,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 //https://github.com/billziss-gh/sshfs-win
@@ -32,7 +33,7 @@ public class SftpServerProcessWin implements SftpServerProcess {
     private volatile boolean running;
     private static final char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray();
     // hash map, key device id, value network driver letter
-    private HashMap<String,String> connectedDrivesMap = new HashMap<>();
+    private Map<String,String> connectedDrivesMap = new HashMap<>();
     private GuiCommunicator guiCommunicator;
 
 
@@ -168,7 +169,7 @@ public class SftpServerProcessWin implements SftpServerProcess {
                     }
                 }
                 if (!has) {
-                    return String.valueOf(c) + ":";
+                    return c + ":";
                 }
             }
         } catch (IOException e) {

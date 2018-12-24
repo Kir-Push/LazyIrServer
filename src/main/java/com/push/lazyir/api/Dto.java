@@ -3,7 +3,10 @@ package com.push.lazyir.api;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class Dto {
+public class Dto {
+    protected Dto(){
+
+    }
     @Getter
     @Setter
     private String className;

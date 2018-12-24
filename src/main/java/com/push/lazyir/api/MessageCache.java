@@ -1,9 +1,10 @@
 package com.push.lazyir.api;
 
 import java.util.HashMap;
+import java.util.Map;
 
 class MessageCache {
-     private HashMap<String,String> cache = new HashMap<>();
+     private Map<String,String> cache = new HashMap<>();
 
     public void warm() {
         cache.put("GETINFO","{ \"multipleVids\": \"false\", \"command\": \"getInfo\" }");

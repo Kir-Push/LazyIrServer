@@ -8,6 +8,7 @@ import com.push.lazyir.modules.dbus.Mpris;
 import com.push.lazyir.modules.notifications.NotificationTypes;
 import com.push.lazyir.service.main.BackgroundService;
 import com.push.lazyir.service.managers.settings.SettingManager;
+import com.push.lazyir.utils.Utility;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,6 +42,10 @@ public class CallModule extends Module {
     private SettingManager settingManager;
     @Getter @Setter
     private static boolean wasmuted;
+    @Getter @Setter
+    private static boolean mediaButtonHitted;
+    @Getter @Setter
+    private static int callCount;
 
 
     @Inject
@@ -60,7 +65,7 @@ public class CallModule extends Module {
         boolean mediaPauseOutcomingCall = settingManager.getBool("mediaPauseOtcomingCall",false);
         switch (command) {
             case CALL:
-                inCall(muteOutgoingCall, muteIncomingCall, dto);
+                inCall(muteOutgoingCall, muteIncomingCall,mediaPauseIncomingCall,mediaPauseOutcomingCall, dto);
                 break;
             case ENDCALL:
                 endCall(muteOutgoingCall, muteIncomingCall, dto);
@@ -78,24 +83,28 @@ public class CallModule extends Module {
     }
 
     private void endCall(boolean muteOutgoingCall, boolean muteIncomingCall, CallModuleDto dto) {
-
         if(isCalling()){
-            setCalling(false);
-            Mpris mpris = backgroundService.getModuleById(device.getId(), Mpris.class);
-            if(mpris != null){
-                mpris.playAll();
-            }
-            String callType = dto.getCallType();
-            if((callType.equalsIgnoreCase(NotificationTypes.OUTGOING.name()) && muteOutgoingCall) ||
-                    (callType.equalsIgnoreCase(NotificationTypes.INCOMING.name()) && muteIncomingCall) ||
-                    callType.equalsIgnoreCase(NotificationTypes.MISSED_IN.name()) && muteIncomingCall){
-                unMute();
+            decrementCallCount();
+                Mpris mpris = backgroundService.getModuleById(device.getId(), Mpris.class);
+                if (mpris != null) {
+                    mpris.playAll();
+                }
+            if(getCallCount() == 0) {
+                setCalling(false);
+                String callType = dto.getCallType();
+                if ((callType.equalsIgnoreCase(NotificationTypes.OUTGOING.name()) && muteOutgoingCall) ||
+                        (callType.equalsIgnoreCase(NotificationTypes.INCOMING.name()) && muteIncomingCall) ||
+                        callType.equalsIgnoreCase(NotificationTypes.MISSED_IN.name()) && muteIncomingCall) {
+                    unMute();
+                }
+                hitMediaPlayButton();
             }
             guiCommunicator.callNotifEnd(dto);
         }
     }
 
-    private void inCall(boolean muteWhenOutcomingCall, boolean muteWhenCall, CallModuleDto dto) {
+    private void inCall(boolean muteWhenOutcomingCall, boolean muteWhenCall, boolean mediaPauseIncomingCall, boolean mediaPauseOutcomingCall, CallModuleDto dto) {
+        incrementCallCount();
         if(!isCalling()){
             Mpris mpris = backgroundService.getModuleById(device.getId(), Mpris.class);
             if(mpris != null) {
@@ -106,6 +115,7 @@ public class CallModule extends Module {
                     (callType.equalsIgnoreCase(NotificationTypes.INCOMING.name()) && muteWhenCall)){
                 mute();
             }
+            hitMediaPauseButton(callType,mediaPauseIncomingCall,mediaPauseOutcomingCall);
             setCalling(true);
         }
         guiCommunicator.callNotif(dto,device.getId());
@@ -130,11 +140,21 @@ public class CallModule extends Module {
         setWasmuted(true);
     }
 
-    private void hitMediaPauseButton(){
+    @Synchronized
+    private static void hitMediaPauseButton(String callType,boolean mediaPauseIncomingCall,boolean mediaPauseOutcomingCall){
+        if(Utility.isWindows() &&
+                ((mediaPauseIncomingCall && callType.equalsIgnoreCase(NotificationTypes.INCOMING.name()))
+                        || mediaPauseOutcomingCall && callType.equalsIgnoreCase(NotificationTypes.OUTGOING.name()))){
+            setMediaButtonHitted(true);
+        }
         //todo windows
     }
 
-    private void hitMediaPlayButton(){
+    @Synchronized
+    private static void hitMediaPlayButton(){
+        if(Utility.isWindows() && mediaButtonHitted){
+            setMediaButtonHitted(false);
+        }
         //todo windows
     }
 
@@ -196,6 +216,16 @@ public class CallModule extends Module {
                 ((BooleanControl) control).setValue(false);
             }
         }
+    }
+
+    @Synchronized
+    public static void incrementCallCount(){
+        callCount++;
+    }
+
+    @Synchronized
+    public static void decrementCallCount(){
+        callCount--;
     }
 
     public void sendMute(){

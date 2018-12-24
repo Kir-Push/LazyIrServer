@@ -124,10 +124,12 @@ public class SettingsWindow {
             heightField.setEditable(true);
             heightField.setText(settingManager.get("notification-height"));
             heightField.setTextFormatter( ( new TextFormatter<>(filter)));
+
             TextField widthField = (TextField) scene.lookup("#NotificationField");
             widthField.setEditable(true);
             widthField.setText(settingManager.get("notification-width"));
             widthField.setTextFormatter( ( new TextFormatter<>(filter)));
+
             CheckBox heightAuto = (CheckBox) scene.lookup("#heightAuto");
             heightAuto.setSelected(settingManager.getBool("notification-height-auto",true));
             heightAuto.setTooltip(new Tooltip(localizationManager.get("heigh-auto-tooltip")));

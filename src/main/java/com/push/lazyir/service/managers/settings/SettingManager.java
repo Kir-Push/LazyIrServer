@@ -155,10 +155,10 @@ public class SettingManager implements Manager {
     public boolean getBool(String key,boolean defaultValue){
             String property = properties.getProperty(key);
             if(property != null) {
-                if (property.equalsIgnoreCase("true")) {
+                if ("true".equalsIgnoreCase(property)) {
                     return true;
                 }
-                if (property.equalsIgnoreCase("false")) {
+                if ("false".equalsIgnoreCase(property)) {
                     return false;
                 }
             }

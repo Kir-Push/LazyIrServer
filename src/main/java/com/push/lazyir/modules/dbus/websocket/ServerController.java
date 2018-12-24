@@ -41,8 +41,13 @@ public class ServerController{
             if(dbusWebSocketServer != null) {
                 dbusWebSocketServer.stop();
             }
-        } catch (IOException | InterruptedException e){
+        } catch (IOException e){
+            log.error("stopServer error",e);
+        } catch (InterruptedException e) {
             log.error("stopServer interrupt",e);
+            if(Thread.currentThread().isInterrupted()) {
+                Thread.currentThread().interrupt();
+            }
         } finally {
             dbusWebSocketServer = null;
             working = false;

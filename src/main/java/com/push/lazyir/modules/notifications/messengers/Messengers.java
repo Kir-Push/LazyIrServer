@@ -112,9 +112,9 @@ public class Messengers extends Module {
     }
 
     private NotificationTypes whatsAppCallType(String text) {
-        if(text.equalsIgnoreCase("Incoming call") )
+        if("Incoming call".equalsIgnoreCase(text))
             return NotificationTypes.INCOMING;
-        else if(text.equalsIgnoreCase("Outcoming call"))
+        else if("Outcoming call".equalsIgnoreCase(text))
             return NotificationTypes.OUTGOING;
         return NotificationTypes.MESSENGER;
     }

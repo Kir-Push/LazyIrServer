@@ -4,7 +4,6 @@ import com.notification.NotificationBuilder;
 import com.push.gui.controllers.MainController;
 import com.push.gui.entity.CustomNotification;
 import com.push.gui.entity.NotificationDevice;
-import com.push.gui.systray.JavaFXTrayIconSample;
 import com.push.lazyir.gui.GuiCommunicator;
 import com.push.lazyir.modules.notifications.NotificationTypes;
 import com.push.lazyir.modules.reminder.ReminderDto;
@@ -20,7 +19,6 @@ import javafx.stage.Screen;
 import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
-import java.io.IOException;
 
 @Slf4j
 public class CustomBuilder implements NotificationBuilder<CustomNotification> {
@@ -29,14 +27,12 @@ public class CustomBuilder implements NotificationBuilder<CustomNotification> {
     private GuiCommunicator guiCommunicator;
     private LocalizationManager localizationManager;
     private SettingManager settingManager;
-    private JavaFXTrayIconSample javaFXTrayIconSample;
     private TextTheme textTheme;
 
     public CustomBuilder(BackgroundService backgroundService, GuiUtils guiUtils) {
         this.guiUtils = guiUtils;
         this.guiCommunicator = backgroundService.getGuiCommunicator();
         this.localizationManager = backgroundService.getLocalizationManager();
-        this.javaFXTrayIconSample = backgroundService.getJavaFXTrayIconSample();
         this.settingManager = backgroundService.getSettingManager();
     }
 

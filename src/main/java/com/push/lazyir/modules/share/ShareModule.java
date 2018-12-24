@@ -12,10 +12,8 @@ import org.apache.commons.io.FileUtils;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.file.Files;
 import java.util.concurrent.Future;
 
 import static com.push.lazyir.service.managers.settings.SettingManager.CURRENT_USERS_HOME_DIR;

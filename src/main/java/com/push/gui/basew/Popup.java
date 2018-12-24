@@ -18,6 +18,7 @@ import javafx.stage.Screen;
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Popup {
@@ -32,7 +33,7 @@ public class Popup {
      private double callNotTime;
      private int maxNotifOnScreen;
 
-     private HashMap<String,CustomNotification> callNotifs = new HashMap<>();
+     private Map<String,CustomNotification> callNotifs = new HashMap<>();
      private int countScreens;
 
      @Inject
@@ -66,10 +67,8 @@ public class Popup {
         if(checkForDuplicates(notifications,notification)){
             return;
         }
-        if(notifications.size() >= maxNotifOnScreen){
-            for(int i = 0;i<=notifications.size() - maxNotifOnScreen;i++) {
-                notifications.get(i).removeFromManager();
-            }
+        for(int i = 0;i<=notifications.size() - maxNotifOnScreen;i++) {
+            notifications.get(i).removeFromManager();
         }
         CustomNotification build = factory.build(CustomNotification.class, notification, id, mainController,(arg == null || arg.length == 0) ? null : arg[0]);
         String type = notification.getType();

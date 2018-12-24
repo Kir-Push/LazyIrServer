@@ -82,7 +82,7 @@ public class Reminder extends Module {
         textBuilder.append("Messengers messages: ");
         multimap.keySet().forEach(key -> {
             Notification notification = multimap.get(key).get(0);
-            textBuilder.append(key).append(" ").append(notification.getTitle()).append("\n");
+            textBuilder.append(key).append(' ').append(notification.getTitle()).append('\n');
         });
     }
 
@@ -101,10 +101,10 @@ public class Reminder extends Module {
                 Sms message = max.get();
                 LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(message.getDate()), ZoneId.systemDefault());
                 textBuilder.append(" (").append(message.getNumber()).append(") ").append(messages.size())
-                        .append(" messages, last: ").append(date.getYear()).append("/")
-                        .append(date.getMonthValue()).append("/")
+                        .append(" messages, last: ").append(date.getYear()).append('/')
+                        .append(date.getMonthValue()).append('/')
                         .append(date.getDayOfMonth()).append(" - (")
-                        .append(date.getHour()).append(":")
+                        .append(date.getHour()).append(':')
                         .append(date.getMinute()).append(")\n");
             }
         }
@@ -141,11 +141,11 @@ public class Reminder extends Module {
                     .append(missedCalls.get(0).getName()).append(" (")
                     .append(missedCalls.get(0).getNumber()).append(") ")
                     .append(missedCalls.size()).append(" calls, last: ")
-                    .append(date.getYear()).append("/")
-                    .append(date.getMonth()).append("/")
+                    .append(date.getYear()).append('/')
+                    .append(date.getMonth()).append('/')
                     .append(date.getDayOfMonth()).append(" - (")
-                    .append(date.getHour()).append(":")
-                    .append(date.getMinute()).append(":").
+                    .append(date.getHour()).append(':')
+                    .append(date.getMinute()).append(':').
                     append(date.getSecond()).append(")\n");
 
         }

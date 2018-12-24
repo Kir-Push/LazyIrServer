@@ -4,6 +4,8 @@ import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.main.BackgroundService;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +21,7 @@ import static com.push.lazyir.modules.clipboard.ClipBoard.api.RECEIVE;
 public class ClipBoard extends Module implements ClipboardOwner {
   private static final Clipboard SYSTEM_CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
   private static String lastClipboard = "";
+  @Getter @Setter
   private static boolean clipboardSet;
   private static FlavorListener flavorListener;
   private static boolean imSet;
@@ -39,7 +42,7 @@ public class ClipBoard extends Module implements ClipboardOwner {
 
     @Synchronized
     private static void setClipboardListener(MessageFactory messageFactory,BackgroundService backgroundService) {
-        if(!clipboardSet) {
+        if(!isClipboardSet()) {
             flavorListener = listener -> {
                 try {
                     Transferable content = SYSTEM_CLIPBOARD.getContents(backgroundService);
@@ -59,7 +62,7 @@ public class ClipBoard extends Module implements ClipboardOwner {
                 }
             };
             SYSTEM_CLIPBOARD.addFlavorListener(flavorListener);
-            clipboardSet = true;
+            setClipboardSet(true);
         }
     }
 
@@ -76,7 +79,7 @@ public class ClipBoard extends Module implements ClipboardOwner {
     public void endWork() {
         if(backgroundService.ifLastConnectedDeviceAreYou(device.getId())){
             SYSTEM_CLIPBOARD.removeFlavorListener(flavorListener);
-            clipboardSet = false;
+            setClipboardSet(false);
         }
     }
 

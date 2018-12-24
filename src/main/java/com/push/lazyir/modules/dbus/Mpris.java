@@ -28,7 +28,7 @@ public class Mpris extends Module {
         REPEAT,
         ALLPLAYERS
     }
-    private static int callersCount = 0;
+    private static int callersCount;
     private static OsStrategy strategy;
     private static OsStrategy browserStrategy;
     private ServerController serverController;
@@ -144,7 +144,7 @@ public class Mpris extends Module {
     }
 
     private boolean browserCheck(@NonNull String type) {
-        return type.equals("browser");
+        return "browser".equals(type);
     }
 
 

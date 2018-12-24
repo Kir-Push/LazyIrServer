@@ -37,7 +37,7 @@ public class BackgroundService {
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     @Getter
     private final ScheduledThreadPoolExecutor timerService = new ExtScheduledThreadPoolExecutor(5);
-    private HashMap<String, ModuleSetting> myEnabledModules;
+    private Map<String, ModuleSetting> myEnabledModules;
     private TcpConnectionManager tcp;
     private UdpBroadcastManager udp;
     @Getter

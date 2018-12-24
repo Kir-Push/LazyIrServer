@@ -37,10 +37,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class ModuleFactory {
-    private HashMap<String, Pair<Class,Class>> registeredModules = new HashMap<>();
+    private Map<String, Pair<Class,Class>> registeredModules = new HashMap<>();
     private ModuleComponent moduleComponent;
     private Method[] methods;
 

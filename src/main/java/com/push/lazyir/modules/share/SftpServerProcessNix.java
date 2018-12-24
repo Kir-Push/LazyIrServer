@@ -34,6 +34,7 @@ public class SftpServerProcessNix implements SftpServerProcess {
     private GuiCommunicator guiCommunicator;
     private BackgroundService backgroundService;
     private boolean errorInitialization;
+    private  Random random;
 
     SftpServerProcessNix(int port, InetAddress ip, String mountPoint, PathWrapper externalMountPoint, String userName, String pass, String id, BackgroundService backgroundService) {
         this.port = port;
@@ -45,6 +46,7 @@ public class SftpServerProcessNix implements SftpServerProcess {
         this.id = id;
         this.guiCommunicator = backgroundService.getGuiCommunicator();
         this.backgroundService = backgroundService;
+        this.random = new Random();
         try {
             if(!Files.exists(Paths.get(CURRENT_USERS_HOME_DIR))) {
                 Files.createDirectory(Paths.get(CURRENT_USERS_HOME_DIR));
@@ -59,7 +61,6 @@ public class SftpServerProcessNix implements SftpServerProcess {
     }
 
     private void createDirForCurrentDevice() {
-        Random random = new Random();
         String path = CURRENT_USERS_HOME_DIR + File.separator + id +
                 random.nextInt(10) +
                 random.nextInt(10) +
@@ -101,31 +102,40 @@ public class SftpServerProcessNix implements SftpServerProcess {
             mkdir = file.mkdir();
         }
         if (mkdir) {
-            File deviceLink = new File(file.getPath() + File.separator + userName + id.substring(id.length() - 3));
-            if (!deviceLink.exists()) {
-                deviceLink.mkdir();
-            } else {
-                deleteFiles(deviceLink.listFiles());
-            }
-            String deviceLinkPath = deviceLink.getPath();
+            String deviceLinkPath = createDeviceLinkPath(file);
             Path mainStoragePath = Paths.get(deviceLinkPath + File.separator + "MainStorage");
             if(Files.exists(mainStoragePath)) {
                 Files.delete(mainStoragePath);
             }
-                Files.createSymbolicLink(mainStoragePath, Paths.get(currDeviceDir.getPath() + File.separator + mountPoint));
+
+            Files.createSymbolicLink(mainStoragePath, Paths.get(currDeviceDir.getPath() + File.separator + mountPoint));
+
             if (externalMountPoint != null) {
-                List<String> paths = externalMountPoint.getPaths();
-                if (paths != null && !paths.isEmpty()) {
-                    for (int i = 0; i < paths.size(); i++) {
-                        Files.createSymbolicLink(Paths.get(deviceLinkPath + File.separator + "ExternalStorage" + i),
-                                Paths.get(currDeviceDir.getPath() + File.separator + paths.get(i)));
-                    }
-                }
+                createSymbolicLinks(externalMountPoint.getPaths(),deviceLinkPath);
             }
         }
     }
 
-    private void deleteFiles(File[] files) throws IOException {
+    private void createSymbolicLinks(List<String> paths,String deviceLinkPath) throws IOException{
+        if (paths != null && !paths.isEmpty()) {
+            for (int i = 0; i < paths.size(); i++) {
+                Files.createSymbolicLink(Paths.get(deviceLinkPath + File.separator + "ExternalStorage" + i),
+                        Paths.get(currDeviceDir.getPath() + File.separator + paths.get(i)));
+            }
+        }
+    }
+
+    private String createDeviceLinkPath(File file) throws IOException{
+        File deviceLink = new File(file.getPath() + File.separator + userName + id.substring(id.length() - 3));
+        if (!deviceLink.exists()) {
+            deviceLink.mkdir();
+        } else {
+            deleteFiles(deviceLink.listFiles());
+        }
+        return deviceLink.getPath();
+    }
+
+    private void deleteFiles(File... files) throws IOException {
         if (files != null) {
             for (File fl : files) {
                 Files.delete(fl.toPath());

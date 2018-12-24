@@ -107,7 +107,7 @@ public class Win implements OsStrategy {
                             .stream()
                             .filter(player -> {
                                 String status = player.getStatus();
-                                return  (status.equalsIgnoreCase("play") || status.equalsIgnoreCase("playing"));
+                                return  ("play".equalsIgnoreCase(status) || "playing".equalsIgnoreCase(status));
                             })
                             .forEach(player -> {
                                 String name = player.getName();

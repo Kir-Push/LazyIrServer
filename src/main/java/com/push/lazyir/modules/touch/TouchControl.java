@@ -2,7 +2,6 @@ package com.push.lazyir.modules.touch;
 
 import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.api.NetworkPackage;
-import com.push.lazyir.modules.Module;
 import com.push.lazyir.service.main.BackgroundService;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;

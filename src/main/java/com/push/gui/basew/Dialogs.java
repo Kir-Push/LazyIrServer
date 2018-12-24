@@ -58,9 +58,9 @@ public class Dialogs {
 
         answerBtn.setOnAction(event -> {
             String type = notification.getType();
-            if(type.equals("SMS"))
+            if("SMS".equals(type))
                 guiCommunicator.sendSmsAnswer(id,name,answerText.getText());
-             else if(type.equals("MESSENGER") )
+             else if("MESSENGER".equals(type))
                  guiCommunicator.sendMessengerAnswer(id,typName,answerText.getText());
             stage.hide();
         });

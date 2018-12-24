@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.*;
 
 @Slf4j
@@ -143,14 +142,14 @@ public class CommandsWindow {
             ObservableList<Command> items = tableView.getItems();
             Command cge  = value.getRowValue();
             if(row != items.size()-1){ // if it's not last row - which are empty row
-                if(newValue.equals(" ") || newValue.equals("")){
+                if(" ".equals(newValue) || "".equals(newValue)){
                     items.remove(row);
                     tempDeleteList.add(new Command("","",cge.getId()));
                 }else{
                     cge.setCommandName(newValue);
                     tempUpdateList.add(cge);
                 }
-            }else if(!newValue.equals(" ") && !newValue.equals("")){
+            }else if(!" ".equals(newValue) && !"".equals(newValue)){
                 cge.setCommandName(newValue);
                 tempNewList.add(cge);
                 list.add(new Command("","",generateTempId()));

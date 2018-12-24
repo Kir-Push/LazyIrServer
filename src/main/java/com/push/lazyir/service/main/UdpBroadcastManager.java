@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.push.lazyir.api.MessageFactory;
 import com.push.lazyir.api.NetworkPackage;
 import com.push.lazyir.gui.GuiCommunicator;
+import com.push.lazyir.utils.exceptions.UdpRuntimeException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
@@ -28,7 +29,7 @@ public class UdpBroadcastManager  {
     @Getter @Setter
     private boolean listening;
     private BackgroundService backgroundService;
-    private GuiCommunicator guiCommunicator;
+    private GuiCommunicator guiCommunicator; // not used now, but maybe helpful in future
     private MessageFactory messageFactory;
 
     UdpBroadcastManager(BackgroundService backgroundService, GuiCommunicator guiCommunicator, MessageFactory messageFactory) {
@@ -66,7 +67,7 @@ public class UdpBroadcastManager  {
                     }
                 } catch (Exception e) {
                     log.error("udpReceive exception",e);
-                    throw new RuntimeException("Something goes wrong in udpBroadcastListener",e);
+                    throw new UdpRuntimeException("Something goes wrong in udpBroadcastListener",e);
                 } finally {
                     log.info("stopping udp listener");
                     stopUdpListener();
